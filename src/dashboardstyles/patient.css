@@ -1,0 +1,199 @@
+/* Dashboard Container */
+.dashboard-container {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1fr;
+    gap: 2rem;
+    padding: 2rem;
+    /* background: #f8f9fa; Light Gray for background */
+    width: 150vh;
+    margin-left: 2.5rem;
+    margin-top: 2rem;
+    height: auto;
+}
+
+/* Patient Info Card */
+.patient-info-card {
+    background: #ffffff;
+    color: #0D2B37; /* Dark Gray for text */
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+.patient-info-card h2{
+    color: #007BFF;
+    margin-top: -1rem;
+    margin-bottom: 3rem;
+}
+.profile-body p{
+    margin-bottom: 1.5rem;
+}
+.profile-pic {
+    width: 6rem;
+    height: 6rem;
+    border-radius: 50%;
+    margin-bottom: 1.5rem;
+    object-fit: cover;
+    border: 4px solid #007BFF; /* Blue border for profile picture */
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    font-size: 1.1rem;
+}
+
+/* Reminder and Alarm */
+.reminder-alarm {
+    margin-top: 2rem;
+    background: #007BFF; /* Blue background */
+    padding: 0.9rem;
+    border-radius: 0.75rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.reminder-alarm span {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.alarm {
+    font-size: 2rem;
+    text-align: center;
+    margin-right: 1.5rem;
+}
+
+/* Chart Section */
+.chart-section {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-size: 1rem;
+}
+
+.chart-section h3 {
+    color: #007BFF; /* Dark Gray */
+    text-align: center;
+    font-size: 1.6rem;
+    margin-bottom: 1.5rem;
+    margin-left: 0rem;
+}
+
+/* Notification Section */
+.notif {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.notif h3 {
+    color: #007BFF; /* Dark Gray */
+    font-size: 1.6rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    margin-left: 0rem;
+}
+
+.notif li {
+    color: #0D2B37; /* Dark Gray */
+    margin-bottom: 0.8rem;
+    font-size: 1.1rem;
+}
+
+/* Health Info */
+.health-info {
+    background: #ffffff;
+    color: #007BFF; /* Dark Gray */
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-left: 0rem;
+}
+
+.health-info p {
+    color: #0D2B37; /* Dark Gray */
+    font-size: 1.1rem;
+}
+
+.health-info h3 {
+    color: #007BFF; /* Dark Gray */
+    font-size: 1.6rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    margin-left: 0rem;
+}
+
+/* Regular Checkups */
+.regular-checkups {
+    background: #ffffff;
+    color: #007BFF; /* Dark Gray */
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.regular-checkups p {
+    color: #0D2B37; /* Dark Gray */
+    font-size: 1.1rem;
+}
+
+.regular-checkups h3 {
+    color: #007BFF; /* Dark Gray */
+    font-size: 1.6rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    margin-left: 0rem;
+}
+
+/* Patient Vitals & Activities */
+.patient-vitals,
+.patient-activities {
+    background: #ffffff;
+    color: #0D2B37; /* Dark Gray */
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.patient-vitals h3,
+.patient-activities h3 {
+    color: #007BFF; /* Dark Gray */
+    font-size: 1.6rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    margin-left: 0rem;
+}
+.patient-vitals strong{
+    color: #555;
+    margin-left: 1rem;
+
+}
+body.dark-theme .patient-info-card,
+body.dark-theme .regular-checkups,
+body.dark-theme .health-info,
+body.dark-theme .notif,
+body.dark-theme .chart-section,
+body.dark-theme .patient-vitals,
+body.dark-theme .patient-activities{
+    background-color: #181818;
+    box-shadow: 0 0 5px rgba(80, 80, 80, 0.384);
+    /* border:  solid white; */
+    color: white;
+}
+
+body.dark-theme .dashboard-container{
+    background-color: #181818;
+}
+body.dark-theme .patient-info-card h2{
+    color: white;
+}
+body.dark-theme .patient-vitals strong{
+    color: white;
+    margin-left: 1rem;
+}

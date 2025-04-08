@@ -1,0 +1,120 @@
+.doctor-profile{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2rem;
+    padding: 2rem;
+    /* background: #f4f6f9; */
+    width: 94%;
+    margin-top: 0rem;
+    height: auto;
+    margin-left:4rem;
+}
+.doctor-profile .content{
+    margin-left: 5rem;
+}
+.doctor-profile .content h1{
+    color: #007bff;
+    font-size: 2rem;
+}
+.profile-body h2{
+    color: #007bff;
+    margin-bottom: 1rem;
+}
+.doctor-profile .content .desc{
+    font-size: 1rem;
+}
+.doctor-profile .content .desc span{
+    font-size: 1rem;
+    color: black;
+}
+.doctor-profile .content p{
+    font-size: 1.1rem;
+    margin-top: 1rem;
+}
+.doctor-profile .content .email{
+    font-size: 1.1rem;
+    color: #0D2B37;
+    text-decoration: none;
+    cursor: pointer;
+}
+.doctor-profile .content .email span{
+    font-size: 1.2rem;
+    color: #0D2B37;
+}
+.specialiity{
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    text-align: center;
+    padding: 1rem;
+    height: auto;
+}
+.specialiity h3 {
+    font-size: 1.4rem;
+    color: #007BFF;
+    border-bottom: 2px solid #007BFF;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+  }
+.specialiity li{
+    color: black;
+    font-weight: lighter;
+    text-align: left;
+}
+.info {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .info li {
+    font-size: 1rem;
+    color: #333;
+    margin: 5px 0;
+  }
+  
+strong{
+    color: #007bff;
+}
+.message-list {
+    list-style: none;
+    padding: 0;
+  }
+    .message-list li {
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+  }
+   
+  .message-list li strong {
+    color: #007BFF;
+  }
+body.light-theme .specialiity{
+    background-color: white;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+.expertise strong{
+    color: #555;
+}
+body.dark-theme .doctor-profile, 
+body.dark-theme   .message-list li ,
+body.dark-theme  .specialiity{
+    background-color: #181818;
+    box-shadow: 0 0 5px rgb(80, 80, 80);
+  color: white  ;
+}
+body.dark-theme .doctor-profile .specialiity h3,
+body.dark-theme .doctor-profile .specialiity strong,
+body.dark-theme .doctor-profile .profile-body h2{
+    color: white;
+}
+body.dark-theme .specialiity .info li strong, body.dark-theme .message-list strong{
+    color: white;
+}
+.specialiity h3, .profile-body h3, .chart-section h3{
+    margin-left: 0rem;
+    color: #007bff;
+    font-size: 1.5rem;
+}

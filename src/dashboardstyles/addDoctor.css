@@ -1,0 +1,165 @@
+/* Overall Form Container */
+.forms {
+    margin-top: 7rem;
+    width: 140vh;
+    background-color: #f8f9fa; /* Light background for the form */
+    /* margin: 1rem auto; Center the form and add some spacing */
+    height: auto;
+    border-radius: 12px; /* Rounded corners */
+    padding: 2rem;
+    margin-left: 5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+}
+
+/* Header Section */
+.heades-container {
+    background: #007BFF; /* Dark Blue for consistency */
+    text-align: center;
+    color: white;
+    padding: 1.5rem;
+    border-radius: 10px 10px 0 0; /* Rounded top corners */
+}
+
+.heades-title {
+    font-size: 28px;
+    font-weight: 700; /* Bold title */
+    position: relative;
+    z-index: 1;
+}
+
+.heades-description {
+    font-size: 16px;
+    width: 70%; /* Increased width for description */
+    margin: 1rem auto;
+    position: relative;
+    z-index: 1;
+    color: #e0e0e0; /* Subtle light color for the description */
+}
+
+/* Form Styling */
+.forms form {
+    width: 94%;
+    border: 0.15rem solid #007BFF;
+    margin-top: 2rem;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 12px; /* Rounded corners for the form */
+}
+
+/* Form Title */
+.forms form h2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #007BFF;
+    margin-bottom: 1.5rem; /* Spacing between title and fields */
+}
+
+/* Form Fields Styling */
+.forms form input, 
+.forms form textarea {
+    width: 97%;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid #007BFF;
+    color: #333;
+    font-size: 1rem;
+    font-weight: 400;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+}
+
+.forms form input:focus,
+.forms form textarea:focus {
+    border-color: #0061c9; /* Blue border on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3); /* Subtle glow effect */
+}
+
+/* Label Styling */
+.forms form label {
+    /* display: block; */
+    margin-top: 1rem;
+    margin-left: 0rem;
+    color: #007BFF;
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+/* Button Styles */
+.doctor-btn {
+    background-color: #007BFF; /* Blue button */
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 0.5rem; /* Pill shape */
+    cursor: pointer;
+    border: none;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-left: 0rem;
+    transition: background-color 0.3s ease;
+    width: auto;
+    margin-top: 1rem; /* Spacing from form fields */
+}
+
+.doctor-btn:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Cancel Button */
+.cancel {
+    background-color: #e0e0e0;
+    color: #0D2B37;
+    padding: 1rem 2rem;
+    border-radius: 25px;
+    cursor: pointer;
+    border: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    margin-top: 1.5rem;
+    margin-left: 2rem;
+}
+
+.cancel:hover {
+    background-color: #ccc; /* Light gray on hover */
+}
+
+
+@media (max-width: 768px) {
+    .header-description {
+        width: 90%;
+    }
+}
+
+body.dark-theme .forms,
+body.dark-theme input,
+body.dark-theme textarea,
+body.dark-theme .heades-container{
+    background-color: #181818;
+    box-shadow: 0 0 5px rgb(80, 80, 80);
+    border: 0.1rem solid white;
+    color: white;
+}
+body.dark-theme .forms form h2,
+body.dark-theme .cancel{
+    color: white;
+}
+body.dark-theme .forms form label{
+    color: white;
+}
+body.dark-theme .doctor-btn{
+    background-color: #141414;
+    box-shadow: 0 0 5px rgb(80, 80, 80);
+    border: 0.1rem  white;
+    color: white;
+}
+body.dark-theme .forms form{
+    background-color: #181818;
+    box-shadow: 0 0 5px rgb(80, 80, 80);
+    border: 0.1rem  white;
+    color: white;
+}
+
+
+
+ 

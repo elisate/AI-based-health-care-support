@@ -1,0 +1,151 @@
+
+.table-section {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  width: 150vh;
+  margin-bottom: 2rem;
+  margin-left: 3rem;
+  margin-top: 7rem;
+  transition: all 0.3s ease;
+}
+
+.table-section:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+.table-section h1{
+  color: #007BFF;
+  margin-bottom: 1rem;
+}
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 0.5rem;
+  min-width: 40rem;
+  border-radius: 0.5rem;
+}
+
+th {
+  background: #007BFF;
+  color: #ffffff;
+  padding: 1rem;
+  text-align: left;
+  font-size: 1rem;
+}
+
+td {
+  background-color: #dceaf8;
+  padding: 0.75rem;
+  text-align: left;
+  color: #0D2B37;
+  border-bottom: 1px solid #e4e7ec;
+  transition: background 0.3s ease;
+}
+td h5{
+  font-size: 1rem;
+  margin-top: -2rem;
+  margin-left: 4rem;
+  text-align: left;
+}
+tbody tr:hover td {
+  background-color: #eef4fc;
+  /* Subtle highlight on row hover */
+}
+
+tbody tr:nth-child(even) td {
+  background: #f4f6f8;
+}
+
+.profile-img {
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-top: -0.5rem;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #007BFF;
+  transition: transform 0.3s ease;
+}
+
+.profile-img:hover {
+  transform: scale(1.1);
+}
+
+.edit,
+.delete {
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.4rem;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.edit {
+  color: #007BFF;
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
+.edit:hover {
+  background-color: #007BFF;
+  color: #fff;
+}
+
+.delete {
+  color: #FF3B30;
+  background-color: rgba(255, 59, 48, 0.1);
+  margin-left: 0.5rem;
+}
+
+.delete:hover {
+  background-color: #FF3B30;
+  color: #fff;
+}
+
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+td .name-info {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+td .name-info span {
+  font-weight: 500;
+  color: #0D2B37;
+}
+
+body.dark-theme .table-section {
+  background-color: #181818;
+  box-shadow: 0 0 5px rgb(80, 80, 80);
+}
+
+body.dark-theme th {
+  background-color: #24232394;
+  color: white;
+}
+
+body.light-theme td {
+  padding: 0.75rem;
+  text-align: left;
+  justify-content: left;
+  color: gray;
+  background: #f0f0f0;
+}
+body.dark-theme td{
+  background-color: #38383894;
+  color: white;
+}
+body.dark-theme tbody tr:nth-child(even) td {
+  background-color: #50505094;
+  color: white;
+}
+body.dark-theme tbody tr:hover td{
+  background-color: #191e24;
+}
+body.dark-theme .table-section h1{
+  color: white;
+}
