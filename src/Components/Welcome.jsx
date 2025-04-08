@@ -1,493 +1,215 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import axios from 'axios';
-import { Notify } from 'notiflix';
+import React, { useState } from "react";
+import { Fragment } from "react";
 
-import doctorImage from "../assets/welcomeImage.jpg"
-import "../styles/welcome.css";
-import { LanguageContext,LanguageSelector } from './Languages';
-
-
-const Welcome = () => {
-  const navigate = useNavigate();
-  const { language, setLanguage } = useContext(LanguageContext);
-  const [activeTab, setActiveTab] = useState('signin');
-  const [rememberMe, setRememberMe] = useState(false);
+export default function Welcome() {
+  const [isOpen, setIsOpen] = useState(true);
+  const [activeTab, setActiveTab] = useState("signin");
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [language, setLanguage] = useState("en");
 
-  // Setup React Hook Form
-  const { 
-    register: registerSignIn, 
-    handleSubmit: handleSubmitSignIn,
-    formState: { errors: errorsSignIn }
-  } = useForm();
-
-  const { 
-    register: registerSignUp, 
-    handleSubmit: handleSubmitSignUp,
-    formState: { errors: errorsSignUp }
-  } = useForm();
-
-  const content = {
-    english: {
-      welcome: 'Welcome Back!',
-      getStarted: 'Get Started',
-      signIn: 'Sign In',
-      signUp: 'Sign Up',
-      email: 'Email',
-      password: 'Password',
-      fullName: 'Full Name',
-      rememberMe: 'Remember me',
-      forgotPassword: 'Forgot password?',
-      haveAccount: 'Already have an account?',
-      noAccount: "Don't have an account?",
-      agreeTerms: 'I agree to the processing of Personal data',
-      continueWith: 'Sign in with',
-      guest: 'Continue as Guest',
-      enterDetails: 'Enter personal details to your account',
-      loggingIn: 'Logging in...',
-      signingUp: 'Signing up...',
-      errorOccurred: 'An error occurred'
+  // Translation object (simplified for demo)
+  const translations = {
+    en: {
+      signIn: "Sign In",
+      signUp: "Sign Up",
+      fullName: "Full Name",
+      email: "Email",
+      password: "Password",
+      agreeTerms: "I agree to the Terms and Conditions",
+      submit: "Submit",
+      loggingIn: "Logging in...",
+      signingUp: "Signing up...",
+      guest: "Continue as Guest",
+      welcome: "Welcome Back",
+      joinUs: "Join Us Today"
     },
-    french: {
-      welcome: 'Bon Retour!',
-      getStarted: 'Commencer',
-      signIn: 'Se Connecter',
+    fr: {
+      signIn: "Se Connecter",
       signUp: "S'inscrire",
-      email: 'E-mail',
-      password: 'Mot de passe',
-      fullName: 'Nom complet',
-      rememberMe: 'Se souvenir de moi',
-      forgotPassword: 'Mot de passe oublié?',
-      haveAccount: 'Vous avez déjà un compte?',
-      noAccount: "Vous n'avez pas de compte?",
-      agreeTerms: 'J\'accepte le traitement des données personnelles',
-      continueWith: 'Se connecter avec',
-      guest: 'Continuer en tant qu\'invité',
-      enterDetails: 'Entrez vos informations personnelles',
-      loggingIn: 'Connexion en cours...',
-      signingUp: 'Inscription en cours...',
-      errorOccurred: 'Une erreur est survenue'
+      fullName: "Nom Complet",
+      email: "Email",
+      password: "Mot de Passe",
+      agreeTerms: "J'accepte les termes et conditions",
+      submit: "Soumettre",
+      loggingIn: "Connexion...",
+      signingUp: "Inscription...",
+      guest: "Continuer en tant qu'invité",
+      welcome: "Bon Retour",
+      joinUs: "Rejoignez-nous"
     },
-    kinyarwanda: {
-      welcome: 'Murakaza Neza!',
-      getStarted: 'Tangira',
-      signIn: 'Injira',
-      signUp: 'Iyandikishe',
-      email: 'Imeri',
-      password: 'Ijambo ryibanga',
-      fullName: 'Amazina yombi',
-      rememberMe: 'Unyibuke',
-      forgotPassword: 'Wibagiwe ijambo ryibanga?',
-      haveAccount: 'Usanzwe ufite konti?',
-      noAccount: "Nta konti ufite?",
-      agreeTerms: 'Nemeye gutanga amakuru yanjye bwite',
-      continueWith: 'Injira ukoresheje',
-      guest: 'Komeza nk\'umushyitsi',
-      enterDetails: 'Uzuza amakuru yawe bwite',
-      loggingIn: 'Kwinjira...',
-      signingUp: 'Kwiyandikisha...',
-      errorOccurred: 'Habayeho ikosa'
+    rw: {
+      signIn: "Kwinjira",
+      signUp: "Kwiyandikisha",
+      fullName: "Amazina Yombi",
+      email: "Imeli",
+      password: "Ijambo ry'ibanga",
+      agreeTerms: "Nemera amabwiriza",
+      submit: "Ohereza",
+      loggingIn: "Kwinjira...",
+      signingUp: "Kwiyandikisha...",
+      guest: "Komeza nk'umushyitsi",
+      welcome: "Murakaza neza",
+      joinUs: "Twifatanye"
     }
   };
 
-  // API URL
-  // const API_URL = 'https://evuriro-backend.onrender.com';
-  const API_URL = 'https://evuriro-backend.onrender.com';
-  // Updated sign-in handler with React Hook Form and Axios
-  const onSubmitSignIn = async (data) => {
+  const t = (key) => translations[language][key] || key;
+
+  const changeLanguage = (lng) => {
+    setLanguage(lng);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
     setIsLoading(true);
-    setErrorMessage('');
-    
-    try {
-      console.log("Connecting to:", `${API_URL}/user/login`);
-      
-      const response = await axios.post(`${API_URL}/user/login`, {
-        email: data.email,
-        password: data.password
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        withCredentials: true // equivalent to credentials: 'include'
-      });
-      
-      console.log("Login response:", response);
-      
-      const userToken = response.data;
-      
-      // Store user data and token
-      localStorage.setItem('isAuthenticated', 'true');
-      localStorage.setItem('userEmail', data.email);
-      localStorage.setItem('preferredLanguage', language);
-      
-      // If the backend returns a token, store it
-      if (userToken.token) {
-        localStorage.setItem('token', userToken.token);
-      }
-      
-      // If the backend returns user data, store relevant info
-      if (userToken.user) {
-        localStorage.setItem('userId', userToken.user.id || userToken.user._id);
-        localStorage.setItem('userName', userToken.user.name);
-        localStorage.setItem('role', userToken.user.role);
-      }
-      
-      Notify.success('Login Successful');
-      navigate('/dashboard');
-    } catch (error) {
-      console.error('Login error:', error);
-      const errorMsg = error.response?.data?.message || text.errorOccurred;
-      setErrorMessage(errorMsg);
-      Notify.failure(errorMsg);
-    } finally {
+    setTimeout(() => {
       setIsLoading(false);
-    }
+      setIsOpen(false);
+    }, 1000);
   };
-  
-  // Updated sign-up handler with React Hook Form and Axios
-  const onSubmitSignUp = async (data) => {
-    if (!agreeToTerms) {
-        setErrorMessage("Please agree to the terms");
-        return;
-    }
-
-    setIsLoading(true);
-    setErrorMessage("");
-
-    try {
-        console.log("Sending signup request with data:", JSON.stringify(data, null, 2));
-
-        const response = await axios.post(`${API_URL}/user/register`, {
-            name: data.name,
-            email: data.email,
-            password: data.password,
-            role: "patient"
-        }, {
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-        });
-
-        console.log("Register response:", response);
-
-        Notify.success("Registration Successful");
-        navigate("/dashboard");
-    } catch (error) {
-        console.error("Registration error:", error);
-        console.error("Error response:", error.response?.data);
-        setErrorMessage(error.response?.data?.message || "An error occurred");
-        Notify.failure(error.response?.data?.message || "An error occurred");
-    } finally {
-        setIsLoading(false);
-    }
-};
-
-  // Handler for social login (placeholder)
-  const handleSocialLogin = (provider) => {
-    console.log(`Social login with ${provider}`);
-  };
-
-  // Handler for guest login
-  const handleGuestLogin = () => {
-    localStorage.setItem('isAuthenticated', 'true');
-    localStorage.setItem('isGuest', 'true');
-    localStorage.setItem('preferredLanguage', language);
-    navigate('/login');
-  };
-
-  // Add effect to check if user is already logged in
-  useEffect(() => {
-    const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
-    if (isAuthenticated) {
-      navigate('/dashboard');
-    }
-  }, [navigate]);
-
-  const text = content[language];
 
   return (
-    <div className="welcome-container">
-      <div className="language-selector-container">
-        <LanguageSelector />
+    <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
+      {/* Left Section - Image */}
+      <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-blue-500 to-blue-700 justify-center items-center p-8">
+        <div className="text-center text-white">
+          <h2 className="text-3xl font-bold mb-4">
+            {activeTab === "signin" ? t("welcome") : t("joinUs")}
+          </h2>
+          <p className="text-xl">
+            {activeTab === "signin" 
+              ? "Access your account and continue your journey" 
+              : "Create an account and start your journey with us"}
+          </p>
+          <div className="mt-8 p-4">
+           
+            <div className="w-64 h-64 mx-auto bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+              <svg className="w-40 h-40 text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="welcome-content">
-        <div 
-          className="left-section" 
-          style={{
-            backgroundImage: `linear-gradient(rgba(30, 87, 153, 0.8), rgba(30, 87, 153, 0.8)), url(${doctorImage})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center'
-          }}
+      {/* Right Section - Form */}
+      <div className="flex-col items-center justify-center  md:p-8">
+  <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+    <div className="flex flex-row items-center justify-between mb-4">
+      <div className=" font-bold text-gray-800">
+        {activeTab === "signin" ? t("signIn") : t("signUp")}
+      </div>
+      <div className="flex flex-row items-center space-x-2">
+        <button 
+          onClick={() => changeLanguage("en")} 
+          className={`w-16 h-6 text-center rounded ${language === "en" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700"}`}
         >
-          <div className="left-content">
-            <h1>{text.welcome}</h1>
-            <p>{text.enterDetails}</p>
-            <div className="tab-buttons-mobile">
-              <button 
-                className={activeTab === 'signin' ? 'active' : ''} 
-                onClick={() => setActiveTab('signin')}
-              >
-                {text.signIn}
-              </button>
-              <button 
-                className={activeTab === 'signup' ? 'active' : ''} 
-                onClick={() => setActiveTab('signup')}
-              >
-                {text.signUp}
-              </button>
-            </div>
-            {/* <button 
-              onClick={handleGuestLogin} 
-              className="guest-button"
-            >
-              {text.guest}
-            </button> */}
-          </div>
-        </div>
-
-        <div className="right-section">
-          <div className="card">
-            <div className="tab-buttons">
-              <button 
-                className={activeTab === 'signin' ? 'active' : ''} 
-                onClick={() => setActiveTab('signin')}
-              >
-                {text.signIn}
-              </button>
-              <button 
-                className={activeTab === 'signup' ? 'active' : ''} 
-                onClick={() => setActiveTab('signup')}
-              >
-                {text.signUp}
-              </button>
-            </div>
-
-            {errorMessage && (
-              <div className="error-message">
-                {errorMessage}
-              </div>
-            )}
-
-            {activeTab === 'signin' ? (
-              <form onSubmit={handleSubmitSignIn(onSubmitSignIn)} className="signin-form">
-                <div className="form-group">
-                  <label htmlFor="email">{text.email}</label>
-                  <input
-                    type="email"
-                    id="email"
-                    placeholder="example@mail.com"
-                    disabled={isLoading}
-                    {...registerSignIn('email', { 
-                      required: 'Email is required',
-                      pattern: {
-                        value: /^\S+@\S+\.\S+$/,
-                        message: 'Invalid email format'
-                      }
-                    })}
-                  />
-                  {errorsSignIn.email && <span className="error-text">{errorsSignIn.email.message}</span>}
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="password">{text.password}</label>
-                  <input
-                    type="password"
-                    id="password"
-                    placeholder="••••••••"
-                    disabled={isLoading}
-                    {...registerSignIn('password', { 
-                      required: 'Password is required',
-                      minLength: {
-                        value: 6,
-                        message: 'Password must be at least 6 characters'
-                      }
-                    })}
-                  />
-                  {errorsSignIn.password && <span className="error-text">{errorsSignIn.password.message}</span>}
-                </div>
-
-                <div className="form-options">
-                  <div className="checkbox-group">
-                    <input
-                      type="checkbox"
-                      id="rememberMe"
-                      checked={rememberMe}
-                      onChange={() => setRememberMe(!rememberMe)}
-                      disabled={isLoading}
-                    />
-                    <label htmlFor="rememberMe">{text.rememberMe}</label>
-                  </div>
-                  <a href="#" className="forgot-password">{text.forgotPassword}</a>
-                </div>
-
-                <button 
-                  type="submit" 
-                  className="submit-btn" 
-                  disabled={isLoading}
-                >
-                  {isLoading ? text.loggingIn : text.signIn}
-                </button>
-
-                <div className="separator">
-                  <span>or</span>
-                </div>
-
-                <div className="social-login">
-                  <p>{text.continueWith}</p>
-                  <div className="social-icons">
-                    <button 
-                      type="button"
-                      className="social-btn facebook"
-                      onClick={() => handleSocialLogin('facebook')}
-                      disabled={isLoading}
-                    >
-                      <i className="facebook-icon"></i>
-                    </button>
-                    <button 
-                      type="button"
-                      className="social-btn google"
-                      onClick={() => handleSocialLogin('google')}
-                      disabled={isLoading}
-                    >
-                      <i className="google-icon"></i>
-                    </button>
-                    <button 
-                      type="button"
-                      className="social-btn apple"
-                      onClick={() => handleSocialLogin('apple')}
-                      disabled={isLoading}
-                    >
-                      <i className="apple-icon"></i>
-                    </button>
-                  </div>
-                </div>
-
-                <p className="switch-form">
-                  {text.noAccount} <button type="button" onClick={() => setActiveTab('signup')} disabled={isLoading}>{text.signUp}</button>
-                </p>
-              </form>
-            ) : (
-              <form onSubmit={handleSubmitSignUp(onSubmitSignUp)} className="signup-form">
-                <div className="form-group">
-                  <label htmlFor="fullName">{text.fullName}</label>
-                  <input
-                    type="text"
-                    id="name"
-                    placeholder="John Doe"
-                    disabled={isLoading}
-                    {...registerSignUp('name', { 
-                      required: 'Full name is required'
-                    })}
-                  />
-                  {errorsSignUp.name && <span className="error-text">{errorsSignUp.name.message}</span>}
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="signupEmail">{text.email}</label>
-                  <input
-                    type="email"
-                    id="signupEmail"
-                    placeholder="example@mail.com"
-                    disabled={isLoading}
-                    {...registerSignUp('email', { 
-                      required: 'Email is required',
-                      pattern: {
-                        value: /^\S+@\S+\.\S+$/,
-                        message: 'Invalid email format'
-                      }
-                    })}
-                  />
-                  {errorsSignUp.email && <span className="error-text">{errorsSignUp.email.message}</span>}
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="signupPassword">{text.password}</label>
-                  <input
-                    type="password"
-                    id="signupPassword"
-                    placeholder="••••••••"
-                    disabled={isLoading}
-                    {...registerSignUp('password', { 
-                      required: 'Password is required',
-                      minLength: {
-                        value: 6,
-                        message: 'Password must be at least 6 characters'
-                      }
-                    })}
-                  />
-                  {errorsSignUp.password && <span className="error-text">{errorsSignUp.password.message}</span>}
-                </div>
-
-                <div className="checkbox-group terms">
-                  <input
-                    type="checkbox"
-                    id="agreeTerms"
-                    checked={agreeToTerms}
-                    onChange={() => setAgreeToTerms(!agreeToTerms)}
-                    disabled={isLoading}
-                  />
-                  <label htmlFor="agreeTerms">{text.agreeTerms}</label>
-                </div>
-
-                <button 
-                  type="submit" 
-                  className="submit-btn"
-                  disabled={isLoading}
-                >
-                  {isLoading ? text.signingUp : text.signUp}
-                </button>
-
-                <div className="separator">
-                  <span>or</span>
-                </div>
-
-                <div className="social-login">
-                  <p>{text.continueWith}</p>
-                  <div className="social-icons">
-                    <button 
-                      type="button"
-                      className="social-btn facebook"
-                      onClick={() => handleSocialLogin('facebook')}
-                      disabled={isLoading}
-                    >
-                      <i className="facebook-icon"></i>
-                    </button>
-                    <button 
-                      type="button"
-                      className="social-btn google" 
-                      onClick={() => handleSocialLogin('google')}
-                      disabled={isLoading}
-                    >
-                      <i className="google-icon"></i>
-                    </button>
-                    <button 
-                      type="button"
-                      className="social-btn apple"
-                      onClick={() => handleSocialLogin('apple')}
-                      disabled={isLoading}
-                    >
-                      <i className="apple-icon"></i>
-                    </button>
-                  </div>
-                </div>
-
-                <p className="switch-form">
-                  {text.haveAccount} <button type="button" onClick={() => setActiveTab('signin')} disabled={isLoading}>{text.signIn}</button>
-                </p>
-              </form>
-            )}
-          </div>
-        </div>
+          EN
+        </button>
+        <button 
+          onClick={() => changeLanguage("fr")} 
+          className={`w-16 h-6 text-sm rounded ${language === "fr" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700"}`}
+        >
+          FR
+        </button>
+        <button 
+          onClick={() => changeLanguage("rw")} 
+          className={`w-16 h-6 text-sm rounded ${language === "rw" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700"}`}
+        >
+          RW
+        </button>
       </div>
     </div>
-  );
-};
 
-export default Welcome;
+    <div className="flex mb-6">
+      <button
+        className={`flex-1 py-3 text-sm font-medium rounded-l-lg transition-colors ${
+          activeTab === "signin" 
+            ? "bg-blue-500 text-white" 
+            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+        }`}
+        onClick={() => setActiveTab("signin")}
+      >
+        {t("signIn")}
+      </button>
+      <button
+        className={`flex-1 py-3 text-sm font-medium rounded-r-lg transition-colors ${
+          activeTab === "signup" 
+            ? "bg-blue-500 text-white" 
+            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+        }`}
+        onClick={() => setActiveTab("signup")}
+      >
+        {t("signUp")}
+      </button>
+    </div>
+
+    <form onSubmit={handleSubmit} className="">
+      {activeTab === "signup" && (
+        <>
+          <label className="text-sm font-medium text-black ">Full Name</label>
+          <input
+            required
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+            placeholder="John Doe"
+            disabled={isLoading}
+          />
+        </>
+      )}
+
+      <div>
+        <label className="text-sm font-medium text-gray-700 mb-1">Email</label>
+        <input
+          type="email"
+          required
+          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+          placeholder="example@mail.com"
+          disabled={isLoading}
+        />
+      </div>
+
+      <div>
+        <label className="text-sm font-medium text-gray-700 mb-1">Password</label>
+        <input
+          type="password"
+          required
+          minLength={6}
+          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+          placeholder="••••••••"
+          disabled={isLoading}
+        />
+      </div>
+
+      {activeTab === "signup" && (
+        <div className="flex items-center space-x-2 mt-2">
+          <input
+            type="checkbox"
+            id="terms"
+            checked={agreeToTerms}
+            onChange={() => setAgreeToTerms(!agreeToTerms)}
+            disabled={isLoading}
+            className="w-4 h-4 text-blue-500"
+          />
+          <label htmlFor="terms" className="text-sm text-gray-600">{t("agreeTerms")}</label>
+        </div>
+      )}
+
+      <button
+        type="submit"
+        className="w-52 bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition font-medium mt-4"
+        disabled={isLoading || (activeTab === "signup" && !agreeToTerms)}
+      >
+        {isLoading ? (activeTab === "signin" ? t("loggingIn") : t("signingUp")) : t("submit")}
+      </button>
+    </form>
+
+    <p className="mt-6 text-center text-sm text-gray-600 border-t border-gray-200 pt-4">
+      guest
+    </p>
+  </div>
+</div>
+
+    </div>
+  );
+}
