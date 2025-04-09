@@ -14,9 +14,9 @@ const Patientsidebar = () => {
 
   return (
     <div className="flex flex-col">
-      <div className={`sidebar ${isSidebarVisible ? "block" : "hidden"} fixed top-0 left-0 h-full w-64 bg-white text-gray-700 p-6 transition-width duration-300 border-r-3 border-blue-500 shadow-lg overflow-y-auto`}>
-        <div className="topbar flex justify-between items-center mb-8 bg-blue-500 p-4">
-          <h3 className='text-blue-500 font-bold text-xl'>MediConnect</h3>
+      <div className={`sidebar ${isSidebarVisible ? "block" : "hidden"} fixed top-0 left-0 h-full w-64 bg-white text-gray-700 p-5 transition-width duration-300 border-r-3 border-blue-500 shadow-lg overflow-y-auto`}>
+        <div className=" flex justify-between items-center mb-12 text-blue-500 p-1">
+          <div className='text-blue-500 font-bold text-xl'>MediConnect</div>
         </div>
         <ul className="nav-list space-y-4">
           <Link to="patient-pro" className="nav-link flex items-center text-base font-bold text-gray-700 hover:bg-blue-500 hover:text-white p-3 rounded-md transition-colors">
