@@ -22,7 +22,7 @@ const Patientsidebar = () => {
           <Link to="patient-pro" className="nav-link flex items-center text-base font-bold text-gray-700 hover:bg-blue-500 hover:text-white p-3 rounded-md transition-colors">
             <FaUser className='mr-3 text-xl' /> Your Profile
           </Link>
-          <Link to="/patient/resources" className="nav-link flex items-center text-base font-bold text-gray-700 hover:bg-blue-500 hover:text-white p-3 rounded-md transition-colors">
+          <Link to="/patient/pr" className="nav-link flex items-center text-base font-bold text-gray-700 hover:bg-blue-500 hover:text-white p-3 rounded-md transition-colors">
             <GiMedicines className='mr-3 text-xl' /> Medical Resources
           </Link>
           <Link to="/patient/event" className="nav-link flex items-center text-base font-bold text-gray-700 hover:bg-blue-500 hover:text-white p-3 rounded-md transition-colors">

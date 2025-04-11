@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-
+import { Notify } from 'notiflix';
 const useLogout = () => {
   const navigate = useNavigate();
 
@@ -11,7 +11,7 @@ const useLogout = () => {
       navigate('/welcome');
     }
     else{
-      alert("Can't Logout at the moment!!");
+      Notify.failure("Can't Logout at the moment!!");
     }
 
   };
