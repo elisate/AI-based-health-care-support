@@ -45,6 +45,7 @@ import PatientEvent from "./PatientDashboard/PatientEvent";
 import Welcome from "./Components/Welcome";
 
 import Test from "./Components/Test";
+import PatientSymptomForm from "./PatientDashboard/PatientSymptomForm";
 // import ProtectedRoutes from './Components/ProtectedRoute.js'
 function App() {
   return (
@@ -110,6 +111,7 @@ function App() {
           <Route path="/patient/support" element={<Support />} />
           <Route path="/patient/settings" element={<PaSettings />} />
           <Route path="/patient/event" element={<PatientEvent />} />
+          <Route path="/patient/pridict" element={<PatientSymptomForm/>}/>
         </Route>
         <Route path="/nurse" element={<NurseLayout />}></Route>
         <Route path="/doctor" element={<DoctorLayout />}>
