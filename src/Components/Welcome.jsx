@@ -83,11 +83,14 @@ export default function Welcome() {
         reset();
         setActiveTab("signin");
       } else {
-        await axios.post("http://localhost:8000/recommend/login", formData, {
+       const res= await axios.post("http://localhost:8000/recommend/login", formData, {
           headers: {
             "Content-Type": "application/json",
           },
         });
+        const userToken=res.data;
+        localStorage.setItem("userToken", JSON.stringify(userToken));
+
         Notify.success("Login successful");
         navigate("/patient");
       }
@@ -236,13 +239,15 @@ export default function Welcome() {
               </div>
             )}
 
-            <button
-              type="submit"
-              className=" bg-blue-500 text-white py-3 hover:bg-blue-600"
-              disabled={isLoading}
-            >
-              {t("submit")}
-            </button>
+<button
+  type="submit"
+  className="bg-blue-500 text-white py-3 hover:bg-blue-600"
+  disabled={isLoading}
+>
+  {isLoading ? "Submitting..." : t("submit")}
+</button>
+
+
           </form>
 
           <p className="mt-6 text-center text-sm text-gray-600 border-t border-gray-200 pt-4">

@@ -1,21 +1,50 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 export default function PatientSymptomForm() {
   const availableSymptoms = [
-    "Fever", "Cough", "Headache", "Blurred vision", "Chest pain",
-    "Shortness of breath", "Joint pain", "Swelling", "Stomach pain",
-    "Nausea", "High blood pressure", "Weight loss", "Fatigue", "Itchy skin",
-    "Redness", "Sore throat", "Difficulty swallowing", "Frequent urination",
-    "Thirst", "Abdominal pain", "Bloating", "Dizziness", "Fainting",
-    "Back pain", "Leg numbness",
+    "Fever",
+    "Cough",
+    "Headache",
+    "Blurred vision",
+    "Chest pain",
+    "Shortness of breath",
+    "Joint pain",
+    "Swelling",
+    "Stomach pain",
+    "Nausea",
+    "High blood pressure",
+    "Weight loss",
+    "Fatigue",
+    "Itchy skin",
+    "Redness",
+    "Sore throat",
+    "Difficulty swallowing",
+    "Frequent urination",
+    "Thirst",
+    "Abdominal pain",
+    "Bloating",
+    "Dizziness",
+    "Fainting",
+    "Back pain",
+    "Leg numbness",
   ];
 
   const [selectedSymptom, setSelectedSymptom] = useState("");
   const [symptoms, setSymptoms] = useState([]);
 
   const { register, handleSubmit, setValue } = useForm();
+
+  // Load user from localStorage and set user_id
+  
+  const userToken = JSON.parse(localStorage.getItem("userToken"));
+  const userId = userToken?.user?.user_id;
+  
+
+  
+  
+  
 
   const handleSymptomChange = (e) => {
     setSelectedSymptom(e.target.value);
@@ -25,19 +54,23 @@ export default function PatientSymptomForm() {
     if (selectedSymptom && !symptoms.includes(selectedSymptom)) {
       const updatedSymptoms = [...symptoms, selectedSymptom];
       setSymptoms(updatedSymptoms);
-      setValue("symptoms", updatedSymptoms); // update form value
-      setSelectedSymptom(""); // Reset selection
+      setValue("symptoms", updatedSymptoms);
+      setSelectedSymptom("");
     }
   };
 
   const removeSymptom = (symptomToRemove) => {
-    const updatedSymptoms = symptoms.filter(s => s !== symptomToRemove);
+    const updatedSymptoms = symptoms.filter((s) => s !== symptomToRemove);
     setSymptoms(updatedSymptoms);
-    setValue("symptoms", updatedSymptoms); // update form value
+    setValue("symptoms", updatedSymptoms);
   };
 
   const loadSampleData = () => {
-    setValue("user_id", "12345");
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      setValue("user_id", user.user_id);
+    }
     setValue("location", "New York");
     const sampleSymptoms = ["Fever", "Cough"];
     setSymptoms(sampleSymptoms);
@@ -46,16 +79,9 @@ export default function PatientSymptomForm() {
 
   const onsubmit = async (data) => {
     try {
-      const { user_id, location, symptoms } = data;
-      const formData = {
-        user_id,
-        location,
-        symptoms,
-      };
-
       const res = await axios.post(
         "http://localhost:8000/recommend/resourceFinder",
-        formData,
+        data,
         {
           headers: {
             "Content-Type": "application/json",
@@ -63,8 +89,10 @@ export default function PatientSymptomForm() {
         }
       );
       console.log("Submitted:", res.data);
+      alert("Data submitted successfully");
     } catch (error) {
       console.error("Submission Error:", error);
+      alert("Failed to submit data");
     }
   };
 
@@ -81,15 +109,21 @@ export default function PatientSymptomForm() {
           <form className="space-y-5" onSubmit={handleSubmit(onsubmit)}>
             {/* Patient ID */}
             <div>
-              <label htmlFor="user_id" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="user_id"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Patient ID
               </label>
               <div className="mt-1">
                 <input
-                  id="user_id"
-                  {...register("user_id")}
+                    defaultValue={userId}
+                    {...register("user_id")}
+                    readOnly
+                    
                   type="text"
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  {...register("user_id",{required:true})}
+                  className="appearance-none bg-gray-100 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
             </div>
@@ -107,7 +141,7 @@ export default function PatientSymptomForm() {
                 >
                   <option value="">Select a symptom</option>
                   {availableSymptoms
-                    .filter(symptom => !symptoms.includes(symptom))
+                    .filter((symptom) => !symptoms.includes(symptom))
                     .map((symptom, index) => (
                       <option key={index} value={symptom}>
                         {symptom}
@@ -124,10 +158,11 @@ export default function PatientSymptomForm() {
                 </button>
               </div>
 
-              {/* Show selected symptoms */}
               {symptoms.length > 0 && (
                 <div className="mt-4">
-                  <p className="text-sm text-gray-700 mb-2">Selected symptoms:</p>
+                  <p className="text-sm text-gray-700 mb-2">
+                    Selected symptoms:
+                  </p>
                   <div className="flex flex-wrap gap-2">
                     {symptoms.map((symptom, index) => (
                       <div
@@ -148,12 +183,19 @@ export default function PatientSymptomForm() {
                   </div>
                 </div>
               )}
-              <input type="hidden" {...register("symptoms")} value={JSON.stringify(symptoms)} />
+              <input
+                type="hidden"
+                {...register("symptoms")}
+                value={JSON.stringify(symptoms)}
+              />
             </div>
 
             {/* Location */}
             <div>
-              <label htmlFor="location" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="location"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Location
               </label>
               <div className="mt-1">
@@ -167,20 +209,14 @@ export default function PatientSymptomForm() {
             </div>
 
             {/* Buttons */}
-            <div className="pt-2 flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
+            <div className="pt-2 flex flex-row  sm:space-x-2 sm:space-y-0">
               <button
                 type="submit"
-                className="flex-grow flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+                className=" w-full py-2  border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
               >
                 Submit
               </button>
-              <button
-                type="button"
-                onClick={loadSampleData}
-                className="flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-base font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
-              >
-                Load Sample
-              </button>
+              
             </div>
           </form>
         </div>
