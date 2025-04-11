@@ -8,7 +8,7 @@ const useLogout = () => {
     if (confirmLogOut) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      navigate('/login');
+      navigate('/welcome');
     }
     else{
       alert("Can't Logout at the moment!!");

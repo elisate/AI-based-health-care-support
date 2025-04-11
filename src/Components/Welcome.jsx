@@ -89,7 +89,7 @@ export default function Welcome() {
           },
         });
         Notify.success("Login successful");
-        navigate("/welcome");
+        navigate("/patient");
       }
     } catch (error) {
       console.error(error);
