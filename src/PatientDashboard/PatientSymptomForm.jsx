@@ -33,7 +33,7 @@ export default function PatientSymptomForm() {
 
   const [selectedSymptom, setSelectedSymptom] = useState("");
   const [symptoms, setSymptoms] = useState([]);
-  const { register, handleSubmit, setValue } = useForm();
+  const { register, handleSubmit, setValue,reset } = useForm();
   const [prediction, setPrediction] = useState(null);
 
   const userToken = JSON.parse(localStorage.getItem("userToken"));
@@ -85,10 +85,10 @@ export default function PatientSymptomForm() {
           },
         }
       );
-
+      reset();
       console.log("Submitted:", res.data);
       alert("Data submitted successfully");
-
+       
       // Automatically fetch prediction after submission
       fetchPrediction();
     } catch (error) {
@@ -127,43 +127,46 @@ export default function PatientSymptomForm() {
   }, []);
 
   return (
-    <div className="flex flex-row justify-between pb-[2rem]">
-      <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-6 px-4 sm:px-6 lg:px-8">
-        <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <h2 className="text-center text-2xl sm:text-3xl font-extrabold text-gray-900">
+    <div className="flex flex-col lg:flex-row justify-between gap-8 p-6 bg-gray-50 min-h-screen">
+      <div className="flex-1 flex flex-col justify-start">
+        <div className="w-full max-w-xl mx-auto">
+          <h2 className="text-center text-3xl font-extrabold text-gray-900 mb-8 border-b-4 border-blue-500 pb-2">
             Patient Symptom Form
           </h2>
-        </div>
-
-        <div className="mt-6 sm:mt-8 sm:mx-auto w-full sm:max-w-md lg:max-w-lg">
-          <div className="bg-white py-6 sm:py-8 px-4 sm:px-10 shadow sm:rounded-lg">
-            <form className="space-y-5" onSubmit={handleSubmit(onsubmit)}>
+        
+          <div className="bg-white py-8 px-6 rounded-xl shadow-lg border border-gray-100">
+            <form className="space-y-6" onSubmit={handleSubmit(onsubmit)}>
               <div>
                 <label
                   htmlFor="user_id"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 mb-1"
                 >
                   Patient ID
                 </label>
-                <div className="mt-1">
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                    </svg>
+                  </div>
                   <input
                     defaultValue={userId}
                     readOnly
                     {...register("user_id", { required: true })}
-                    className="appearance-none bg-gray-100 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="appearance-none bg-gray-50 block w-full pl-10 px-3 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 transition duration-150"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Symptoms
                 </label>
                 <div className="mt-1 flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
                   <select
                     value={selectedSymptom}
                     onChange={handleSymptomChange}
-                    className="flex-grow appearance-none px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="flex-grow appearance-none px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 bg-white"
                   >
                     <option value="">Select a symptom</option>
                     {availableSymptoms
@@ -178,28 +181,31 @@ export default function PatientSymptomForm() {
                     type="button"
                     onClick={addSymptom}
                     disabled={!selectedSymptom}
-                    className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-blue-300 disabled:cursor-not-allowed"
+                    className="px-5 py-3 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-blue-300 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center"
                   >
+                    <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
                     Add
                   </button>
                 </div>
 
                 {symptoms.length > 0 && (
                   <div className="mt-4">
-                    <p className="text-sm text-gray-700 mb-2">
+                    <p className="text-sm font-medium text-gray-700 mb-2">
                       Selected symptoms:
                     </p>
                     <div className="flex flex-wrap gap-2">
                       {symptoms.map((symptom, index) => (
                         <div
                           key={index}
-                          className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full flex items-center"
+                          className="bg-blue-100 text-blue-800 text-sm px-3 py-1.5 rounded-full flex items-center transition-all hover:bg-blue-200"
                         >
                           {symptom}
                           <button
                             type="button"
                             onClick={() => removeSymptom(symptom)}
-                            className="ml-1 text-blue-500 hover:text-blue-700 focus:outline-none"
+                            className="ml-1.5 text-blue-500 hover:text-blue-700 focus:outline-none rounded-full hover:bg-blue-300 w-5 h-5 inline-flex items-center justify-center transition-colors"
                             aria-label={`Remove ${symptom}`}
                           >
                             ×
@@ -219,26 +225,35 @@ export default function PatientSymptomForm() {
               <div>
                 <label
                   htmlFor="location"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 mb-1"
                 >
                   Location
                 </label>
-                <div className="mt-1">
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                    </svg>
+                  </div>
                   <input
                     id="location"
                     {...register("location")}
                     type="text"
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Enter your location"
+                    className="appearance-none block w-full pl-10 px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 transition duration-150"
                   />
                 </div>
               </div>
 
-              <div className="pt-2 flex flex-row sm:space-x-2 sm:space-y-0">
+              <div className="pt-4">
                 <button
                   type="submit"
-                  className="w-full py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+                  className=" py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 flex items-center justify-center"
                 >
-                  Submit
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
+                  </svg>
+                  Predict
                 </button>
               </div>
             </form>
@@ -246,53 +261,91 @@ export default function PatientSymptomForm() {
         </div>
       </div>
 
-      <div className="p-4 shadow-md border border-gray-300 rounded-md bg-white mt-[10rem] w-[23rem]">
-        <h1 className="text-lg font-semibold pb-[1rem]">Predicted Output</h1>
-        <div>
-          {prediction && (
-            <div className="p-4 bg-white rounded shadow-md">
-              <h2 className="text-xl font-bold mb-2">Diagnosis Result</h2>
-              <p>
-                <strong>Diagnosis:</strong> {prediction.diagnosis}
-              </p>
+      <div className="flex-1 max-w-xl mx-auto lg:mt-20">
+        <div className="p-6 shadow-lg border border-gray-200 rounded-xl bg-white">
+          <h1 className="text-xl font-bold pb-4 border-b border-gray-200 text-blue-600 flex items-center">
+            <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+            </svg>
+            Predicted Output
+          </h1>
+          
+          <div className="mt-4">
+            {prediction ? (
+              <div className="rounded-lg bg-gray-50 p-5">
+                <h2 className="text-xl font-bold mb-4 text-gray-800 border-b-2 border-blue-200 pb-2">Diagnosis Result</h2>
+                <p className="mb-4 bg-white p-3 rounded-lg shadow-sm border border-gray-100">
+                  <span className="font-semibold text-blue-700">Diagnosis:</span> {prediction.diagnosis}
+                </p>
 
-              <div className="mt-4">
-                <p className="font-semibold">Recommended Doctors:</p>
-                <ul className="list-disc ml-5">
-                  {prediction.recommended_doctors?.map((doctor, index) => (
-                    <li key={index}>{doctor}</li>
-                  ))}
-                </ul>
-              </div>
+                <div className="mb-4">
+                  <p className="font-semibold text-blue-700 mb-2">Recommended Doctors:</p>
+                  <ul className="bg-white p-3 rounded-lg shadow-sm border border-gray-100">
+                    {prediction.recommended_doctors?.map((doctor, index) => (
+                      <li key={index} className="mb-1 flex items-center text-black">
+                        <svg className="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                        {doctor}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
 
-              <div className="mt-4">
-                <p className="font-semibold">Medical Supplies:</p>
-                <ul className="list-disc ml-5">
-                  {prediction.medical_supplies?.map((supply, index) => (
-                    <li key={index}>{supply}</li>
-                  ))}
-                </ul>
-              </div>
+                <div className="mb-4">
+                  <p className="font-semibold text-blue-700 mb-2">Medical Supplies:</p>
+                  <ul className="bg-white p-3 rounded-lg shadow-sm border border-gray-100">
+                    {prediction.medical_supplies?.map((supply, index) => (
+                      <li key={index} className="mb-1 flex items-center text-black">
+                        <svg className="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                        {supply}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
 
-              <div className="mt-4">
-                <p className="font-semibold">Medical Resources:</p>
-                <ul className="list-disc ml-5">
-                  {prediction.medical_resources?.map((resource, index) => (
-                    <li key={index}>{resource}</li>
-                  ))}
-                </ul>
-              </div>
+                <div className="mb-4">
+                  <p className="font-semibold text-blue-700 mb-2">Medical Resources:</p>
+                  <ul className="bg-white p-3 rounded-lg shadow-sm border border-gray-100">
+                    {prediction.medical_resources?.map((resource, index) => (
+                      <li key={index} className="mb-1 flex items-center text-black">
+                        <svg className="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                        {resource}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
 
-              <div className="mt-4">
-                <p className="font-semibold">Recommended Hospitals:</p>
-                <ul className="list-disc ml-5 ">
-                  {prediction.recommended_hospitals?.map((hospital, index) => (
-                    <li key={index}>{hospital}</li>
-                  ))}
-                </ul>
+                <div>
+                  <p className="font-semibold text-blue-700 mb-2">Recommended Hospitals:</p>
+                  <ul className="bg-white p-3 rounded-lg shadow-sm border border-gray-100">
+                    {prediction.recommended_hospitals?.map((hospital, index) => (
+                      <li key={index} className="mb-1 flex items-center text-black">
+                        <svg className="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                        {hospital}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="flex items-center justify-center h-64 bg-gray-50 rounded-lg border border-gray-200">
+                <div className="text-center text-gray-500">
+                  <svg className="mx-auto h-12 w-12 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  </svg>
+                  <p className="mt-2">No prediction data available</p>
+                  <p className="text-sm">Submit the form to see results</p>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
