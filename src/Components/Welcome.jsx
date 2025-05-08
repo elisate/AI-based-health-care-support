@@ -73,7 +73,8 @@ export default function Welcome() {
       formData.append("email", data.email);
       formData.append("password", data.password);
       if (activeTab === "signup") {
-        formData.append("username", data.username);
+        formData.append("firstname", data.firstname);
+        formData.append("lastname", data.lastname);
         await axios.post("http://localhost:8000/recommend/register", formData, {
           headers: {
             "Content-Type": "application/json",
@@ -83,12 +84,16 @@ export default function Welcome() {
         reset();
         setActiveTab("signin");
       } else {
-       const res= await axios.post("http://localhost:8000/recommend/login", formData, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        const userToken=res.data;
+        const res = await axios.post(
+          "http://localhost:8000/recommend/login",
+          formData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const userToken = res.data;
         localStorage.setItem("userToken", JSON.stringify(userToken));
 
         Notify.success("Login successful");
@@ -182,17 +187,32 @@ export default function Welcome() {
 
           <form onSubmit={handleSubmit(onSubmit)}>
             {activeTab === "signup" && (
-              <div className="mb-4">
-                <div className="block text-sm font-medium text-gray-700 mb-1">
-                  {t("fullName")}
+              <>
+                <div className="mb-4">
+                  <div className="block text-sm font-medium text-gray-700 mb-1">
+                    {t("FirstName")}
+                  </div>
+                  <input
+                    {...register("firstname", { required: true })}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="John"
+                    name="firstname"
+                    disabled={isLoading}
+                  />
                 </div>
-                <input
-                  {...register("username", { required: true })}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="John Doe"
-                  disabled={isLoading}
-                />
-              </div>
+                <div className="mb-4">
+                  <div className="block text-sm font-medium text-gray-700 mb-1">
+                    {t("LastName")}
+                  </div>
+                  <input
+                    {...register("lastname", { required: true })}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Doe"
+                    name="lastname"
+                    disabled={isLoading}
+                  />
+                </div>
+              </>
             )}
 
             <div className="mb-4">
@@ -239,15 +259,13 @@ export default function Welcome() {
               </div>
             )}
 
-<button
-  type="submit"
-  className="bg-blue-500 text-white py-3 hover:bg-blue-600"
-  disabled={isLoading}
->
-  {isLoading ? "Submitting..." : t("submit")}
-</button>
-
-
+            <button
+              type="submit"
+              className="bg-blue-500 text-white py-3 hover:bg-blue-600"
+              disabled={isLoading}
+            >
+              {isLoading ? "Submitting..." : t("submit")}
+            </button>
           </form>
 
           <p className="mt-6 text-center text-sm text-gray-600 border-t border-gray-200 pt-4">
