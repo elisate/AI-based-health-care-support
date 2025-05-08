@@ -227,6 +227,7 @@ export default function Welcome() {
                 disabled={isLoading}
               />
             </div>
+           
 
             <div className="mb-4">
               <div className="block text-sm font-medium text-gray-700 mb-1">
@@ -240,6 +241,13 @@ export default function Welcome() {
                 disabled={isLoading}
               />
             </div>
+            
+            {activeTab === "signin" && (
+              <div className="mb-4">
+                Forget Password
+                </div>
+            )}
+            
 
             {activeTab === "signup" && (
               <div className="mb-1">
