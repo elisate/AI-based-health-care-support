@@ -214,7 +214,7 @@ export default function Welcome() {
               </div>
               <input
                 type="password"
-                {...register("password", { required: true, minLength: 6 })}
+                {...register("password", { required: true, minLength: 3 })}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="••••••••"
                 disabled={isLoading}
