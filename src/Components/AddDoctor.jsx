@@ -1,9 +1,9 @@
-import React from 'react'
-import '../dashboardstyles/addDoctor.css';
-import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import "../dashboardstyles/addDoctor.css";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { Notify } from "notiflix/build/notiflix-notify-aio";
+import axios from "axios";
 
 const AddDoctor = () => {
   const navigate = useNavigate();
@@ -13,39 +13,71 @@ const AddDoctor = () => {
     formState: { errors },
     reset,
   } = useForm();
-  const onsave = async (data) => {
-    try {
-      const { userName, userEmail, userPassword, userAge, Gender, Speciality, phoneNumber, profileImage, userRole,userDescription } = data;
-      const formData = new FormData();
-      formData.append("userName", userName);
-      formData.append("userEmail", userEmail);
-      formData.append("userPassword", userPassword);
-      formData.append("userAge", userAge);
-      formData.append("Gender", Gender);
-      formData.append("Speciality", Speciality);
-      formData.append("phoneNumber", phoneNumber);
-      formData.append("userRole", userRole);
-      formData.append("profileImage", profileImage[0]);
-      formData.append("userDescription", userDescription);
 
-      const response = await axios.post(`http://localhost:5001/user/register`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
+ 
+  const [loading, setLoading] = useState(false);
+
+ 
+    const userToken = JSON.parse(localStorage.getItem("userToken"));
+    
+    const hospitalId=userToken?.user?.hospital_id
+     
+    
+
+
+  const onsave = async (data) => {
+    setLoading(true);
+    try {
+      const {
+        firstname,
+        lastname,
+        email,
+        password,
+        age,
+        gender,
+        profile_image,
+        phone,
+        notes,
+        specialty,
+      } = data;
+
+      const formData = new FormData();
+      formData.append("firstname", firstname);
+      formData.append("lastname", lastname);
+      formData.append("password", password);
+      formData.append("age", age);
+      formData.append("gender", gender);
+      formData.append("specialty", specialty);
+      formData.append("phone", phone);
+      formData.append("email", email);
+      formData.append("profile_image", profile_image[0]);
+      formData.append("hospital_id", hospitalId);
+      formData.append("notes", notes);
+
+      const response = await axios.post(
+        `http://127.0.0.1:8000/recommend/doctor/create`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
-      });
+      );
+
       if (response.status === 201) {
         Notify.success("Doctor Added Successfully");
         reset();
-      }
-      else {
+      } else {
         Notify.failure("Adding Doctor failed. Please try again.");
       }
-    }
-    catch (error) {
-      console.log(error);
+    } catch (error) {
+      console.error(error);
       Notify.failure("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
-  }
+  };
+
   return (
     <div>
       <div className="forms">
@@ -54,33 +86,91 @@ const AddDoctor = () => {
         </div>
         <form onSubmit={handleSubmit(onsave)}>
           <h2>Doctor info</h2>
-          <label className='label'>Name</label>
-          <input type="text" placeholder='Full Names' name='userName' {...register("userName", { required: true })} />
-          <label >Age</label>
-          <input type="text" placeholder='Age' name='userAge' {...register("userAge", { required: true })} />
-          <label >Gender</label>
-          <input type="text" placeholder='Gender' name='Gender' {...register("Gender", { required: true })} />
-          <label >Profile Image</label>
-          <input type="file" id="" placeholder='Plofile Image' name='profileImage' {...register("profileImage", { required: true })} />
-          <label>Speciality </label>
-          <input type="text" placeholder='Speciality' name='Speciality' {...register("Speciality", { required: true })} />
-          <label >Phone</label>
-          <input type="text" placeholder='Phone Number' name='phoneNumber' {...register("phoneNumber", { required: true })} />
-          <label >Role</label>
-          <input type="text" placeholder='Role' name='userRole' {...register("userRole", { required: true })} />
-          <label className='label'>Email</label>
-          <input type="email" placeholder='E-mail' name='userEmail' {...register("userEmail", { required: true })} />
-          <label >Password</label>
-          <input type="password" placeholder='Password' name='userPassword' {...register("userPassword", { required: true })} />
-          <label >Notes</label>
-          <textarea name="userDescription" id="" placeholder=' Doctor Description' {...register("userDescription", { required: true })}></textarea>
-          <button className='doctor-btn' type='submit'>Save</button>
-          {/* <button type="reset" value="Cancel" className='cancel'  >Cancel</button> */}
+
+          <label className="label">FirstName</label>
+          <input
+            type="text"
+            placeholder="FirstName"
+            {...register("firstname", { required: true })}
+          />
+
+          <label className="label">LastName</label>
+          <input
+            type="text"
+            placeholder="LastName"
+            {...register("lastname", { required: true })}
+          />
+
+          <label>Age</label>
+          <input
+            type="text"
+            placeholder="Age"
+            {...register("age", { required: true })}
+          />
+
+          <label>Gender</label>
+          <select {...register("gender", { required: true })}>
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+
+          <label>Profile Image</label>
+          <input
+            type="file"
+            {...register("profile_image", { required: true })}
+          />
+
+          <label>Speciality</label>
+          <input
+            type="text"
+            placeholder="Speciality"
+            name="specialty"
+            {...register("specialty", { required: true })}
+          />
+
+          <label>Phone</label>
+          <input
+            type="text"
+            placeholder="Phone Number"
+            {...register("phone", { required: true })}
+          />
+
+          <label>Hospital Id</label>
+          <input
+            type="text"
+            placeholder="hospital_id"
+            value={hospitalId}
+            readOnly
+          />
+
+          <label className="label">Email</label>
+          <input
+            type="email"
+            placeholder="E-mail"
+            {...register("email", { required: true })}
+          />
+
+          <label>Password</label>
+          <input
+            type="password"
+            placeholder="Password"
+            {...register("password", { required: true })}
+          />
+
+          <label>Notes</label>
+          <textarea
+            placeholder="Doctor Description"
+            {...register("notes", { required: true })}
+          ></textarea>
+
+          <button className="doctor-btn" type="submit" disabled={loading}>
+            {loading ? "Saving..." : "Save"}
+          </button>
         </form>
       </div>
     </div>
-  )
-}
+  );
+};
 
-
-export default AddDoctor
+export default AddDoctor;

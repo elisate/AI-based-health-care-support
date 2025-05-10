@@ -95,9 +95,16 @@ export default function Welcome() {
         );
         const userToken = res.data;
         localStorage.setItem("userToken", JSON.stringify(userToken));
+        const Role = userToken?.user?.userRole;
+        console.log("=====================", Role);
 
-        Notify.success("Login successful");
-        navigate("/patient");
+        if (Role === "hospital") {
+          navigate("/dashboard");
+        } else if (Role === "doctor") {
+          navigate("/doctor");
+        } else {
+          navigate("/patient");
+        }
       }
     } catch (error) {
       console.error(error);
@@ -227,7 +234,6 @@ export default function Welcome() {
                 disabled={isLoading}
               />
             </div>
-           
 
             <div className="mb-4">
               <div className="block text-sm font-medium text-gray-700 mb-1">
@@ -241,13 +247,10 @@ export default function Welcome() {
                 disabled={isLoading}
               />
             </div>
-            
+
             {activeTab === "signin" && (
-              <div className="mb-4">
-                Forget Password
-                </div>
+              <div className="mb-4">Forget Password</div>
             )}
-            
 
             {activeTab === "signup" && (
               <div className="mb-1">
