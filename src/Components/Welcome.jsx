@@ -100,10 +100,13 @@ export default function Welcome() {
 
         if (Role === "hospital") {
           navigate("/dashboard");
+          Notify.success("Hospital Login Successful")
         } else if (Role === "doctor") {
           navigate("/doctor");
+          Notify.success("Doctor Login SuccessFull")
         } else {
           navigate("/patient");
+          Notify.success("Patient Login SuccessFull")
         }
       }
     } catch (error) {
