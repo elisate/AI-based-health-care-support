@@ -77,6 +77,7 @@ const Doctorsidebar = () => {
           )} */}
           {/* <Link to="/events" className='nav-link'><li><SiEventstore className='nav-icon' /> Event Management</li></Link> */}
           {/* <Link to="/support" className='nav-link'><li><BiSupport className='nav-icon' /> Support</li></Link> */}
+           
           <Link to="/doctor/settings" className='nav-link'><li><MdSettings className='nav-icon' /> Settings</li></Link>
         
         </ul>

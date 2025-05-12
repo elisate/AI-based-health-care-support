@@ -46,6 +46,7 @@ import Welcome from "./Components/Welcome";
 
 import Test from "./Components/Test";
 import PatientSymptomForm from "./PatientDashboard/PatientSymptomForm";
+import HospitalSchedule from "./other_component/HospitalSchedule";
 // import ProtectedRoutes from './Components/ProtectedRoute.js'
 function App() {
   return (
@@ -78,6 +79,7 @@ function App() {
             element={<EditDoctorForm />}
           />
           <Route path="/add-doctor" element={<AddDoctor />} />
+          <Route path="/createSchedule" element={<HospitalSchedule/>} />
           <Route
             path="/all-doctors/doctor_profile/:id"
             element={<DoctorProfile />}
