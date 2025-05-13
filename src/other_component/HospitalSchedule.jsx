@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import {
   Dialog,
   DialogContent,
@@ -13,7 +14,7 @@ import {
   AiOutlinePlus,
   AiOutlineCalendar,
 } from "react-icons/ai";
- import { IoMdClose } from "react-icons/io";
+
 const HospitalSchedule = () => {
   const [schedule, setSchedule] = useState({
     monday: [],
@@ -29,6 +30,7 @@ const HospitalSchedule = () => {
   const [currentDay, setCurrentDay] = useState("");
   const [userId, setUserId] = useState(null);
   const [editingSlot, setEditingSlot] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const daysOfWeek = [
     "monday",
@@ -40,60 +42,40 @@ const HospitalSchedule = () => {
     "sunday",
   ];
 
+  const userToken = JSON.parse(localStorage.getItem("userToken"));
+  const hospitalId = userToken?.user?.hospital_id;
+
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (storedUser && storedUser.id) {
-      setUserId(storedUser.id);
-      fetchSchedule(storedUser.id);
-    }
-  }, []);
-
-  const fetchSchedule = async (userId) => {
+  const fetchSchedule = async () => {
     try {
-      // For demonstration, using sample data
-      const sampleData = {
-        monday: [
-          { start_time: "08:00", end_time: "12:00", date: "2025-05-13" },
-          { start_time: "14:00", end_time: "18:00", date: "2025-05-13" },
-        ],
-        tuesday: [
-          { start_time: "08:00", end_time: "12:00", date: "2025-05-13" },
-          { start_time: "14:00", end_time: "18:00", date: "2025-05-13" },
-        ],
-        wednesday: [
-          { start_time: "08:00", end_time: "12:00", date: "2025-05-13" },
-          { start_time: "14:00", end_time: "18:00", date: "2025-05-13" },
-        ],
-        thursday: [
-          { start_time: "08:00", end_time: "12:00", date: "2025-05-13" },
-          { start_time: "14:00", end_time: "18:00", date: "2025-05-13" },
-        ],
-        friday: [
-          { start_time: "08:00", end_time: "12:00", date: "2025-05-13" },
-          { start_time: "14:00", end_time: "18:00", date: "2025-05-13" },
-        ],
-        saturday: [
-          { start_time: "08:00", end_time: "12:00", date: "2025-05-13" },
-          { start_time: "14:00", end_time: "18:00", date: "2025-05-13" },
-        ],
-        sunday: [
-          { start_time: "08:00", end_time: "12:00", date: "2025-05-13" },
-          { start_time: "14:00", end_time: "18:00", date: "2025-05-13" },
-        ],
-      };
-
-      setSchedule(sampleData);
-
-      // Uncomment for actual API call
-      /*
-      const response = await axios.get(`https://your-api-url/recommend/schedule/view/${userId}/`);
+      const response = await axios.get(
+        `http://127.0.0.1:8000/recommend/schedule/get/${hospitalId}/`
+      );
       if (response.status === 200) {
         setSchedule(response.data.schedule);
       }
-      */
     } catch (error) {
       console.error("Error fetching schedule:", error);
     }
+  };
+
+  if (hospitalId) {
+    fetchSchedule();
+    setUserId(userToken?.user?.id); // Save user ID if needed for POST
+  }
+}, [hospitalId]);
+
+ 
+
+  const isDuplicateSlot = (day, newSlot, index = null) => {
+    return schedule[day].some((slot, i) => {
+      return (
+        i !== index &&
+        slot.start_time === newSlot.start_time &&
+        slot.end_time === newSlot.end_time &&
+        slot.date === newSlot.date
+      );
+    });
   };
 
   const handleAddTimeSlot = (day, slot) => {
@@ -121,31 +103,31 @@ const HospitalSchedule = () => {
     }));
   };
 
-  const saveSchedule = async () => {
-    try {
-      // For demonstration, just show success message
-      alert("Schedule saved successfully!");
-
-      // Uncomment for actual API call
-      /*
-      const response = await axios.post('https://your-api-url/recommend/schedule/create/', {
-        user: userId,
-        schedule,
-      });
-      if (response.status === 201) {
-        alert('Schedule saved successfully!');
+const saveSchedule = async () => {
+  setLoading(true);
+  try {
+    const response = await axios.post(
+      "http://127.0.0.1:8000/recommend/schedule/create",
+      {
+        hospital_id: hospitalId, // ✅ Required
+        schedule,                // ✅ Required
       }
-      */
-    } catch (error) {
-      console.error("Error saving schedule:", error);
+    );
+    if (response.status === 201) {
+      alert("Schedule saved successfully!");
     }
-  };
+  } catch (error) {
+    console.error("Error saving schedule:", error);
+    alert("Failed to save schedule.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const openModal = (day, slotIndex = null) => {
     setCurrentDay(day);
     if (slotIndex !== null) {
       setEditingSlot({ index: slotIndex, ...schedule[day][slotIndex] });
-      
     } else {
       setEditingSlot(null);
     }
@@ -161,7 +143,6 @@ const HospitalSchedule = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-6 px-4 shadow-lg">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
         <div className="bg-white rounded-lg shadow-md p-4 mb-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center mb-3 md:mb-0">
@@ -179,14 +160,16 @@ const HospitalSchedule = () => {
             </div>
             <button
               onClick={saveSchedule}
-              className="bg-blue-600 text-white px-4 py-2 text-sm rounded-md hover:bg-blue-700 transition duration-200 flex items-center shadow-sm"
+              disabled={loading}
+              className={`bg-blue-600 text-white px-4 py-2 text-sm rounded-md flex items-center shadow-sm transition duration-200 ${
+                loading ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"
+              }`}
             >
-              Save Schedule
+              {loading ? "Saving..." : "Save Schedule"}
             </button>
           </div>
         </div>
 
-        {/* Schedule Column View */}
         <div className="flex flex-col space-y-4">
           {daysOfWeek.map((day) => (
             <div
@@ -222,13 +205,9 @@ const HospitalSchedule = () => {
                               className=" text-blue-600 hover:text-blue-800 size-5"
                               onClick={() => openModal(day, idx)}
                             />
-
                             <AiOutlineDelete
-                              className=" text-red-500
-                              hover:text-red-700 size-5"
+                              className=" text-red-500 hover:text-red-700 size-5"
                               
-                              
-                              onClick={() => handleDeleteTimeSlot(day, idx)}
                             />
                           </div>
                         </div>
@@ -267,8 +246,16 @@ const HospitalSchedule = () => {
             initialData={editingSlot}
             onSave={(slot) => {
               if (editingSlot) {
+                if (isDuplicateSlot(currentDay, slot, editingSlot.index)) {
+                  alert("This time slot already exists.");
+                  return;
+                }
                 handleEditTimeSlot(currentDay, editingSlot.index, slot);
               } else {
+                if (isDuplicateSlot(currentDay, slot)) {
+                  alert("This time slot already exists.");
+                  return;
+                }
                 handleAddTimeSlot(currentDay, slot);
               }
               closeModal();

@@ -13,11 +13,12 @@
   display: flex;
   align-items: center;
   position: absolute;
-  right: 20rem;
+  right: 21rem;
   font-size: 0.5rem;
   /* margin-left: 55rem;  */
   transform: translateY(-10%);
   color: #007BFF;
+
 }
 .navbar-profile span{
   font-size: 1.5rem;
@@ -71,7 +72,8 @@
     padding: 0 1rem;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     top: 0;
-    left: 19.2rem;
+    left:16rem;
+    z-index: 1000;
     /* margin-bottom: 15rem; */
 }
 .main-content h3{

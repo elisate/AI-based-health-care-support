@@ -17,7 +17,7 @@ const AddDoctor = () => {
  
   const [loading, setLoading] = useState(false);
 
- 
+  
     const userToken = JSON.parse(localStorage.getItem("userToken"));
     
     const hospitalId=userToken?.user?.hospital_id

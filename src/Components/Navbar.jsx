@@ -34,8 +34,8 @@ const Navbar = () => {
                 {isDarkTheme ? <IoMdSunny /> : <LuMoonStar />}
             </button>
             <div className="navbar-profile">
-                {userProfile && <img src={userProfile} alt="profile" className="profile-img" />}
-                {userName && <span>{userName}</span>}
+                <img src={userProfile} alt="profile" className="profile-img" />
+                 <span>Elisa</span>
             </div>
             {/* <MdNotifications className='notifications' /> */}
         </div>
