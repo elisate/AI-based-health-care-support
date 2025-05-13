@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { IoClose } from "react-icons/io5";
+import { VscRequestChanges } from "react-icons/vsc";
 export default function PatientSymptomForm() {
   const availableSymptoms = [
     "Fever",
@@ -461,8 +462,9 @@ export default function PatientSymptomForm() {
                     <hr className="border-blue-500 border-t-2 my-4" />
                   </div>
 
-                  <div>
+                  <div className="flex flex-grow gap-2 items-center">
                     {" "}
+                    <VscRequestChanges className="text-blue-500"/>
                     <span className="text-sm cursor-pointer">
                       Request Appointment
                     </span>
