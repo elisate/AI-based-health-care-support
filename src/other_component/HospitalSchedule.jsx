@@ -46,26 +46,24 @@ const HospitalSchedule = () => {
   const hospitalId = userToken?.user?.hospital_id;
 
   useEffect(() => {
-  const fetchSchedule = async () => {
-    try {
-      const response = await axios.get(
-        `http://127.0.0.1:8000/recommend/schedule/get/${hospitalId}/`
-      );
-      if (response.status === 200) {
-        setSchedule(response.data.schedule);
+    const fetchSchedule = async () => {
+      try {
+        const response = await axios.get(
+          `http://127.0.0.1:8000/recommend/schedule/get/${hospitalId}/`
+        );
+        if (response.status === 200) {
+          setSchedule(response.data.schedule);
+        }
+      } catch (error) {
+        console.error("Error fetching schedule:", error);
       }
-    } catch (error) {
-      console.error("Error fetching schedule:", error);
+    };
+
+    if (hospitalId) {
+      fetchSchedule();
+      setUserId(userToken?.user?.id); // Save user ID if needed for POST
     }
-  };
-
-  if (hospitalId) {
-    fetchSchedule();
-    setUserId(userToken?.user?.id); // Save user ID if needed for POST
-  }
-}, [hospitalId]);
-
- 
+  }, [hospitalId]);
 
   const isDuplicateSlot = (day, newSlot, index = null) => {
     return schedule[day].some((slot, i) => {
@@ -85,14 +83,40 @@ const HospitalSchedule = () => {
     }));
   };
 
-  const handleDeleteTimeSlot = (day, index) => {
-    const updatedDaySlots = [...schedule[day]];
-    updatedDaySlots.splice(index, 1);
-    setSchedule((prev) => ({
-      ...prev,
-      [day]: updatedDaySlots,
-    }));
-  };
+ const handleDeleteTimeSlot = async (day, index) => {
+  if (!window.confirm("Are you sure you want to delete this time slot?")) return;
+
+  try {
+    const response = await axios.delete(
+      "http://127.0.0.1:8000/recommend/schedule/delete_slot",
+      {
+        data: {
+          hospital_id: hospitalId,
+          day: day,
+          index: index,
+        },
+      }
+    );
+
+    if (response.status === 200) {
+      // Update local state using filter instead of splice
+      setSchedule((prev) => {
+        const updatedDaySlots = prev[day].filter((_, i) => i !== index);
+        return {
+          ...prev,
+          [day]: updatedDaySlots,
+        };
+      });
+    } else {
+      console.error("Unexpected response:", response);
+      alert("Something went wrong while deleting the slot.");
+    }
+  } catch (error) {
+    console.error("Error deleting slot:", error);
+    alert("Failed to delete time slot.");
+  }
+};
+
 
   const handleEditTimeSlot = (day, index, slot) => {
     const updatedDaySlots = [...schedule[day]];
@@ -103,26 +127,26 @@ const HospitalSchedule = () => {
     }));
   };
 
-const saveSchedule = async () => {
-  setLoading(true);
-  try {
-    const response = await axios.post(
-      "http://127.0.0.1:8000/recommend/schedule/create",
-      {
-        hospital_id: hospitalId, // ✅ Required
-        schedule,                // ✅ Required
+  const saveSchedule = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/recommend/schedule/create",
+        {
+          hospital_id: hospitalId, // ✅ Required
+          schedule, // ✅ Required
+        }
+      );
+      if (response.status === 201) {
+        alert("Schedule saved successfully!");
       }
-    );
-    if (response.status === 201) {
-      alert("Schedule saved successfully!");
+    } catch (error) {
+      console.error("Error saving schedule:", error);
+      alert("Failed to save schedule.");
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error("Error saving schedule:", error);
-    alert("Failed to save schedule.");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const openModal = (day, slotIndex = null) => {
     setCurrentDay(day);
@@ -206,8 +230,8 @@ const saveSchedule = async () => {
                               onClick={() => openModal(day, idx)}
                             />
                             <AiOutlineDelete
-                              className=" text-red-500 hover:text-red-700 size-5"
-                              
+                              className="text-red-500 hover:text-red-700 size-5 cursor-pointer"
+                              onClick={() => handleDeleteTimeSlot(day, idx)}
                             />
                           </div>
                         </div>
@@ -269,3 +293,4 @@ const saveSchedule = async () => {
 };
 
 export default HospitalSchedule;
+
