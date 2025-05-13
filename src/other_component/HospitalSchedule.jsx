@@ -28,7 +28,6 @@ const HospitalSchedule = () => {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [currentDay, setCurrentDay] = useState("");
-  const [userId, setUserId] = useState(null);
   const [editingSlot, setEditingSlot] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -44,24 +43,24 @@ const HospitalSchedule = () => {
 
   const userToken = JSON.parse(localStorage.getItem("userToken"));
   const hospitalId = userToken?.user?.hospital_id;
+  const key = userToken?.token;
+
+  const fetchSchedule = async () => {
+    try {
+      const response = await axios.get(
+        `http://127.0.0.1:8000/recommend/schedule/get/${hospitalId}/`
+      );
+      if (response.status === 200) {
+        setSchedule(response.data.schedule);
+      }
+    } catch (error) {
+      console.error("Error fetching schedule:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchSchedule = async () => {
-      try {
-        const response = await axios.get(
-          `http://127.0.0.1:8000/recommend/schedule/get/${hospitalId}/`
-        );
-        if (response.status === 200) {
-          setSchedule(response.data.schedule);
-        }
-      } catch (error) {
-        console.error("Error fetching schedule:", error);
-      }
-    };
-
     if (hospitalId) {
       fetchSchedule();
-      setUserId(userToken?.user?.id); // Save user ID if needed for POST
     }
   }, [hospitalId]);
 
@@ -83,40 +82,37 @@ const HospitalSchedule = () => {
     }));
   };
 
- const handleDeleteTimeSlot = async (day, index) => {
-  if (!window.confirm("Are you sure you want to delete this time slot?")) return;
+  const handleDeleteTimeSlot = async (day, index) => {
+    if (!window.confirm("Are you sure you want to delete this time slot?")) return;
 
-  try {
-    const response = await axios.delete(
-      "http://127.0.0.1:8000/recommend/schedule/delete_slot",
-      {
-        data: {
-          hospital_id: hospitalId,
-          day: day,
-          index: index,
-        },
+    try {
+      const response = await axios.delete(
+        "http://127.0.0.1:8000/recommend/schedule/delete_slot",
+        {
+          data: {
+            hospital_id: hospitalId,
+            day: day,
+            index: index,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setSchedule((prev) => {
+          const updatedDaySlots = prev[day].filter((_, i) => i !== index);
+          return {
+            ...prev,
+            [day]: updatedDaySlots,
+          };
+        });
+      } else {
+        alert("Unexpected response from server.");
       }
-    );
-
-    if (response.status === 200) {
-      // Update local state using filter instead of splice
-      setSchedule((prev) => {
-        const updatedDaySlots = prev[day].filter((_, i) => i !== index);
-        return {
-          ...prev,
-          [day]: updatedDaySlots,
-        };
-      });
-    } else {
-      console.error("Unexpected response:", response);
-      alert("Something went wrong while deleting the slot.");
+    } catch (error) {
+      console.error("Error deleting slot:", error);
+      alert("Failed to delete time slot.");
     }
-  } catch (error) {
-    console.error("Error deleting slot:", error);
-    alert("Failed to delete time slot.");
-  }
-};
-
+  };
 
   const handleEditTimeSlot = (day, index, slot) => {
     const updatedDaySlots = [...schedule[day]];
@@ -128,25 +124,35 @@ const HospitalSchedule = () => {
   };
 
   const saveSchedule = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/recommend/schedule/create",
-        {
-          hospital_id: hospitalId, // ✅ Required
-          schedule, // ✅ Required
-        }
-      );
-      if (response.status === 201) {
-        alert("Schedule saved successfully!");
+  setLoading(true);
+  try {
+    const response = await axios.post(
+      "http://127.0.0.1:8000/recommend/schedule/create",
+      {
+        hospital_id: hospitalId,
+        ...schedule, // 👈 Spread the schedule fields here
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${key}`,
+        },
       }
-    } catch (error) {
-      console.error("Error saving schedule:", error);
-      alert("Failed to save schedule.");
-    } finally {
-      setLoading(false);
+    );
+
+    if (response.status === 200 || response.status === 201) {
+      alert("Schedule saved successfully!");
+      await fetchSchedule(); // Refresh updated data
+    } else {
+      alert("Unexpected response while saving schedule.");
     }
-  };
+  } catch (error) {
+    console.error("Error saving schedule:", error);
+    alert("Failed to save schedule.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const openModal = (day, slotIndex = null) => {
     setCurrentDay(day);
@@ -217,8 +223,7 @@ const HospitalSchedule = () => {
                         <div className="flex justify-between items-center">
                           <div>
                             <div className="text-blue-600 text-sm">
-                              {formatTime(slot.start_time)} -{" "}
-                              {formatTime(slot.end_time)}
+                              {formatTime(slot.start_time)} - {formatTime(slot.end_time)}
                             </div>
                             <div className="text-xs text-gray-500">
                               {formatDate(slot.date)}
@@ -226,7 +231,7 @@ const HospitalSchedule = () => {
                           </div>
                           <div className="flex gap-2">
                             <AiOutlineEdit
-                              className=" text-blue-600 hover:text-blue-800 size-5"
+                              className=" text-blue-600 hover:text-blue-800 size-5 cursor-pointer"
                               onClick={() => openModal(day, idx)}
                             />
                             <AiOutlineDelete
@@ -257,7 +262,6 @@ const HospitalSchedule = () => {
         </div>
       </div>
 
-      {/* Modal */}
       <Dialog open={modalOpen} onOpenChange={closeModal}>
         <DialogContent className="bg-white rounded-lg shadow-xl max-w-md mx-auto">
           <DialogHeader>
@@ -293,4 +297,3 @@ const HospitalSchedule = () => {
 };
 
 export default HospitalSchedule;
-
