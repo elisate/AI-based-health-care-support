@@ -5,17 +5,12 @@
  * Example: "14:30" -> "2:30 PM"
  */
 export const formatTime = (timeStr) => {
-  if (!timeStr || !timeStr.includes(":")) return "";
   const [hour, minute] = timeStr.split(":").map(Number);
-  const date = new Date();
-  date.setHours(hour);
-  date.setMinutes(minute);
-  return date.toLocaleTimeString([], {
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true,
-  });
+  const ampm = hour >= 12 ? "PM" : "AM";
+  const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+  return `${hour12}:${minute.toString().padStart(2, "0")} ${ampm}`;
 };
+
 
 /**
  * Format date from "YYYY-MM-DD" to "Month Day, Year"
