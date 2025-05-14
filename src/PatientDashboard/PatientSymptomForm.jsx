@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { IoClose } from "react-icons/io5";
 import { VscRequestChanges } from "react-icons/vsc";
+import { useNavigate } from "react-router-dom";
 export default function PatientSymptomForm() {
   const availableSymptoms = [
     "Fever",
@@ -127,6 +128,10 @@ export default function PatientSymptomForm() {
     fetchPrediction(); // initial fetch on component mount
   }, []);
 
+  const navigate = useNavigate();
+  const handleNavigate = (id) => {
+    navigate(`/patient/findAppointment/${id}`);
+  };
   return (
     <>
       <div className="text-3xl font-extrabold text-gray-900 mb-8 pl-6 pb-2">
@@ -464,8 +469,11 @@ export default function PatientSymptomForm() {
 
                   <div className="flex flex-grow gap-2 items-center">
                     {" "}
-                    <VscRequestChanges className="text-blue-500"/>
-                    <span className="text-sm cursor-pointer">
+                    <VscRequestChanges className="text-blue-500" />
+                    <span
+                      className="text-sm cursor-pointer hover:text-blue-500"
+                      onClick={() => handleNavigate(prediction.prediction_id)}
+                    >
                       Request Appointment
                     </span>
                   </div>

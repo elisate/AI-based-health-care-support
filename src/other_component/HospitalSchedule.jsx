@@ -44,6 +44,7 @@ const HospitalSchedule = () => {
   const userToken = JSON.parse(localStorage.getItem("userToken"));
   const hospitalId = userToken?.user?.hospital_id;
   const key = userToken?.token;
+  // console.log("===================",hospitalId)
 
   const fetchSchedule = async () => {
     try {
@@ -52,6 +53,7 @@ const HospitalSchedule = () => {
       );
       if (response.status === 200) {
         setSchedule(response.data.schedule);
+        
       }
     } catch (error) {
       console.error("Error fetching schedule:", error);
