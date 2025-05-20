@@ -13,6 +13,7 @@ import {
   Clock3,
   Calendar as CalendarIcon,
 } from "lucide-react";
+import { useForm } from "react-hook-form";
 
 // Helper to convert 24-hour time to 12-hour format with AM/PM
 const formatTo12Hour = (time24) => {
@@ -70,10 +71,39 @@ function AppointmentPage() {
     fetchPrediction();
   }, [id]);
 
+ const { register, handleSubmit, reset } = useForm();
+
+const onsubmit = async (data) => {
+  const userToken = JSON.parse(localStorage.getItem("userToken"));
+  const authToken = userToken?.token;
+
+  try {
+    const response = await axios.post(
+      "http://127.0.0.1:8000/recommend/Appointment/createRequest",
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      }
+    );
+
+    alert("Appointment request submitted successfully!");
+    setSelectedTimeSlot(null); // Close modal
+    reset(); // Clear form
+  } catch (error) {
+    console.error("Error submitting appointment:", error);
+    alert("Failed to submit appointment.");
+  }
+};
+
+
   const handleRequestAppointment = (day, slot) => {
     setSelectedTimeSlot({ day, slot });
     // Implement your booking logic here
-    console.log(`Requesting appointment for ${day} at ${slot.start_time}-${slot.end_time}`);
+    console.log(
+      `Requesting appointment for ${day} at ${slot.start_time}-${slot.end_time}`
+    );
   };
 
   if (loading)
@@ -128,7 +158,9 @@ function AppointmentPage() {
               <div className="flex items-start mb-3">
                 <Hospital className="mr-2 text-blue-500 mt-1" size={18} />
                 <div>
-                  <p className="text-sm text-gray-500 font-medium">Recommended Hospitals</p>
+                  <p className="text-sm text-gray-500 font-medium">
+                    Recommended Hospitals
+                  </p>
                   <p className="font-semibold">
                     {prediction.recommended_hospitals?.join(", ")}
                   </p>
@@ -137,14 +169,18 @@ function AppointmentPage() {
               <div className="flex items-start mb-3">
                 <Package className="mr-2 text-blue-500 mt-1" size={18} />
                 <div>
-                  <p className="text-sm text-gray-500 font-medium">Medical Resources</p>
+                  <p className="text-sm text-gray-500 font-medium">
+                    Medical Resources
+                  </p>
                   <p>{prediction.medical_resources?.join(", ")}</p>
                 </div>
               </div>
               <div className="flex items-start mb-3">
                 <Package className="mr-2 text-blue-500 mt-1" size={18} />
                 <div>
-                  <p className="text-sm text-gray-500 font-medium">Medical Supplies</p>
+                  <p className="text-sm text-gray-500 font-medium">
+                    Medical Supplies
+                  </p>
                   <p>{prediction.medical_supplies?.join(", ")}</p>
                 </div>
               </div>
@@ -154,7 +190,9 @@ function AppointmentPage() {
             <div className="flex items-start mb-2">
               <FileText className="mr-2 text-blue-500 mt-1" size={18} />
               <div>
-                <p className="text-sm text-gray-500 font-medium">Prediction ID</p>
+                <p className="text-sm text-gray-500 font-medium">
+                  Prediction ID
+                </p>
                 <p className="font-mono">{prediction.prediction_id}</p>
               </div>
             </div>
@@ -186,36 +224,46 @@ function AppointmentPage() {
               {Object.keys(schedule).map((day) => (
                 <div key={day} className="border rounded-lg overflow-hidden">
                   <div className="bg-blue-50 p-3">
-                    <h3 className="font-medium capitalize text-blue-700">{day}</h3>
+                    <h3 className="font-medium capitalize text-blue-700">
+                      {day}
+                    </h3>
                   </div>
                   <div className="p-3">
                     {schedule[day].length > 0 ? (
                       <ul className="space-y-2">
                         {schedule[day].map((slot, idx) => (
-                          <li key={idx} className="rounded-md border p-3 hover:bg-gray-50">
+                          <li
+                            key={idx}
+                            className="rounded-md border p-3 hover:bg-gray-50"
+                          >
                             <div className="flex flex-col">
-                              
-                                <div className="text-sm font-medium">
-                                  <span className="flex items-center">
-                                    <Calendar className="mr-1 text-gray-400" size={14} />
-                                    <span className="text-sm text-blue-300">{slot.date}</span>
+                              <div className="text-sm font-medium">
+                                <span className="flex items-center">
+                                  <Calendar
+                                    className="mr-1 text-gray-400"
+                                    size={14}
+                                  />
+                                  <span className="text-sm text-blue-300">
+                                    {slot.date}
                                   </span>
-                                </div>
-                                <hr className="border-t-1 border-blue-600" />
-                                <div className="flex items-center text-blue-500 mt-1">
-                                  <Clock className="mr-1" size={14} />
-                                  {formatTo12Hour(slot.start_time)} - {formatTo12Hour(slot.end_time)}
-                                </div>
-                           
-                                <button
-                                onClick={() => handleRequestAppointment(day, slot)}
+                                </span>
+                              </div>
+                              <hr className="border-t-1 border-blue-600" />
+                              <div className="flex items-center text-blue-500 mt-1">
+                                <Clock className="mr-1" size={14} />
+                                {formatTo12Hour(slot.start_time)} -{" "}
+                                {formatTo12Hour(slot.end_time)}
+                              </div>
+
+                              <button
+                                onClick={() =>
+                                  handleRequestAppointment(day, slot)
+                                }
                                 className="flex items-center w-24 px-2 py-1 text-xs bg-blue-500 text-white rounded-md hover:bg-blue-600"
                               >
                                 <Clock3 size={14} className="mr-1" />
                                 Request
                               </button>
-                              
-                              
                             </div>
                           </li>
                         ))}
@@ -232,44 +280,57 @@ function AppointmentPage() {
             </div>
           ) : (
             <div className="text-center p-8 bg-gray-50 rounded-lg">
-              <p className="text-gray-500">No schedule available for this hospital.</p>
+              <p className="text-gray-500">
+                No schedule available for this hospital.
+              </p>
             </div>
           )}
         </div>
 
         {/* Modal */}
         {selectedTimeSlot && (
-          <form>
-            <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-              <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-                <h3 className="text-lg font-semibold mb-4">
-                  Confirm Appointment Request
-                </h3>
-                <p><span className="font-medium">Day:</span> {selectedTimeSlot.day}</p>
-                <p><span className="font-medium">Date:</span> {selectedTimeSlot.slot.date}</p>
-                <p><span className="font-medium">Time:</span> {formatTo12Hour(selectedTimeSlot.slot.start_time)} - {formatTo12Hour(selectedTimeSlot.slot.end_time)}</p>
-                <p><span className="font-medium">Hospital:</span> {prediction.recommended_hospitals?.[0]}</p>
+          <form onSubmit={handleSubmit(onsubmit)}>
+  <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+    <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+      <h3 className="text-lg font-semibold mb-4">
+        Confirm Appointment Request
+      </h3>
 
-                <div className="flex justify-end space-x-2 mt-6">
-                  <button
-                    onClick={() => setSelectedTimeSlot(null)}
-                    className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={() => {
-                      alert("Appointment requested successfully!");
-                      setSelectedTimeSlot(null);
-                    }}
-                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-                  >
-                    Confirm Request
-                  </button>
-                </div>
-              </div>
-            </div>
-          </form>
+      {/* Displayed info */}
+      <p><span className="font-medium">Day:</span> {selectedTimeSlot.day}</p>
+      <p><span className="font-medium">Date:</span> {selectedTimeSlot.slot.date}</p>
+      <p><span className="font-medium">Time:</span> {formatTo12Hour(selectedTimeSlot.slot.start_time)} - {formatTo12Hour(selectedTimeSlot.slot.end_time)}</p>
+      <p><span className="font-medium">Hospital:</span> {prediction.recommended_hospitals?.[0]}</p>
+
+      {/* Hidden inputs with react-hook-form */}
+      <input type="hidden" {...register("user")} value={JSON.parse(localStorage.getItem("userToken"))?.user?.user_id} />
+      <input type="hidden" {...register("prediction_id")} value={prediction.prediction_id} />
+      <input type="hidden" {...register("hospital_name")} value={prediction.recommended_hospitals?.[0]} />
+      <input type="hidden" {...register("day")} value={selectedTimeSlot.day} />
+      <input type="hidden" {...register("appointment_date")} value={selectedTimeSlot.slot.date} />
+      <input type="hidden" {...register("start_time")} value={selectedTimeSlot.slot.start_time} />
+      <input type="hidden" {...register("end_time")} value={selectedTimeSlot.slot.end_time} />
+
+      {/* Buttons */}
+      <div className="flex justify-end space-x-2 mt-6">
+        <button
+          type="button"
+          onClick={() => setSelectedTimeSlot(null)}
+          className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+        >
+          Confirm Request
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
+
         )}
       </div>
     </div>
