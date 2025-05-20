@@ -60,7 +60,7 @@ const Sidebar = () => {
                             <Link to="#" className='nav-link'><li>Nurse Profile</li></Link>
                         </ul> */}
                         <Link to="/createSchedule" className='nav-link'><li><FaCalendarAlt className='nav-icon' />Scheduling</li></Link>
-                    <Link to="/events" className='nav-link'><li><SiEventstore className='nav-icon' /> Event Management</li></Link>
+                    <Link to="/events" className='nav-link'><li><SiEventstore className='nav-icon' />Appointments</li></Link>
                     <Link to="/dashboard/settings" className='nav-link'><li><MdSettings className='nav-icon' /> Settings</li></Link>
                 </ul>
 
