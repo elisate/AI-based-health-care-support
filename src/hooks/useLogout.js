@@ -1,19 +1,27 @@
 import { useNavigate } from 'react-router-dom';
-import { Notify } from 'notiflix';
+import Notify from '../utils/notifyConfig';
+import  Confirm from '../utils/confirmCofig';
 const useLogout = () => {
   const navigate = useNavigate();
 
   const logout = () => {
-    const confirmLogOut = window.confirm("Are you sure you want to Logout?");
-    if (confirmLogOut) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      navigate('/welcome');
-    }
-    else{
-      Notify.failure("Can't Logout at the moment!!");
-    }
-
+    Confirm.show(
+      'Logout Confirmation',
+      'Are you sure you want to Logout?',
+      'Yes',  // OK Button
+      'Cancel', // Cancel Button
+      () => {
+        // Confirmed
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        navigate('/welcome');
+        Notify.success('Logged out successfully');
+      },
+      () => {
+        // Cancelled
+        Notify.failure("Logout cancelled");
+      }
+    );
   };
 
   return logout;

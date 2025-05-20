@@ -37,3 +37,20 @@ export const formatDay = (day) => {
     ? day.charAt(0).toUpperCase() + day.slice(1).toLowerCase()
     : "";
 };
+
+/**
+ * Get lowercase weekday (e.g. "monday") from a date string ("YYYY-MM-DD")
+ */
+export const getWeekdayFromDate = (dateStr) => {
+  const date = new Date(dateStr);
+  const weekdays = [
+    "sunday",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+  ];
+  return weekdays[date.getDay()];
+};

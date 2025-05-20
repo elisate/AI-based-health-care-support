@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+
+
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "../other_component/Dialog";
-import { formatTime, formatDate, formatDay } from "../utils/Day_Time_Date";
+import { formatTime, formatDate, formatDay,getWeekdayFromDate } from "../utils/Day_Time_Date";
 import TimeSlotModal from "./TimeSlotModal";
 import {
   AiOutlineDelete,
@@ -14,6 +16,7 @@ import {
   AiOutlinePlus,
   AiOutlineCalendar,
 } from "react-icons/ai";
+import Notify  from "../utils/notifyConfig";
 
 const HospitalSchedule = () => {
   const [schedule, setSchedule] = useState({
@@ -108,11 +111,11 @@ const HospitalSchedule = () => {
           };
         });
       } else {
-        alert("Unexpected response from server.");
+        Notify.info("Unexpected response from server.");
       }
     } catch (error) {
       console.error("Error deleting slot:", error);
-      alert("Failed to delete time slot.");
+      Notify.failure("Failed to delete time slot.");
     }
   };
 
@@ -142,14 +145,14 @@ const HospitalSchedule = () => {
     );
 
     if (response.status === 200 || response.status === 201) {
-      alert("Schedule saved successfully!");
+      Notify.success("Schedule saved successfully!");
       await fetchSchedule(); // Refresh updated data
     } else {
       alert("Unexpected response while saving schedule.");
     }
   } catch (error) {
     console.error("Error saving schedule:", error);
-    alert("Failed to save schedule.");
+    Notify.failure("Failed to save schedule.");
   } finally {
     setLoading(false);
   }
@@ -274,22 +277,40 @@ const HospitalSchedule = () => {
           <TimeSlotModal
             day={currentDay}
             initialData={editingSlot}
-            onSave={(slot) => {
-              if (editingSlot) {
-                if (isDuplicateSlot(currentDay, slot, editingSlot.index)) {
-                  alert("This time slot already exists.");
-                  return;
-                }
-                handleEditTimeSlot(currentDay, editingSlot.index, slot);
-              } else {
-                if (isDuplicateSlot(currentDay, slot)) {
-                  alert("This time slot already exists.");
-                  return;
-                }
-                handleAddTimeSlot(currentDay, slot);
-              }
-              closeModal();
-            }}
+           onSave={(slot) => {
+  const now = new Date();
+  const selectedDateTime = new Date(`${slot.date}T${slot.start_time}`);
+
+  if (selectedDateTime < now) {
+    Notify.warning("Cannot add or update a time slot for a past date/time.");
+    return;
+  }
+
+  const actualDay = getWeekdayFromDate(slot.date);
+  if (actualDay !== currentDay.toLowerCase()) {
+    Notify(
+      `Date does not match the selected day (${formatDay(currentDay)}). Please select a correct date.`
+    );
+    return;
+  }
+
+  if (editingSlot) {
+    if (isDuplicateSlot(currentDay, slot, editingSlot.index)) {
+      alert("This time slot already exists.");
+      return;
+    }
+    handleEditTimeSlot(currentDay, editingSlot.index, slot);
+  } else {
+    if (isDuplicateSlot(currentDay, slot)) {
+      alert("This time slot already exists.");
+      return;
+    }
+    handleAddTimeSlot(currentDay, slot);
+  }
+
+  closeModal();
+}}
+
             onCancel={closeModal}
           />
         </DialogContent>

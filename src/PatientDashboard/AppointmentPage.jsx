@@ -31,6 +31,7 @@ function AppointmentPage() {
   const [schedule, setSchedule] = useState(null);
   const [scheduleLoading, setScheduleLoading] = useState(false);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
 
   useEffect(() => {
     const fetchPrediction = async () => {
@@ -71,32 +72,34 @@ function AppointmentPage() {
     fetchPrediction();
   }, [id]);
 
- const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset } = useForm();
 
-const onsubmit = async (data) => {
-  const userToken = JSON.parse(localStorage.getItem("userToken"));
-  const authToken = userToken?.token;
+  const onsubmit = async (data) => {
+    setLoadingSubmit(true);
+    const userToken = JSON.parse(localStorage.getItem("userToken"));
+    const authToken = userToken?.token;
 
-  try {
-    const response = await axios.post(
-      "http://127.0.0.1:8000/recommend/Appointment/createRequest",
-      data,
-      {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      }
-    );
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/recommend/Appointment/createRequest",
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
 
-    alert("Appointment request submitted successfully!");
-    setSelectedTimeSlot(null); // Close modal
-    reset(); // Clear form
-  } catch (error) {
-    console.error("Error submitting appointment:", error);
-    alert("Failed to submit appointment.");
-  }
-};
-
+      alert("Appointment request submitted successfully!");
+      setSelectedTimeSlot(null); // Close modal
+      reset(); // Clear form
+    } catch (error) {
+      console.error("Error submitting appointment:", error);
+      alert("Failed to submit appointment.");
+    } finally {
+      setLoadingSubmit(false);
+    }
+  };
 
   const handleRequestAppointment = (day, slot) => {
     setSelectedTimeSlot({ day, slot });
@@ -290,47 +293,90 @@ const onsubmit = async (data) => {
         {/* Modal */}
         {selectedTimeSlot && (
           <form onSubmit={handleSubmit(onsubmit)}>
-  <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-    <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-      <h3 className="text-lg font-semibold mb-4">
-        Confirm Appointment Request
-      </h3>
+            <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+              <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+                <h3 className="text-lg font-semibold mb-2">
+                  Confirm Appointment Request
+                </h3>
 
-      {/* Displayed info */}
-      <p><span className="font-medium">Day:</span> {selectedTimeSlot.day}</p>
-      <p><span className="font-medium">Date:</span> {selectedTimeSlot.slot.date}</p>
-      <p><span className="font-medium">Time:</span> {formatTo12Hour(selectedTimeSlot.slot.start_time)} - {formatTo12Hour(selectedTimeSlot.slot.end_time)}</p>
-      <p><span className="font-medium">Hospital:</span> {prediction.recommended_hospitals?.[0]}</p>
+                {/* Displayed info */}
+                <p>
+                  <span className="text-sm">Day:</span>{" "}
+                   {selectedTimeSlot.day}
+                </p>
+                <p>
+                  <span className="text-sm">Date:</span>{" "}
+                  {selectedTimeSlot.slot.date}
+                </p>
+                <p>
+                  <span className="text-sm">Time:</span>{" "}
+                  {formatTo12Hour(selectedTimeSlot.slot.start_time)} -{" "}
+                  {formatTo12Hour(selectedTimeSlot.slot.end_time)}
+                </p>
+                <p>
+                  <span className="text-sm">Hospital:</span>{" "}
+                  {prediction.recommended_hospitals?.[0]}
+                </p>
 
-      {/* Hidden inputs with react-hook-form */}
-      <input type="hidden" {...register("user")} value={JSON.parse(localStorage.getItem("userToken"))?.user?.user_id} />
-      <input type="hidden" {...register("prediction_id")} value={prediction.prediction_id} />
-      <input type="hidden" {...register("hospital_name")} value={prediction.recommended_hospitals?.[0]} />
-      <input type="hidden" {...register("day")} value={selectedTimeSlot.day} />
-      <input type="hidden" {...register("appointment_date")} value={selectedTimeSlot.slot.date} />
-      <input type="hidden" {...register("start_time")} value={selectedTimeSlot.slot.start_time} />
-      <input type="hidden" {...register("end_time")} value={selectedTimeSlot.slot.end_time} />
+                {/* Hidden inputs with react-hook-form */}
+                <input
+                  type="hidden"
+                  {...register("user")}
+                  value={
+                    JSON.parse(localStorage.getItem("userToken"))?.user?.user_id
+                  }
+                />
+                <input
+                  type="hidden"
+                  {...register("prediction_id")}
+                  value={prediction.prediction_id}
+                />
+                <input
+                  type="hidden"
+                  {...register("hospital_name")}
+                  value={prediction.recommended_hospitals?.[0]}
+                />
+                <input
+                  type="hidden"
+                  {...register("day")}
+                  value={selectedTimeSlot.day}
+                />
+                <input
+                  type="hidden"
+                  {...register("appointment_date")}
+                  value={selectedTimeSlot.slot.date}
+                />
+                <input
+                  type="hidden"
+                  {...register("start_time")}
+                  value={selectedTimeSlot.slot.start_time}
+                />
+                <input
+                  type="hidden"
+                  {...register("end_time")}
+                  value={selectedTimeSlot.slot.end_time}
+                />
 
-      {/* Buttons */}
-      <div className="flex justify-end space-x-2 mt-6">
-        <button
-          type="button"
-          onClick={() => setSelectedTimeSlot(null)}
-          className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-        >
-          Confirm Request
-        </button>
-      </div>
-    </div>
-  </div>
-</form>
+                {/* Buttons */}
+                <div className="flex justify-end space-x-2 mt-6 ">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedTimeSlot(null)}
+                    className="px-2 py-2 text-xs  border border-solid bg-white border-gray-400 text-gray-800 rounded-md"
+                  >
+                    ✖ Cancel
+                  </button>
 
+                  <button
+                    type="submit"
+                    className="px-2 py-2  text-xs bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                  >
+                    Confirm Request
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
         )}
       </div>
     </div>
