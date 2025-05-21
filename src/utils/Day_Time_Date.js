@@ -54,3 +54,14 @@ export const getWeekdayFromDate = (dateStr) => {
   ];
   return weekdays[date.getDay()];
 };
+
+// Add this helper function inside your component (above return)
+export const formatTimeToAmPm = (time24) => {
+  if (!time24) return "";
+  const [hourStr, minute] = time24.split(":");
+  let hour = parseInt(hourStr, 10);
+  const ampm = hour >= 12 ? "PM" : "AM";
+  hour = hour % 12 || 12; // Convert 0 -> 12 for 12 AM
+  return `${hour}:${minute} ${ampm}`;
+};
+

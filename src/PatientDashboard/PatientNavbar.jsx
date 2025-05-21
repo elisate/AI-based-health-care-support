@@ -3,7 +3,11 @@ import { Sun, Moon, User } from "lucide-react";
 
 export default function PatientNavbar() {
   const [isDarkTheme, setIsDarkTheme] = useState(true);
-
+ const userToken = JSON.parse(localStorage.getItem("userToken"));
+  const Fname = userToken?.user?.firstname;
+  const Lname = userToken?.user?.lastname;
+  const Role = userToken?.user?.userRole;
+  const key = userToken?.token;
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme === "light") {
@@ -45,8 +49,8 @@ export default function PatientNavbar() {
             <User size={20} />
           </div>
           <div className="flex flex-col">
-            <span className="font-medium text-blue-500 text-sm">{fullName}</span>
-            <span className="text-xs text-gray-400">Patient</span>
+            <span className="font-medium text-blue-500 text-sm">{Lname}</span>
+            <span className="text-xs text-gray-400">{Role}</span>
           </div>
         </div>
         
