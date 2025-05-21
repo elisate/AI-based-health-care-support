@@ -147,15 +147,18 @@ const Events = () => {
                               {`${apt.firstname?.[0] || ""}${
                                 apt.lastname?.[0] || ""
                               }`}
-                              
                             </div>
                           </div>
                           <div className="ml-4">
                             <div className="font-medium text-gray-900">
-                             {`${apt.firstname || ""} ${apt.lastname || ""}`.length > 20
-  ? `${apt.firstname || ""} ${apt.lastname || ""}`.slice(0, 20) + ".."
-  : `${apt.firstname || ""} ${apt.lastname || ""}`}
-
+                              {`${apt.firstname || ""} ${apt.lastname || ""}`
+                                .length > 20
+                                ? `${apt.firstname || ""} ${
+                                    apt.lastname || ""
+                                  }`.slice(0, 20) + ".."
+                                : `${apt.firstname || ""} ${
+                                    apt.lastname || ""
+                                  }`}
                             </div>
                           </div>
                         </div>

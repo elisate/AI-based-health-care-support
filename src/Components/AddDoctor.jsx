@@ -35,7 +35,7 @@ const AddDoctor = () => {
         password,
         age,
         gender,
-        profile_image,
+        profile_image_url,
         phone,
         notes,
         specialty,
@@ -50,7 +50,7 @@ const AddDoctor = () => {
       formData.append("specialty", specialty);
       formData.append("phone", phone);
       formData.append("email", email);
-      formData.append("profile_image", profile_image[0]);
+      formData.append("profile_image_url", profile_image_url[0]);
       formData.append("hospital_id", hospitalId);
       formData.append("notes", notes);
 
@@ -118,7 +118,7 @@ const AddDoctor = () => {
           <label>Profile Image</label>
           <input
             type="file"
-            {...register("profile_image", { required: true })}
+            {...register("profile_image_url", { required: true })}
           />
 
           <label>Speciality</label>
