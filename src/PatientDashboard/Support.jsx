@@ -82,8 +82,8 @@ const Support = () => {
 
             <div className="support-contact">
                 <h3>Other ways to reach us:</h3>
-                <p >Email: <span style={{ color: "#444", fontSize: "1rem" }}>uwitonzeafuwa@gmail.com</span></p>
-                <p>Phone: <span style={{ color: "#444", fontSize: "1rem" }}>+250 793 213 119</span></p>
+                <p >Email: <span style={{ color: "#444", fontSize: "1rem" }}>dushimiyimanaelisa@gmail.com</span></p>
+                <p>Phone: <span style={{ color: "#444", fontSize: "1rem" }}>+250 787 239 952</span></p>
             </div>
         </div>
     )
