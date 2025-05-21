@@ -14,15 +14,13 @@
   align-items: center;
   position: absolute;
   right: 21rem;
-  font-size: 0.5rem;
+  
   /* margin-left: 55rem;  */
   transform: translateY(-10%);
   color: #007BFF;
 
 }
-.navbar-profile span{
-  font-size: 1.5rem;
-}
+
 .profile-img {
   display: block;
   border: 2px solid #007BFF;
