@@ -10,7 +10,7 @@ const Navbar = () => {
   const userToken = JSON.parse(localStorage.getItem("userToken"));
   const Fname = userToken?.user?.firstname;
   const Lname = userToken?.user?.lastname;
-  const HospitalEmail=userToken?.user?.email
+  const HospitalEmail = userToken?.user?.email;
   const Role = userToken?.user?.userRole;
   const key = userToken?.token;
 
@@ -47,14 +47,16 @@ const Navbar = () => {
         {/* <img src={userProfile} alt="profile" className="profile-img" />
         <span>{HospitalEmail?.slice(0, 6)}...</span> */}
         <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
-                    <User size={20} />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="font-medium text-blue-500 text-sm">{HospitalEmail?.slice(0, 9)}...</span>
-                    <span className="text-xs text-gray-400">{Role}</span>
-                  </div>
-                </div>
+          <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
+            <User size={20} />
+          </div>
+          <div className="flex flex-col">
+            <span className="font-medium text-blue-500 text-sm">
+              {HospitalEmail?.slice(0, 9)}...
+            </span>
+            <span className="text-xs text-gray-400">{Role}</span>
+          </div>
+        </div>
       </div>
       {/* <MdNotifications className='notifications' /> */}
     </div>

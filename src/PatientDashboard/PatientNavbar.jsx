@@ -31,11 +31,7 @@ export default function PatientNavbar() {
     });
   };
 
-  const fullName =
-    sessionStorage.getItem("PatientName") ||
-    sessionStorage.getItem("UserName") ||
-    "User";
-
+ 
   return (
     <nav
       className={`fixed top-0 h-14 ml-[16rem] w-[calc(100%-16rem)] pl-[50rem] sm xl lg-h-16 ${
