@@ -1,58 +1,175 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { CalendarDays, Check, X, Eye } from "lucide-react";
+import "../dashboardstyles/table.css";
+const PatientEvents = () => {
+  const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-const PatientEvent = () => {
-    const [requests, setRequests] = useState([]);
-    const patientEmail = "isimbi@gmail.com"; // Replace this with the logged-in user's email
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      const userToken = JSON.parse(localStorage.getItem("userToken"));
+      const userId = userToken?.user?.user_id;
+      const key = userToken?.token;
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:8000/recommend/Appointment/getAppointmentByUserId/${userId}`
+        );
+        const data = await response.json();
 
-    useEffect(() => {
-        const fetchPatientRequests = async () => {
-            try {
-                const response = await axios.get(`http://localhost:5001/contact/patient-requests?email=${patientEmail}`);
-                setRequests(response.data);
-            } catch (error) {
-                console.error("Error fetching patient support requests:", error);
-            }
-        };
+        if (Array.isArray(data)) {
+          setAppointments(data);
+        } else if (Array.isArray(data.appointments)) {
+          setAppointments(data.appointments);
+        } else {
+          console.error("Unexpected response format:", data);
+          setAppointments([]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch appointments:", error);
+        setAppointments([]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-        fetchPatientRequests();
-    }, []);
+    fetchAppointments();
+  }, []);
 
-    return (
-        <div>
-            <div className="table-section">
-                <h1>My Support Requests</h1>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Full Name</th>
-                            <th>Email</th>
-                            <th>Date</th>
-                            <th>Request</th>
-                            <th>Reply</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {requests.map((request) => (
-                            <tr key={request._id}>
-                                <td>{request.fullName}</td>
-                                <td>{request.email}</td>
-                                <td>{new Date(request.createdAt).toLocaleString()}</td>
-                                <td>{request.message}</td>
-                                <td>
-                                    {request.replyMessage ? (
-                                        <span style={{ color: "green", fontSize:"1rem" }}>{request.replyMessage}</span>
-                                    ) : (
-                                        <span style={{ color: "red" }}>No reply yet</span>
-                                    )}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+  const updateAppointmentStatus = (appointmentId, newStatus) => {
+    setAppointments((prev) =>
+      prev.map((apt) =>
+        apt.appointment_id === appointmentId
+          ? { ...apt, status: newStatus }
+          : apt
+      )
     );
+    alert(`Appointment status updated to ${newStatus}`);
+  };
+
+  const truncateText = (text, maxLength = 20) => {
+    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+  };
+
+  return (
+    <div className="flex flex-col items-center min-h-screen w-full bg-gray-100">
+      <div className="w-full max-w-7xl mx-auto p-4 md:p-8 mt-16 rounded-xl shadow-lg bg-white text-gray-800">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <CalendarDays size={28} className="text-blue-600" />
+            <h1 className="text-2xl md:text-3xl font-bold text-blue-600">
+              Requested Appointments
+            </h1>
+          </div>
+
+          <div className="text-base md:text-lg font-medium text-gray-500">
+            Total: {appointments.length}
+          </div>
+        </div>
+
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
+        ) : (
+          <div className="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-blue-400">
+            <table className="min-w-[800px] w-full border-collapse">
+              <thead>
+                <tr>
+                  <th className="px-3 py-4 text-left text-sm font-medium uppercase tracking-wider hidden md:table-cell bg-blue-500 text-white">
+                    Hospital Name
+                  </th>
+                  <th className="px-3 py-4 text-left text-sm font-medium uppercase tracking-wider hidden md:table-cell bg-blue-500 text-white">
+                    Day
+                  </th>
+                  <th className="px-3 py-4 text-left text-sm font-medium uppercase tracking-wider bg-blue-500 text-white">
+                    Date
+                  </th>
+                  <th className="px-3 py-4 text-left text-sm font-medium uppercase tracking-wider hidden lg:table-cell bg-blue-500 text-white">
+                    Time
+                  </th>
+                  <th className="px-3 py-4 text-left text-sm font-medium uppercase tracking-wider bg-blue-500 text-white">
+                    Status
+                  </th>
+                  <th className="px-3 py-4 text-left text-sm font-medium uppercase tracking-wider rounded-tr-lg bg-blue-500 text-white">
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {appointments.map((apt, index) => (
+                  <tr
+                    key={apt.appointment_id}
+                    className={`transition-colors ${
+                      index % 2 === 0
+                        ? "bg-blue-50 hover:bg-blue-100"
+                        : "bg-white hover:bg-blue-50"
+                    }`}
+                  >
+                    <td className="px-3 py-4 whitespace-nowrap hidden md:table-cell">
+                      <div className="text-sm text-gray-600">
+                        {truncateText(apt.hospital_name || "")}
+                      </div>
+                    </td>
+
+                    <td className="px-3 py-4 whitespace-nowrap hidden md:table-cell">
+                      <div className="text-sm text-gray-600">
+                        {truncateText(apt.day || "")}
+                      </div>
+                    </td>
+
+                    <td className="px-3 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-600">{apt.date}</div>
+                    </td>
+                    <td className="px-3 py-4 whitespace-nowrap hidden lg:table-cell">
+                      <div className="text-sm text-gray-600">
+                        {apt.start_time} - {apt.end_time}
+                      </div>
+                    </td>
+                    <td className="px-3 py-4 whitespace-nowrap">
+                      <span
+                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          apt.status === "approved"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-yellow-100 text-yellow-800"
+                        }`}
+                      >
+                        {apt.status}
+                      </span>
+                    </td>
+                    <td className="px-3 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex flex-wrap gap-2 items-center">
+                        {/* View Button */}
+                        <div className="flex items-center bg-blue-100 text-blue-600 px-2 py-1 rounded cursor-pointer hover:bg-blue-200 transition">
+                          <Eye size={16} className="mr-1" />
+                          <span className="text-sm">View</span>
+                        </div>
+
+                        {/* Approve Button */}
+                        <div
+                          onClick={() =>
+                            updateAppointmentStatus(
+                              apt.appointment_id,
+                              "approved"
+                            )
+                          }
+                          className="flex items-center bg-green-100 text-green-600 px-2 py-1 rounded cursor-pointer hover:bg-green-200 transition"
+                        >
+                          <Check size={16} className="mr-1" />
+                          <span className="text-sm">Comment</span>
+                        </div>
+
+                       
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
 
-export default PatientEvent;
+export default PatientEvents;

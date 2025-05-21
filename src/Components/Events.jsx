@@ -4,10 +4,12 @@ import "../dashboardstyles/table.css";
 const Events = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const hospitalId = "6824928f404a0737192ce194";
 
   useEffect(() => {
     const fetchAppointments = async () => {
+      const userToken = JSON.parse(localStorage.getItem("userToken"));
+      const hospitalId = userToken?.user?.hospital_id;
+      const key = userToken?.token;
       try {
         const response = await fetch(
           `http://127.0.0.1:8000/recommend/Appointment/getAppointmentByHospId/${hospitalId}`
@@ -55,7 +57,7 @@ const Events = () => {
           <div className="flex items-center gap-3">
             <CalendarDays size={28} className="text-blue-600" />
             <h1 className="text-2xl md:text-3xl font-bold text-blue-600">
-              Hospital Appointments
+              Requested Appointments
             </h1>
           </div>
 
@@ -106,7 +108,7 @@ const Events = () => {
                     <td className="px-3 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="h-10 w-10 flex-shrink-0">
-                          <div className="h-10 w-10 rounded-full flex items-center justify-center text-lg font-semibold bg-blue-100 text-blue-600">
+                          <div className="h-10 w-10 rounded-full flex items-center justify-center text-lg font-mono bg-blue-100 text-blue-600">
                             {`${apt.firstname[0]}${apt.lastname[0]}`}
                           </div>
                         </div>

@@ -26,7 +26,7 @@ const Patientsidebar = () => {
             <GiMedicines className='mr-3 text-xl' /> Medical Resources
           </Link>
           <Link to="/patient/event" className="nav-link flex items-center text-base font-bold text-gray-700 hover:bg-blue-500 hover:text-white p-3 rounded-md transition-colors">
-            <SiEventstore className='mr-3 text-xl' /> Event Management
+            <SiEventstore className='mr-3 text-xl' /> Appointment
           </Link>
           <Link to="/patient/support" className="nav-link flex items-center text-base font-bold text-gray-700 hover:bg-blue-500 hover:text-white p-3 rounded-md transition-colors">
             <BiSupport className='mr-3 text-xl' /> Support
