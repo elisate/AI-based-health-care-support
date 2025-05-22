@@ -1,18 +1,16 @@
 import { Notify } from 'notiflix';
 
+// Init Notify
 Notify.init({
-  // no fixed width, so it auto sizes
   position: 'center-top',
   distance: '10px',
   opacity: 0.95,
   borderRadius: '6px',
   timeout: 3500,
-  fontSize: '7px', // smaller font size
+  fontSize: '5px', // Doesn't always apply — we override below
   fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
   cssAnimationDuration: 250,
   cssAnimationStyle: 'fade',
-
-  // Very high z-index to be on top
   zindex: 99999,
 
   success: {
@@ -37,13 +35,28 @@ Notify.init({
   },
 });
 
-// Add global CSS to style notification container
+// Force override styles
 const style = document.createElement('style');
 style.innerHTML = `
   .notiflix-notify {
-    max-width: 22rem; /* about 352px */
-    white-space: normal; /* allow multi-line */
-    overflow-wrap: break-word;
+    font-size: 5px !important;
+    padding: 6px 10px !important;
+  }
+
+  .notiflix-notify .notiflix-notify-content {
+    font-size: 5px !important;
+    line-height: 1.1 !important;
+    padding: 0 !important;
+  }
+
+  .notiflix-notify__message {
+    font-size: 5px !important;
+    margin: 0 !important;
+  }
+
+  .notiflix-notify__icon {
+    transform: scale(0.5) !important;
+    margin-right: 4px;
   }
 `;
 

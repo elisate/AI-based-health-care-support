@@ -48,6 +48,11 @@ import Test from "./Components/Test";
 import PatientSymptomForm from "./PatientDashboard/PatientSymptomForm";
 import HospitalSchedule from "./other_component/HospitalSchedule";
 import AppointmentPage from "./PatientDashboard/AppointmentPage";
+import SuperDashboardlayout from "./SuperAdmin/SuperDashboardlayout";
+import SDasboardview from "./SuperAdmin/SDasboardview";
+import SPatientDashboard from "./SuperAdmin/SPatientDashboard";
+import SAllDoctors from "./SuperAdmin/SAllDoctors";
+import SAddDoctor from "./SuperAdmin/SAddDoctor";
 // import ProtectedRoutes from './Components/ProtectedRoute.js'
 function App() {
   return (
@@ -55,18 +60,10 @@ function App() {
       <Routes>
         <Route path="" index element={<Welcome />} />
         <Route path="/signup" element={<Signup />} />
-        {/* <Route path='/login' element={<Login />} /> */}
+
         <Route path="/welcome" element={<Welcome />} />
-       
-        
-        <Route
-          path="/"
-          element={
-            // <ProtectedRoutes>
-            <Dashboardlayout />
-            // </ProtectedRoutes>
-          }
-        >
+
+        <Route path="/" element={<Dashboardlayout />}>
           <Route path="/dashboard" element={<Dasboardview />} />
           <Route
             path="/dashboard/doctor-dashboard"
@@ -79,9 +76,9 @@ function App() {
             path="/dashboard/edit-doctorform/:id"
             element={<EditDoctorForm />}
           />
-        
+
           <Route path="/add-doctor" element={<AddDoctor />} />
-          <Route path="/createSchedule" element={<HospitalSchedule/>} />
+          <Route path="/createSchedule" element={<HospitalSchedule />} />
           <Route
             path="/all-doctors/doctor_profile/:id"
             element={<DoctorProfile />}
@@ -115,10 +112,10 @@ function App() {
           <Route path="/patient/support" element={<Support />} />
           <Route path="/patient/settings" element={<PaSettings />} />
           <Route path="/patient/event" element={<PatientEvent />} />
-          <Route path="/patient/pridict" element={<PatientSymptomForm/>}/>
-            <Route
+          <Route path="/patient/pridict" element={<PatientSymptomForm />} />
+          <Route
             path="/patient/findAppointment/:id"
-            element={<AppointmentPage/>}
+            element={<AppointmentPage />}
           />
         </Route>
         <Route path="/nurse" element={<NurseLayout />}></Route>
@@ -144,6 +141,49 @@ function App() {
           <Route path="/doctor/nurse-profile/:id" element={<NurseProfile />} />
           <Route path="/doctor/settings" element={<DocSettings />} />
         </Route>
+       
+       {/* --------------------SUPER ADMIN ROUTES ----------------------------------------*/}
+        <Route path="/" element={<SuperDashboardlayout />}>
+          <Route index element={<SDasboardview />} />
+          <Route path="/super" element={<SDasboardview />} />
+          <Route
+            path="/dashboard/doctor-dashboard"
+            element={<DoctorDashboard />}
+          />
+          <Route path="/Spatient-dashboard" element={<SPatientDashboard/>} />
+          <Route path="/Sall-doctors" element={<SAllDoctors/>} />
+          <Route path="/Sedit-doctor" element={<EditDoctor />} />
+          {/* <Route
+            path="/dashboard/edit-doctorform/:id"
+            element={<EditDoctorForm />}
+          /> */}
+
+          <Route path="/Sadd-doctor" element={<SAddDoctor />} />
+          {/* <Route path="/createSchedule" element={<HospitalSchedule />} /> */}
+          {/* <Route
+            path="/all-doctors/doctor_profile/:id"
+            element={<DoctorProfile />}
+          /> */}
+          {/* <Route path="/all-nurses" element={<AllNurses />} />
+          <Route path="/add-nurse" element={<AddNurse />} /> */}
+          {/* <Route
+            path="dashboard/nurse-profile/:id"
+            element={<NurseProfile />}
+          /> */}
+          <Route path="/nurse-doctor" element={<NurseTable />} />
+          <Route path="/all-patients" element={<AllPatients />} />
+          <Route path="/doctor-view" element={<DoctorTable />} />
+          <Route path="/add-patient" element={<AddPatient />} />
+          <Route path="/dashboard/patient-profile" element={<AdminPatient />} />
+          <Route
+            path="/dashboard/patient-profile/:patientId"
+            element={<AdminPatientPro />}
+          />
+          <Route path="/patient-profile/:id" element={<PatientProfile />} />
+          <Route path="/events" element={<Events />} />
+          <Route path="/dashboard/settings" element={<Settings />} />
+        </Route>
+       
       </Routes>
     </BrowserRouter>
   );
