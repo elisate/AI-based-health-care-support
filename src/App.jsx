@@ -53,6 +53,8 @@ import SDasboardview from "./SuperAdmin/SDasboardview";
 import SPatientDashboard from "./SuperAdmin/SPatientDashboard";
 import SAllDoctors from "./SuperAdmin/SAllDoctors";
 import SAddDoctor from "./SuperAdmin/SAddDoctor";
+import MedicalAIassistant from "./DoctorDashboard/MedicalAIassistant";
+import SingleAppointment from "./Components/SingleAppointment";
 // import ProtectedRoutes from './Components/ProtectedRoute.js'
 function App() {
   return (
@@ -63,7 +65,7 @@ function App() {
 
         <Route path="/welcome" element={<Welcome />} />
 
-        <Route path="/" element={<Dashboardlayout />}>
+        < Route path="/" element={<Dashboardlayout />}>
           <Route path="/dashboard" element={<Dasboardview />} />
           <Route
             path="/dashboard/doctor-dashboard"
@@ -76,7 +78,7 @@ function App() {
             path="/dashboard/edit-doctorform/:id"
             element={<EditDoctorForm />}
           />
-
+          <Route path="/singleAppointment/:appointment_id" element={<SingleAppointment/>}/>
           <Route path="/add-doctor" element={<AddDoctor />} />
           <Route path="/createSchedule" element={<HospitalSchedule />} />
           <Route
@@ -119,10 +121,12 @@ function App() {
           />
         </Route>
         <Route path="/nurse" element={<NurseLayout />}></Route>
+        {/* ---------------------DOCTOR------------------- */}
         <Route path="/doctor" element={<DoctorLayout />}>
           <Route path="/doctor/dash" element={<DoctorDash />} />
           <Route path="/doctor/all-patients" element={<DoctorPati />} />
           <Route path="/doctor/patient-pro" element={<DocPatient />} />
+          <Route path="/doctor/AIassistant" element={<MedicalAIassistant/>} />
           <Route
             path="/doctor/patient-profile/:id"
             element={<DoctorPatient />}
@@ -174,6 +178,7 @@ function App() {
           <Route path="/all-patients" element={<AllPatients />} />
           <Route path="/doctor-view" element={<DoctorTable />} />
           <Route path="/add-patient" element={<AddPatient />} />
+          
           <Route path="/dashboard/patient-profile" element={<AdminPatient />} />
           <Route
             path="/dashboard/patient-profile/:patientId"

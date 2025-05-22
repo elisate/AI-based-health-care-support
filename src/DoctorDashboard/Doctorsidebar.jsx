@@ -7,6 +7,8 @@ import { FaHeartbeat, FaCalendarCheck, FaFileInvoiceDollar, FaUserNurse } from "
 import { FaUserDoctor, FaBedPulse } from "react-icons/fa6";
 import { IoMdMenu } from "react-icons/io";
 import { MdSettings, MdDonutSmall, MdArrowDropDown, MdArrowRight } from "react-icons/md";
+import { BrainCircuit } from "lucide-react";
+import { Stethoscope } from "lucide-react";
 import useLogout from '../hooks/useLogout';
 const Doctorsidebar = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
@@ -25,7 +27,8 @@ const Doctorsidebar = () => {
           </button> */}
         </div>
         <ul className="nav-list">
-          <Link to="/doctor/dash" className='nav-link'><li><FaUserDoctor className='nav-icon' /> Doctor Profile</li></Link>
+           <Link to="/doctor/dash" className='nav-link'><li><FaUserDoctor className='nav-icon' /> Doctor Profile</li></Link>
+          <Link to="/doctor/AIassistant" className='nav-link'><li><Stethoscope className='nav-icon' /><BrainCircuit size={13}/> AI Assistant</li></Link>
           <li onClick={() => setIsPatientsMenuOpen(!isPatientsMenuOpen)} className="menu-item">
             <FaBedPulse className='nav-icon' /> Patients
             {isPatientsMenuOpen ? <MdArrowDropDown className='submenu-icon' /> : <MdArrowRight className='submenu-icon' />}

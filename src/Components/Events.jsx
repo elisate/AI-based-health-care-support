@@ -2,20 +2,25 @@ import React, { useEffect, useState } from "react";
 import { CalendarDays, Check, X, Eye } from "lucide-react";
 import "../dashboardstyles/table.css";
 import { formatTimeToAmPm } from "../utils/Day_Time_Date";
+import { useNavigate } from "react-router-dom";
+import { Notify } from "notiflix/build/notiflix-notify-aio";
+import Confirm from "../utils/confirmCofig";
 const Events = () => {
   const [appointments, setAppointments] = useState([]);
   const [totalAppointments, setTotalAppointments] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+  const navigate = useNavigate();
+  const handleViewAppointment = (appointment_id) => {
+    navigate(`/singleAppointment/${appointment_id}`)
+  };
 
   useEffect(() => {
     const fetchAppointments = async () => {
       const userToken = JSON.parse(localStorage.getItem("userToken"));
       const hospitalId = userToken?.user?.hospital_id;
-      const key = userToken?.token;
 
       try {
         const response = await fetch(
@@ -50,14 +55,49 @@ const Events = () => {
   }, []);
 
   const updateAppointmentStatus = (appointmentId, newStatus) => {
-    setAppointments((prev) =>
-      prev.map((apt) =>
-        apt.appointment_id === appointmentId
-          ? { ...apt, status: newStatus }
-          : apt
-      )
+    Confirm.show(
+      `${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)} Confirmation`,
+      `Are you sure you want to ${newStatus} this appointment?`,
+      "Yes",
+      "Cancel",
+      async () => {
+        try {
+          const userToken = JSON.parse(localStorage.getItem("userToken"));
+          const token = userToken?.token;
+
+          const response = await fetch(
+            `http://127.0.0.1:8000/recommend/appointment/update-status/${appointmentId}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Token ${token}`,
+              },
+              body: JSON.stringify({ status: newStatus }),
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("Failed to update status");
+          }
+
+          setAppointments((prev) =>
+            prev.map((apt) =>
+              apt.appointment_id === appointmentId
+                ? { ...apt, status: newStatus }
+                : apt
+            )
+          );
+          Notify.success(`Appointment status updated to ${newStatus}`);
+        } catch (error) {
+          console.error("Error updating appointment status:", error);
+          Notify.failure("Failed to update appointment status");
+        }
+      },
+      () => {
+        Notify.info("Status update cancelled");
+      }
     );
-    alert(`Appointment status updated to ${newStatus}`);
   };
 
   const truncateText = (text, maxLength = 20) => {
@@ -65,7 +105,6 @@ const Events = () => {
     return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
   };
 
-  // Pagination logic:
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentAppointments = appointments.slice(
@@ -75,7 +114,6 @@ const Events = () => {
 
   const totalPages = Math.ceil(appointments.length / itemsPerPage);
 
-  // Added missing pagination handlers:
   const handlePrevPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
@@ -192,13 +230,12 @@ const Events = () => {
                       </td>
                       <td className="px-3 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex flex-wrap gap-2 items-center">
-                          {/* View Button */}
-                          <div className="flex items-center bg-blue-100 text-blue-600 px-2 py-1 rounded cursor-pointer hover:bg-blue-200 transition">
+                          <div className="flex items-center bg-blue-100 text-blue-600 px-2 py-1 rounded cursor-pointer hover:bg-blue-200 transition"
+                          onClick={()=>handleViewAppointment(apt.appointment_id)}
+                          >
                             <Eye size={16} className="mr-1" />
                             <span className="text-sm">View</span>
                           </div>
-
-                          {/* Approve Button */}
                           <div
                             onClick={() =>
                               updateAppointmentStatus(
@@ -211,8 +248,6 @@ const Events = () => {
                             <Check size={16} className="mr-1" />
                             <span className="text-sm">Approve</span>
                           </div>
-
-                          {/* Reject Button */}
                           <div
                             onClick={() =>
                               updateAppointmentStatus(
@@ -233,13 +268,11 @@ const Events = () => {
               </table>
             </div>
 
-            {/* Pagination Controls */}
             <div className="flex flex-wrap justify-center items-center mt-6 gap-2 md:gap-4">
-              {/* Previous Button */}
               <div
                 className={`flex items-center justify-center px-4 py-2 rounded-lg shadow-md text-blue-500 bg-white cursor-pointer hover:scale-105 transition-all duration-300 ${
                   currentPage === 1
-                    ? "bg-gray-200  c transform-none shadow-none"
+                    ? "bg-gray-200 transform-none shadow-none"
                     : ""
                 }`}
                 onClick={handlePrevPage}
@@ -258,15 +291,11 @@ const Events = () => {
                 </svg>
                 Previous
               </div>
-
-              {/* Page Indicator */}
               <div className="flex items-center">
-                {/* Desktop version */}
                 <span className="hidden md:flex items-center gap-1 text-sm md:text-base">
                   Page <span className="font-bold">{currentPage}</span> of{" "}
                   {totalPages}
                 </span>
-                {/* Mobile version - more compact */}
                 <span className="flex md:hidden items-center gap-1 text-sm">
                   <div className="flex justify-center items-center h-8 w-8 rounded-full font-bold bg-blue-100 text-blue-600">
                     {currentPage}
@@ -274,12 +303,10 @@ const Events = () => {
                   / {totalPages}
                 </span>
               </div>
-
-              {/* Next Button */}
               <div
                 className={`flex items-center justify-center px-4 py-2 rounded-lg shadow-md text-blue-500 bg-white cursor-pointer hover:scale-105 transition-all duration-300 ${
                   currentPage === totalPages
-                    ? "bg-gray-200  transform-none shadow-none"
+                    ? "bg-gray-200 transform-none shadow-none"
                     : ""
                 }`}
                 onClick={handleNextPage}
