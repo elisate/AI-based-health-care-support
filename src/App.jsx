@@ -56,6 +56,7 @@ import SAddDoctor from "./SuperAdmin/SAddDoctor";
 import MedicalAIassistant from "./DoctorDashboard/MedicalAIassistant";
 import SingleAppointment from "./Components/SingleAppointment";
 import AssignDoctor from "./Components/AssignDoctor";
+import AssignedAppointment from "./DoctorDashboard/AssignedAppointment";
 // import ProtectedRoutes from './Components/ProtectedRoute.js'
 function App() {
   return (
@@ -149,6 +150,7 @@ function App() {
           <Route path="/doctor/nurse-doctor" element={<NurseTable />} />
           <Route path="/doctor/nurse-profile/:id" element={<NurseProfile />} />
           <Route path="/doctor/settings" element={<DocSettings />} />
+          <Route path="/doctor/Appointment" element={<AssignedAppointment/>}/>
         </Route>
 
         {/* --------------------SUPER ADMIN ROUTES ----------------------------------------*/}

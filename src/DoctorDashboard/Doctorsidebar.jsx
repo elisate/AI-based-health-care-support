@@ -1,14 +1,11 @@
 import React, { useState } from 'react'
 import '../dashboardstyles/sidebar.css';
 import { Link } from 'react-router-dom';
-import { SiEventstore } from "react-icons/si";
-import { BiSupport } from "react-icons/bi";
-import { FaHeartbeat, FaCalendarCheck, FaFileInvoiceDollar, FaUserNurse } from "react-icons/fa";
 import { FaUserDoctor, FaBedPulse } from "react-icons/fa6";
 import { IoMdMenu } from "react-icons/io";
-import { MdSettings, MdDonutSmall, MdArrowDropDown, MdArrowRight } from "react-icons/md";
+import { MdSettings,  MdArrowDropDown, MdArrowRight } from "react-icons/md";
 import { BrainCircuit } from "lucide-react";
-import { Stethoscope } from "lucide-react";
+import { Stethoscope,CalendarCheck2 } from "lucide-react";
 import useLogout from '../hooks/useLogout';
 const Doctorsidebar = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
@@ -16,6 +13,7 @@ const Doctorsidebar = () => {
   const [isEventMenuOpen, setIsEventMenuOpen] = useState(false);
   const [isBillMenuOpen, setIsBillMenuOpen] = useState(false);
   const [isNursesMenuOpen, setIsNursesMenuOpen] = useState(false);
+
   const logout = useLogout();
   return (
     <div className="dashboard">
@@ -29,6 +27,7 @@ const Doctorsidebar = () => {
         <ul className="nav-list">
            <Link to="/doctor/dash" className='nav-link'><li><FaUserDoctor className='nav-icon' /> Doctor Profile</li></Link>
           <Link to="/doctor/AIassistant" className='nav-link'><li><Stethoscope className='nav-icon' /><BrainCircuit size={13}/> AI Assistant</li></Link>
+          <Link to="/doctor/Appointment" className='nav-link'><li><CalendarCheck2 className='nav-icon' />Assigned Appointment</li></Link>
           <li onClick={() => setIsPatientsMenuOpen(!isPatientsMenuOpen)} className="menu-item">
             <FaBedPulse className='nav-icon' /> Patients
             {isPatientsMenuOpen ? <MdArrowDropDown className='submenu-icon' /> : <MdArrowRight className='submenu-icon' />}
