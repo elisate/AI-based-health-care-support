@@ -14,7 +14,7 @@ const Events = () => {
   const itemsPerPage = 5;
   const navigate = useNavigate();
   const handleViewAppointment = (appointment_id) => {
-    navigate(`/singleAppointment/${appointment_id}`)
+    navigate(`/singleAppointment/${appointment_id}`);
   };
 
   useEffect(() => {
@@ -222,7 +222,13 @@ const Events = () => {
                               ? "bg-green-100 text-green-800"
                               : apt.status === "rejected"
                               ? "bg-red-100 text-red-800"
-                              : "bg-yellow-100 text-yellow-800"
+                              : apt.status === "pending"
+                              ? "bg-yellow-100 text-yellow-800"
+                              : apt.status === "completed"
+                              ? "bg-blue-100 text-blue-800"
+                              : apt.status === "assigned"
+                              ? "bg-purple-100 text-purple-800"
+                              : "bg-gray-100 text-gray-800"
                           }`}
                         >
                           {apt.status}
@@ -230,8 +236,11 @@ const Events = () => {
                       </td>
                       <td className="px-3 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex flex-wrap gap-2 items-center">
-                          <div className="flex items-center bg-blue-100 text-blue-600 px-2 py-1 rounded cursor-pointer hover:bg-blue-200 transition"
-                          onClick={()=>handleViewAppointment(apt.appointment_id)}
+                          <div
+                            className="flex items-center bg-blue-100 text-blue-600 px-2 py-1 rounded cursor-pointer hover:bg-blue-200 transition"
+                            onClick={() =>
+                              handleViewAppointment(apt.appointment_id)
+                            }
                           >
                             <Eye size={16} className="mr-1" />
                             <span className="text-sm">View</span>
