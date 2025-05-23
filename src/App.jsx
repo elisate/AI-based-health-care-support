@@ -55,6 +55,7 @@ import SAllDoctors from "./SuperAdmin/SAllDoctors";
 import SAddDoctor from "./SuperAdmin/SAddDoctor";
 import MedicalAIassistant from "./DoctorDashboard/MedicalAIassistant";
 import SingleAppointment from "./Components/SingleAppointment";
+import AssignDoctor from "./Components/AssignDoctor";
 // import ProtectedRoutes from './Components/ProtectedRoute.js'
 function App() {
   return (
@@ -65,12 +66,13 @@ function App() {
 
         <Route path="/welcome" element={<Welcome />} />
 
-        < Route path="/" element={<Dashboardlayout />}>
+        <Route path="/" element={<Dashboardlayout />}>
           <Route path="/dashboard" element={<Dasboardview />} />
           <Route
             path="/dashboard/doctor-dashboard"
             element={<DoctorDashboard />}
           />
+          <Route path="/assign-doctor/:appointment_id" element={<AssignDoctor/>} />
           <Route path="/patient-dashboard" element={<PatientDashboard />} />
           <Route path="/all-doctors" element={<AllDoctors />} />
           <Route path="/edit-doctor" element={<EditDoctor />} />
@@ -78,7 +80,10 @@ function App() {
             path="/dashboard/edit-doctorform/:id"
             element={<EditDoctorForm />}
           />
-          <Route path="/singleAppointment/:appointment_id" element={<SingleAppointment/>}/>
+          <Route
+            path="/singleAppointment/:appointment_id"
+            element={<SingleAppointment />}
+          />
           <Route path="/add-doctor" element={<AddDoctor />} />
           <Route path="/createSchedule" element={<HospitalSchedule />} />
           <Route
@@ -126,7 +131,7 @@ function App() {
           <Route path="/doctor/dash" element={<DoctorDash />} />
           <Route path="/doctor/all-patients" element={<DoctorPati />} />
           <Route path="/doctor/patient-pro" element={<DocPatient />} />
-          <Route path="/doctor/AIassistant" element={<MedicalAIassistant/>} />
+          <Route path="/doctor/AIassistant" element={<MedicalAIassistant />} />
           <Route
             path="/doctor/patient-profile/:id"
             element={<DoctorPatient />}
@@ -145,8 +150,8 @@ function App() {
           <Route path="/doctor/nurse-profile/:id" element={<NurseProfile />} />
           <Route path="/doctor/settings" element={<DocSettings />} />
         </Route>
-       
-       {/* --------------------SUPER ADMIN ROUTES ----------------------------------------*/}
+
+        {/* --------------------SUPER ADMIN ROUTES ----------------------------------------*/}
         <Route path="/" element={<SuperDashboardlayout />}>
           <Route index element={<SDasboardview />} />
           <Route path="/super" element={<SDasboardview />} />
@@ -154,8 +159,8 @@ function App() {
             path="/dashboard/doctor-dashboard"
             element={<DoctorDashboard />}
           />
-          <Route path="/Spatient-dashboard" element={<SPatientDashboard/>} />
-          <Route path="/Sall-doctors" element={<SAllDoctors/>} />
+          <Route path="/Spatient-dashboard" element={<SPatientDashboard />} />
+          <Route path="/Sall-doctors" element={<SAllDoctors />} />
           <Route path="/Sedit-doctor" element={<EditDoctor />} />
           {/* <Route
             path="/dashboard/edit-doctorform/:id"
@@ -178,7 +183,7 @@ function App() {
           <Route path="/all-patients" element={<AllPatients />} />
           <Route path="/doctor-view" element={<DoctorTable />} />
           <Route path="/add-patient" element={<AddPatient />} />
-          
+
           <Route path="/dashboard/patient-profile" element={<AdminPatient />} />
           <Route
             path="/dashboard/patient-profile/:patientId"
@@ -188,7 +193,6 @@ function App() {
           <Route path="/events" element={<Events />} />
           <Route path="/dashboard/settings" element={<Settings />} />
         </Route>
-       
       </Routes>
     </BrowserRouter>
   );
