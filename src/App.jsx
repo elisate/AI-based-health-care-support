@@ -57,6 +57,7 @@ import MedicalAIassistant from "./DoctorDashboard/MedicalAIassistant";
 import SingleAppointment from "./Components/SingleAppointment";
 import AssignDoctor from "./Components/AssignDoctor";
 import AssignedAppointment from "./DoctorDashboard/AssignedAppointment";
+import SingleAssignedAppointment from "./DoctorDashboard/SingleAssignedAppointment";
 // import ProtectedRoutes from './Components/ProtectedRoute.js'
 function App() {
   return (
@@ -66,7 +67,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
 
         <Route path="/welcome" element={<Welcome />} />
-
+         {/* ----------------------HOSPITAL DASHBOARD-------------------------- */}
         <Route path="/" element={<Dashboardlayout />}>
           <Route path="/dashboard" element={<Dasboardview />} />
           <Route
@@ -110,6 +111,7 @@ function App() {
           <Route path="/events" element={<Events />} />
           <Route path="/dashboard/settings" element={<Settings />} />
         </Route>
+        {/* ------------------ PATIENT --------------------------- */}
         <Route path="/patient" element={<PatientLayout />}>
           <Route path="/patient/patient-pro" element={<Patient />} />
           <Route path="/patient/patient-profile" element={<PatientProfile />} />
@@ -126,6 +128,7 @@ function App() {
             element={<AppointmentPage />}
           />
         </Route>
+        {/* ----------------------------------------------------- */}
         <Route path="/nurse" element={<NurseLayout />}></Route>
         {/* ---------------------DOCTOR------------------- */}
         <Route path="/doctor" element={<DoctorLayout />}>
@@ -133,6 +136,7 @@ function App() {
           <Route path="/doctor/all-patients" element={<DoctorPati />} />
           <Route path="/doctor/patient-pro" element={<DocPatient />} />
           <Route path="/doctor/AIassistant" element={<MedicalAIassistant />} />
+           <Route path="/doctor/singleAppointmentForDoctor/:appointment_id" element={<SingleAssignedAppointment/>} />
           <Route
             path="/doctor/patient-profile/:id"
             element={<DoctorPatient />}
@@ -150,7 +154,8 @@ function App() {
           <Route path="/doctor/nurse-doctor" element={<NurseTable />} />
           <Route path="/doctor/nurse-profile/:id" element={<NurseProfile />} />
           <Route path="/doctor/settings" element={<DocSettings />} />
-          <Route path="/doctor/Appointment" element={<AssignedAppointment/>}/>
+           <Route path="/doctor/Appointment" element={<AssignedAppointment/>} />
+          <Route path="/doctor/SingleAssignedAppointment/:appointmentId" element={<SingleAssignedAppointment/>}/>
         </Route>
 
         {/* --------------------SUPER ADMIN ROUTES ----------------------------------------*/}

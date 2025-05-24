@@ -14,8 +14,8 @@ const AssignedAppointment = () => {
   const itemsPerPage = 5;
   const navigate = useNavigate();
 
-  const handleViewAppointment = (appointment_id) => {
-    navigate(`/singleAppointment/${appointment_id}`);
+  const handleViewAppointmentForDoctor = (appointment_id) => {
+    navigate(`/doctor/singleAppointmentForDoctor/${appointment_id}`);
   };
 
   useEffect(() => {
@@ -195,7 +195,7 @@ const AssignedAppointment = () => {
                           <div
                             className="flex items-center bg-blue-100 text-blue-600 px-2 py-1 rounded cursor-pointer hover:bg-blue-200 transition"
                             onClick={() =>
-                              handleViewAppointment(apt.appointment_id)
+                              handleViewAppointmentForDoctor(apt.appointment_id)
                             }
                           >
                             <Eye size={16} className="mr-1" />
