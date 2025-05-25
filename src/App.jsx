@@ -58,6 +58,7 @@ import SingleAppointment from "./Components/SingleAppointment";
 import AssignDoctor from "./Components/AssignDoctor";
 import AssignedAppointment from "./DoctorDashboard/AssignedAppointment";
 import SingleAssignedAppointment from "./DoctorDashboard/SingleAssignedAppointment";
+import Treatment from "./DoctorDashboard/Treatment";
 // import ProtectedRoutes from './Components/ProtectedRoute.js'
 function App() {
   return (
@@ -141,6 +142,7 @@ function App() {
             path="/doctor/patient-profile/:id"
             element={<DoctorPatient />}
           />
+          <Route path="/doctor/TreatPatient/:appointmentId" element={<Treatment/>}/>
           <Route
             path="/doctor/patientpro/:patientId"
             element={<DocPatientPro />}
