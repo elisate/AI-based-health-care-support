@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { CalendarDays, Check, X, Eye } from "lucide-react";
+import { CalendarDays, Check, X, Eye, MessageSquare } from "lucide-react";
 import "../dashboardstyles/table.css";
 import { formatTimeToAmPm } from "../utils/Day_Time_Date";
 import { useNavigate } from "react-router-dom";
@@ -203,7 +203,7 @@ const AssignedAppointment = () => {
                           </div>
 
                           {/* Mark as Complete */}
-                          <div
+                          {/* <div
                             className="flex items-center bg-green-100 text-green-600 px-2 py-1 rounded cursor-pointer hover:bg-green-200 transition"
                             onClick={() =>
                               handleCompleteAppointment(apt.appointment_id)
@@ -211,14 +211,14 @@ const AssignedAppointment = () => {
                           >
                             <Check size={16} className="mr-1" />
                             <span className="text-sm">Complete</span>
-                          </div>
+                          </div> */}
 
                           {/* Add Comment */}
                           <div
                             className="flex items-center bg-blue-100 text-blue-600 px-2 py-1 rounded cursor-pointer hover:bg-blue-200 transition"
                             onClick={() => handleComment(apt.appointment_id)}
                           >
-                            <X size={16} className="mr-1" />
+                            <MessageSquare size={16} className="mr-1" />
                             <span className="text-sm">Comment</span>
                           </div>
                         </div>

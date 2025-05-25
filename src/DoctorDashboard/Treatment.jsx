@@ -15,7 +15,9 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import Notify from '../utils/notifyConfig';
 import Confirm from "../utils/confirmCofig"
+import { useNavigate } from "react-router-dom";
 export default function Treatment() {
+    const navigate=useNavigate();
   const { appointmentId } = useParams();
   const {
     register,
@@ -120,6 +122,8 @@ export default function Treatment() {
               )
             );
             Notify.success(`Appointment status updated to ${newStatus}`);
+            navigate("/doctor/Appointment")
+            
           } catch (error) {
             console.error("Error updating appointment status:", error);
             Notify.failure("Failed to update appointment status");
@@ -262,7 +266,7 @@ export default function Treatment() {
             ...
             <button
              
-              className="bg-blue-500 hover:bg-blue-800 text-white px-6 py-3 rounded-lg font-sm transition-colors duration-200 shadow-md"
+              className="bg-blue-500 hover:bg-blue-800 text-white px-4 py-3 rounded-lg font-sm transition-colors duration-200 shadow-md"
               onClick={() =>
                               updateAppointmentStatus(
                                 appointmentId,
