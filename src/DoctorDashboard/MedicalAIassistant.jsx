@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { IoClose } from "react-icons/io5";
 import { VscRequestChanges } from "react-icons/vsc";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 export default function MedicalAIassistant() {
   const availableSymptoms = [
     "Fever",
@@ -467,16 +468,17 @@ export default function MedicalAIassistant() {
                     <hr className="border-blue-500 border-t-2 my-4" />
                   </div>
 
-                  <div className="flex flex-grow gap-2 items-center">
+              <Link to="/doctor/Appointment" >  <div className="flex flex-grow gap-2 items-center">
                     {" "}
                     <VscRequestChanges className="text-blue-500" />
                     <span
                       className="text-sm cursor-pointer hover:text-blue-500"
                       onClick={() => handleNavigate(prediction.prediction_id)}
                     >
-                      Request Appointment
+                      Go to Appointments
                     </span>
                   </div>
+                  </Link> 
                 </div>
               ) : (
                 <div className="flex items-center justify-center h-64 bg-gray-50 rounded-lg border border-gray-200">
