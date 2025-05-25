@@ -59,6 +59,7 @@ import AssignDoctor from "./Components/AssignDoctor";
 import AssignedAppointment from "./DoctorDashboard/AssignedAppointment";
 import SingleAssignedAppointment from "./DoctorDashboard/SingleAssignedAppointment";
 import Treatment from "./DoctorDashboard/Treatment";
+import DoctorPatientAssigned from "./DoctorDashboard/DoctorPatientAssigned";
 // import ProtectedRoutes from './Components/ProtectedRoute.js'
 function App() {
   return (
@@ -134,7 +135,7 @@ function App() {
         {/* ---------------------DOCTOR------------------- */}
         <Route path="/doctor" element={<DoctorLayout />}>
           <Route path="/doctor/dash" element={<DoctorDash />} />
-          <Route path="/doctor/all-patients" element={<DoctorPati />} />
+          <Route path="/doctor/all-patients" element={<DoctorPatientAssigned/>} />
           <Route path="/doctor/patient-pro" element={<DocPatient />} />
           <Route path="/doctor/AIassistant" element={<MedicalAIassistant />} />
            <Route path="/doctor/singleAppointmentForDoctor/:appointment_id" element={<SingleAssignedAppointment/>} />
