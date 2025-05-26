@@ -44,8 +44,9 @@ const HospitalSchedule = () => {
     "sunday",
   ];
 
-  const userToken = JSON.parse(localStorage.getItem("userToken"));
-  const hospitalId = userToken?.user?.hospital_id;
+   const userToken = JSON.parse(localStorage.getItem("userToken"));
+
+  const hospitalId = userToken?.role_data?.id;
   const key = userToken?.token;
   // console.log("===================",hospitalId)
 

@@ -15,7 +15,7 @@ const AddPatient = () => {
 
   const userToken = JSON.parse(localStorage.getItem("userToken"));
 
-  const hospitalId = userToken?.user?.hospital_id;
+  const hospitalId = userToken?.role_data?.id;
 
   const onsubmit = async (data) => {
     try {

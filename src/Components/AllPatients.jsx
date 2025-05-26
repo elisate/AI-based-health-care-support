@@ -13,8 +13,9 @@ const AllPatients = () => {
 
   useEffect(() => {
     const fetchPatients = async () => {
-      const userToken = JSON.parse(localStorage.getItem("userToken"));
-      const hospitalId = userToken?.user?.hospital_id;
+       const userToken = JSON.parse(localStorage.getItem("userToken"));
+
+  const hospitalId = userToken?.role_data?.id;
 
       try {
         const response = await fetch(

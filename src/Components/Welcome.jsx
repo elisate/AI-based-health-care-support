@@ -100,13 +100,16 @@ export default function Welcome() {
 
         if (Role === "hospital") {
           navigate("/dashboard");
-          Notify.success("Hospital Login Successful")
+          Notify.success("Hospital Login Successful");
         } else if (Role === "doctor") {
           navigate("/doctor");
-          Notify.success("Doctor Login SuccessFull")
+          Notify.success("Doctor Login SuccessFull");
+        } else if (Role === "superAdmin") {
+          navigate("/super");
+          Notify.success("Super Admin Login SuccessFull");
         } else {
           navigate("/patient");
-          Notify.success("Patient Login SuccessFull")
+          Notify.success("Patient Login SuccessFull");
         }
       }
     } catch (error) {
@@ -120,39 +123,37 @@ export default function Welcome() {
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
       {/* Left Section - Image */}
-     {/* Left Section - Image */}
-<div className="hidden md:flex fixed top-0 left-0 h-screen w-1/2 bg-gradient-to-br from-blue-500 to-blue-700 justify-center items-center p-8 z-10">
-  <div className="text-center text-white">
-    <h2 className="text-3xl font-bold mb-4">
-      {activeTab === "signin" ? t("welcome") : t("joinUs")}
-    </h2>
-    <p className="text-xl text-white">
-      {activeTab === "signin"
-        ? "Access your account and continue your journey"
-        : "Create an account and start your journey with us"}
-    </p>
-    <div className="mt-8 p-4">
-      <div className="w-64 h-64 mx-auto bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-        <svg
-          className="w-40 h-40 text-white"
-          fill="currentColor"
-          viewBox="0 0 20 20"
-        >
-          <path
-            fillRule="evenodd"
-            d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-            clipRule="evenodd"
-          ></path>
-        </svg>
+      {/* Left Section - Image */}
+      <div className="hidden md:flex fixed top-0 left-0 h-screen w-1/2 bg-gradient-to-br from-blue-500 to-blue-700 justify-center items-center p-8 z-10">
+        <div className="text-center text-white">
+          <h2 className="text-3xl font-bold mb-4">
+            {activeTab === "signin" ? t("welcome") : t("joinUs")}
+          </h2>
+          <p className="text-xl text-white">
+            {activeTab === "signin"
+              ? "Access your account and continue your journey"
+              : "Create an account and start your journey with us"}
+          </p>
+          <div className="mt-8 p-4">
+            <div className="w-64 h-64 mx-auto bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+              <svg
+                className="w-40 h-40 text-white"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                  clipRule="evenodd"
+                ></path>
+              </svg>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</div>
-
 
       {/* Right Section - Form */}
       <div className="flex items-center justify-center w-full md:w-1/2 p-4 md:p-8 md:ml-[50%] min-h-screen">
-
         <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
           <div className="flex flex-row items-center justify-between mb-4">
             <div className="text-xl font-bold text-gray-800">

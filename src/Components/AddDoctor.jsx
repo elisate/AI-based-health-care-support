@@ -14,16 +14,11 @@ const AddDoctor = () => {
     reset,
   } = useForm();
 
- 
   const [loading, setLoading] = useState(false);
 
-  
-    const userToken = JSON.parse(localStorage.getItem("userToken"));
-    
-    const hospitalId=userToken?.user?.hospital_id
-     
-    
+  const userToken = JSON.parse(localStorage.getItem("userToken"));
 
+  const hospitalId = userToken?.role_data?.id;
 
   const onsave = async (data) => {
     setLoading(true);

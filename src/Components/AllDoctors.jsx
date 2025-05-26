@@ -14,7 +14,7 @@ const AllDoctors = () => {
   useEffect(() => {
     const fetchDoctors = async () => {
       const userToken = JSON.parse(localStorage.getItem("userToken"));
-      const hospitalId = userToken?.user?.hospital_id;
+      const hospitalId = userToken?.role_data?.id;
 
       try {
         const response = await fetch(

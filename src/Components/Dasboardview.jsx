@@ -34,7 +34,7 @@ const Dasboardview = () => {
 
     fetchSupportRequests();
   }, []);
-  
+
   //============================================================================
   const [patients, setPatients] = useState([]);
   const [doctors, setDoctors] = useState([]);
@@ -42,41 +42,39 @@ const Dasboardview = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  
-    useEffect(() => {
-      const fetchPatients = async () => {
-        const userToken = JSON.parse(localStorage.getItem("userToken"));
-        const hospitalId = userToken?.user?.hospital_id;
-  
-        try {
-          const response = await fetch(
-            `http://127.0.0.1:8000/recommend/Appointment/getPatientByHospId/${hospitalId}`
-          );
-          const data = await response.json();
-  
-          if (data.patients && Array.isArray(data.patients)) {
-            setPatients(data.patients);
-           
-          } else {
-            setPatients([]);
-            
-          }
-        } catch (error) {
-          console.error("Failed to fetch patients:", error);
+  useEffect(() => {
+    const fetchPatients = async () => {
+      const userToken = JSON.parse(localStorage.getItem("userToken"));
+
+      const hospitalId = userToken?.role_data?.id;
+
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:8000/recommend/Appointment/getPatientByHospId/${hospitalId}`
+        );
+        const data = await response.json();
+
+        if (data.patients && Array.isArray(data.patients)) {
+          setPatients(data.patients);
+        } else {
           setPatients([]);
-          
-        } finally {
-          setLoading(false);
         }
-      };
-  
-      fetchPatients();
-    }, []);
-  
+      } catch (error) {
+        console.error("Failed to fetch patients:", error);
+        setPatients([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPatients();
+  }, []);
+
   useEffect(() => {
     const fetchDoctors = async () => {
       const userToken = JSON.parse(localStorage.getItem("userToken"));
-      const hospitalId = userToken?.user?.hospital_id;
+
+      const hospitalId = userToken?.role_data?.id;
 
       try {
         const response = await fetch(
@@ -106,7 +104,8 @@ const Dasboardview = () => {
       setError(null);
       try {
         const userToken = JSON.parse(localStorage.getItem("userToken"));
-        const hospitalId = userToken?.user?.hospital_id;
+
+        const hospitalId = userToken?.role_data?.id;
         if (!hospitalId) {
           setError("Hospital ID not found.");
           setLoading(false);
