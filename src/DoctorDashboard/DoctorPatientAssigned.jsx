@@ -153,34 +153,33 @@ const DoctorPatientAssigned = () => {
             </div>
 
             {/* Pagination */}
-            <div className="flex flex-wrap justify-center items-center mt-6 gap-2 md:gap-4">
-              <button
-                className={`px-4 py-2 rounded-lg shadow-md text-blue-500 bg-white hover:scale-105 transition-all duration-300 ${
+            <div className="flex flex-wrap justify-center  items-center mt-6 gap-2 md:gap-4">
+              <span
+                className={`px-4 py-2 rounded-lg cursor-pointer text-sm cursor-pointer shadow-md text-blue-500 bg-white hover:scale-105 transition-all duration-300 ${
                   currentPage === 1
-                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                    : ""
+                    
                 }`}
                 onClick={handlePrevPage}
                 disabled={currentPage === 1}
               >
                 Previous
-              </button>
+              </span>
 
               <span className="text-sm md:text-base">
                 Page <strong>{currentPage}</strong> of {totalPages}
               </span>
 
-              <button
-                className={`px-4 py-2 rounded-lg shadow-md text-blue-500 bg-white hover:scale-105 transition-all duration-300 ${
+              <span
+                className={`px-4 py-2 rounded-lg text-sm cursor-pointer
+                  shadow-md text-blue-500 bg-white hover:scale-105  transition-all duration-300 ${
                   currentPage === totalPages
-                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                    : ""
+                    
                 }`}
                 onClick={handleNextPage}
                 disabled={currentPage === totalPages}
               >
                 Next
-              </button>
+              </span>
             </div>
           </>
         )}
@@ -189,7 +188,7 @@ const DoctorPatientAssigned = () => {
       {/* Modal */}
       {isModalOpen && selectedPatient && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 px-4">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl p-6 relative max-h-[80vh] overflow-y-auto">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl p-6 relative max-h-[95vh] overflow-y-auto">
             <X
               size={24}
               onClick={closeModal}
