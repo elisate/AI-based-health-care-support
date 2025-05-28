@@ -19,10 +19,13 @@ const AssignedAppointment = () => {
   };
 
   useEffect(() => {
+     const userToken = JSON.parse(localStorage.getItem("userToken"));
+      const doctorId = userToken?.role_data?.id;
     const fetchAppointments = async () => {
       try {
         const response = await fetch(
-          "http://127.0.0.1:8000/recommend/appointment/by-doctor-email/elisadush2000@gmail.com"
+          `http://127.0.0.1:8000/recommend/appointment/by-doctor-id/${doctorId}`
+
         );
         const result = await response.json();
 

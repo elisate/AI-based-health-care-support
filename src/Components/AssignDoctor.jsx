@@ -12,7 +12,7 @@ function AssignDoctor() {
   useEffect(() => {
     const fetchDoctors = async () => {
       const userToken = JSON.parse(localStorage.getItem("userToken"));
-      const hospitalId = userToken?.user?.hospital_id;
+      const hospitalId = userToken?.role_data?.id;
 
       try {
         const res = await axios.get(
