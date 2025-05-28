@@ -10,18 +10,16 @@ const DoctorPatientAssigned = () => {
   const itemsPerPage = 5;
 
   const [selectedPatient, setSelectedPatient] = useState(null);
-  const [treatmentHistory, setTreatmentHistory] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalLoading, setModalLoading] = useState(false);
 
   useEffect(() => {
     const fetchPatients = async () => {
       const userToken = JSON.parse(localStorage.getItem("userToken"));
-      const doctorId = userToken?.user?.user_id;
+      const doctorId = userToken?.role_data?.user;
 
       try {
         const response = await fetch(
-          `http://127.0.0.1:8000/recommend/doctor/patientTreated/682fe8db95d48d1e8c77189c`
+          `http://127.0.0.1:8000/recommend/doctor/patientTreated/${doctorId}`
         );
         const data = await response.json();
 
@@ -57,28 +55,14 @@ const DoctorPatientAssigned = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
 
-  const handleView = async (patient) => {
+  const handleView = (patient) => {
     setSelectedPatient(patient);
-    setModalLoading(true);
     setIsModalOpen(true);
-    try {
-      const res = await fetch(
-        `http://127.0.0.1:8000/recommend/doctor/patient-treatment/${patient.patient_id}`
-      );
-      const data = await res.json();
-      setTreatmentHistory(data.treatment_history || []);
-    } catch (error) {
-      console.error("Failed to fetch treatment history:", error);
-      setTreatmentHistory([]);
-    } finally {
-      setModalLoading(false);
-    }
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedPatient(null);
-    setTreatmentHistory([]);
   };
 
   return (
@@ -107,16 +91,16 @@ const DoctorPatientAssigned = () => {
                 <thead>
                   <tr>
                     <th className="px-3 py-4 bg-blue-500 text-white text-left rounded-tl-lg">Profile</th>
-                    <th className="px-3 py-4 bg-blue-500 text-white text-left">Name</th>
+                    <th className="px-3 py-4 bg-blue-500 text-white text-left">Full Name</th>
                     <th className="px-3 py-4 bg-blue-500 text-white text-left">Gender</th>
                     <th className="px-3 py-4 bg-blue-500 text-white text-left">Age</th>
-                    <th className="px-3 py-4 bg-blue-500 text-white text-left">Email</th>
+                    <th className="px-3 py-4 bg-blue-500 text-white text-left">Phone</th>
                     <th className="px-3 py-4 bg-blue-500 text-white text-left rounded-tr-lg">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {currentPatients.map((patient) => (
-                    <tr key={patient.patient_id} className="bg-white hover:bg-blue-50 transition">
+                    <tr key={patient.id} className="bg-white hover:bg-blue-50 transition">
                       <td className="px-3 py-4">
                         <img
                           src={patient.profile_image || "/default-profile.png"}
@@ -125,11 +109,11 @@ const DoctorPatientAssigned = () => {
                         />
                       </td>
                       <td className="px-3 py-4 font-medium text-gray-900">
-                        {patient.firstname} {patient.lastname}
+                        {patient.full_name}
                       </td>
                       <td className="px-3 py-4 text-gray-600">{patient.gender || "N/A"}</td>
                       <td className="px-3 py-4 text-gray-600">{patient.age || "N/A"}</td>
-                      <td className="px-3 py-4 text-gray-600">{patient.email || "N/A"}</td>
+                      <td className="px-3 py-4 text-gray-600">{patient.phone || "N/A"}</td>
                       <td className="px-3 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex flex-wrap gap-2 items-center">
                           <div
@@ -138,14 +122,6 @@ const DoctorPatientAssigned = () => {
                           >
                             <Eye size={16} className="mr-1" />
                             <span className="text-sm">View</span>
-                          </div>
-                          <div className="flex items-center bg-green-100 text-green-600 px-2 py-1 rounded cursor-pointer hover:bg-green-200 transition">
-                            <Edit2 size={16} className="mr-1" />
-                            <span className="text-sm">Update</span>
-                          </div>
-                          <div className="flex items-center bg-red-100 text-red-600 px-2 py-1 rounded cursor-pointer hover:bg-red-200 transition">
-                            <X size={16} className="mr-1" />
-                            <span className="text-sm">Delete</span>
                           </div>
                         </div>
                       </td>
@@ -158,9 +134,8 @@ const DoctorPatientAssigned = () => {
             {/* Pagination */}
             <div className="flex flex-wrap justify-center items-center mt-6 gap-2 md:gap-4">
               <button
-                className={`px-4 py-2 rounded-lg shadow-md text-blue-500 bg-white hover:scale-105 transition-all duration-300 ${
-                  currentPage === 1 ? "bg-gray-200 text-gray-400 cursor-not-allowed" : ""
-                }`}
+                className={`px-4 py-2 rounded-lg shadow-md text-blue-500 bg-white hover:scale-105 transition-all duration-300 ${currentPage === 1 ? "bg-gray-200 text-gray-400 cursor-not-allowed" : ""
+                  }`}
                 onClick={handlePrevPage}
                 disabled={currentPage === 1}
               >
@@ -172,9 +147,8 @@ const DoctorPatientAssigned = () => {
               </span>
 
               <button
-                className={`px-4 py-2 rounded-lg shadow-md text-blue-500 bg-white hover:scale-105 transition-all duration-300 ${
-                  currentPage === totalPages ? "bg-gray-200 text-gray-400 cursor-not-allowed" : ""
-                }`}
+                className={`px-4 py-2 rounded-lg shadow-md text-blue-500 bg-white hover:scale-105 transition-all duration-300 ${currentPage === totalPages ? "bg-gray-200 text-gray-400 cursor-not-allowed" : ""
+                  }`}
                 onClick={handleNextPage}
                 disabled={currentPage === totalPages}
               >
@@ -187,8 +161,8 @@ const DoctorPatientAssigned = () => {
 
       {/* Modal */}
       {isModalOpen && selectedPatient && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 px-4">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl p-6 relative">
+        <div className=" overflow-y-auto fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 px-4 ">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl p-6  relative">
             <button
               className="absolute top-2 right-2 text-gray-500 hover:text-red-600"
               onClick={closeModal}
@@ -196,21 +170,20 @@ const DoctorPatientAssigned = () => {
               <X size={24} />
             </button>
             <h2 className="text-xl font-bold text-blue-600 mb-4">
-              {selectedPatient.firstname} {selectedPatient.lastname}'s Treatment History
+              {selectedPatient.full_name}'s Treatment History
             </h2>
-            {modalLoading ? (
-              <div className="flex justify-center items-center h-24">
-                <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
-              </div>
-            ) : treatmentHistory.length === 0 ? (
+
+            {selectedPatient.treatments.length === 0 ? (
               <p className="text-gray-600">No treatment history available.</p>
             ) : (
               <ul className="space-y-4">
-                {treatmentHistory.map((record, index) => (
+                {selectedPatient.treatments.map((record, index) => (
                   <li key={index} className="border border-gray-200 p-4 rounded-lg">
-                    <p><strong>Date:</strong> {new Date(record.date).toLocaleDateString()}</p>
+                    <p><strong>Date:</strong> {new Date(record.created_at).toLocaleDateString()}</p>
                     <p><strong>Diagnosis:</strong> {record.diagnosis}</p>
                     <p><strong>Prescription:</strong> {record.prescription}</p>
+                    <p><strong>Notes:</strong> {record.notes}</p>
+                    <p><strong>Symptoms:</strong> {Array.isArray(record.symptoms) ? record.symptoms.join(", ") : record.symptoms}</p>
                   </li>
                 ))}
               </ul>
