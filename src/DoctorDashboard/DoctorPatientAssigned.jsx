@@ -155,7 +155,7 @@ const DoctorPatientAssigned = () => {
             {/* Pagination */}
             <div className="flex flex-wrap justify-center  items-center mt-6 gap-2 md:gap-4">
               <span
-                className={`px-4 py-2 rounded-lg cursor-pointer text-sm cursor-pointer shadow-md text-blue-500 bg-white hover:scale-105 transition-all duration-300 ${
+                className={`px-4 py-2 rounded-lg text-sm cursor-pointer shadow-md text-blue-500 bg-white hover:scale-105 transition-all duration-300 ${
                   currentPage === 1
                     
                 }`}
