@@ -1,51 +1,48 @@
 import React, { useEffect, useState } from "react";
 import { CalendarDays } from "lucide-react";
 import "../dashboardstyles/table.css";
-import { Edit2, Check, X, Eye } from "lucide-react";
-const SAllDoctors = () => {
-  const [doctors, setDoctors] = useState([]);
-  const [totalDoctors, setTotalDoctors] = useState(0);
+import { Edit2, X, Eye } from "lucide-react";
+import axios from "axios";
+
+const SAllHospitals = () => {
+  const [hospitals, setHospitals] = useState([]);
+  const [totalHospitals, setTotalHospitals] = useState(0);
   const [loading, setLoading] = useState(true);
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  useEffect(() => {
-    const fetchDoctors = async () => {
-      const userToken = JSON.parse(localStorage.getItem("userToken"));
-      const hospitalId = userToken?.user?.hospital_id;
+ useEffect(() => {
+  const fetchHospitals = async () => {
+    try {
+      const response = await axios.get("http://127.0.0.1:8000/recommend/hospitals");
+      const data = response.data;
 
-      try {
-        const response = await fetch(
-          `http://127.0.0.1:8000/recommend/doctor/getDoctorByHospitalId/${hospitalId}`
-        );
-        const data = await response.json();
-
-        if (data.doctors && Array.isArray(data.doctors)) {
-          setDoctors(data.doctors);
-          setTotalDoctors(data.doctors.length);
-        } else {
-          setDoctors([]);
-          setTotalDoctors(0);
-        }
-      } catch (error) {
-        console.error("Failed to fetch doctors:", error);
-        setDoctors([]);
-        setTotalDoctors(0);
-      } finally {
-        setLoading(false);
+      if (Array.isArray(data)) {
+        setHospitals(data);
+        setTotalHospitals(data.length);
+      } else {
+        setHospitals([]);
+        setTotalHospitals(0);
       }
-    };
+    } catch (error) {
+      console.error("Failed to fetch hospitals:", error);
+      setHospitals([]);
+      setTotalHospitals(0);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchDoctors();
-  }, []);
+  fetchHospitals();
+}, []);
 
-  // Pagination logic:
+  // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentDoctors = doctors.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(doctors.length / itemsPerPage);
+  const currentHospitals = hospitals.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(hospitals.length / itemsPerPage);
 
   const handlePrevPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
@@ -62,12 +59,11 @@ const SAllDoctors = () => {
           <div className="flex items-center gap-3">
             <CalendarDays size={28} className="text-blue-600" />
             <h1 className="text-2xl md:text-3xl font-bold text-blue-600">
-              Doctors List
+              Hospitals List
             </h1>
           </div>
-
           <div className="text-base md:text-lg font-medium text-gray-500">
-            Total: {totalDoctors}
+            Total: {totalHospitals}
           </div>
         </div>
 
@@ -82,16 +78,16 @@ const SAllDoctors = () => {
                 <thead>
                   <tr>
                     <th className="px-3 py-4 text-left text-sm font-medium uppercase tracking-wider rounded-tl-lg bg-blue-500 text-white">
-                      Profile
+                      Logo
                     </th>
                     <th className="px-3 py-4 text-left text-sm font-medium uppercase tracking-wider bg-blue-500 text-white">
                       Name
                     </th>
                     <th className="px-3 py-4 text-left text-sm font-medium uppercase tracking-wider hidden md:table-cell bg-blue-500 text-white">
-                      Specialty
+                      Location
                     </th>
                     <th className="px-3 py-4 text-left text-sm font-medium uppercase tracking-wider hidden lg:table-cell bg-blue-500 text-white">
-                      Phone
+                      Contact
                     </th>
                     <th className="px-3 py-4 text-left text-sm font-medium uppercase tracking-wider bg-blue-500 text-white">
                       Email
@@ -102,49 +98,47 @@ const SAllDoctors = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {currentDoctors.map((doc) => (
+                  {currentHospitals.map((hospital, index) => (
                     <tr
-                      key={doc.doctor_id}
+                      key={hospital._id || index}
                       className={`transition-colors ${
-                        doc.doctor_id.charCodeAt(0) % 2 === 0
+                        index % 2 === 0
                           ? "bg-blue-50 hover:bg-blue-100"
                           : "bg-white hover:bg-blue-50"
                       }`}
                     >
                       <td className="px-3 py-4 whitespace-nowrap">
                         <img
-                          src={doc.profile_image_url}
-                          alt="Doctor Profile"
+                          src={
+                            hospital.logo_url ||
+                            "https://via.placeholder.com/40x40?text=H"
+                          }
+                          alt="Hospital Logo"
                           className="w-10 h-10 rounded-full border-1 border-blue-500"
                         />
                       </td>
                       <td className="px-3 py-4 whitespace-nowrap font-medium text-gray-900">
-                        {doc.firstname} {doc.lastname}
+                        {hospital.hospital_name}
                       </td>
                       <td className="px-3 py-4 whitespace-nowrap hidden md:table-cell text-gray-600">
-                        {doc.specialty || "N/A"}
+                        {hospital.location || "N/A"}
                       </td>
                       <td className="px-3 py-4 whitespace-nowrap hidden lg:table-cell text-gray-600">
-                        {doc.phone || "N/A"}
+                        {hospital.contact || "N/A"}
                       </td>
                       <td className="px-3 py-4 whitespace-nowrap text-gray-600">
-                        {doc.email || "N/A"}
+                        {hospital.email || "N/A"}
                       </td>
                       <td className="px-3 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex flex-wrap gap-2 items-center">
-                          {/* View Button */}
                           <div className="flex items-center bg-blue-100 text-blue-600 px-2 py-1 rounded cursor-pointer hover:bg-blue-200 transition">
                             <Eye size={16} className="mr-1" />
                             <span className="text-sm">View</span>
                           </div>
-
-                          {/* Approve Button */}
                           <div className="flex items-center bg-green-100 text-green-600 px-2 py-1 rounded cursor-pointer hover:bg-green-200 transition">
                             <Edit2 size={16} className="mr-1" />
                             <span className="text-sm">Update</span>
                           </div>
-
-                          {/* Reject Button */}
                           <div className="flex items-center bg-red-100 text-red-600 px-2 py-1 rounded cursor-pointer hover:bg-red-200 transition">
                             <X size={16} className="mr-1" />
                             <span className="text-sm">Delete</span>
@@ -161,13 +155,10 @@ const SAllDoctors = () => {
             <div className="flex flex-wrap justify-center items-center mt-6 gap-2 md:gap-4">
               <div
                 className={`flex items-center justify-center px-4 py-2 rounded-lg shadow-md text-blue-500 bg-white cursor-pointer hover:scale-105 transition-all duration-300 ${
-                  currentPage === 1
-                    ? "bg-gray-200  c transform-none shadow-none"
-                    : ""
+                  currentPage === 1 ? "bg-gray-200 shadow-none" : ""
                 }`}
                 onClick={handlePrevPage}
               >
-                {/* Left arrow */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5 mr-1"
@@ -198,14 +189,11 @@ const SAllDoctors = () => {
 
               <div
                 className={`flex items-center justify-center px-4 py-2 rounded-lg shadow-md text-blue-500 bg-white cursor-pointer hover:scale-105 transition-all duration-300 ${
-                  currentPage === totalPages
-                    ? "bg-gray-200  transform-none shadow-none"
-                    : ""
+                  currentPage === totalPages ? "bg-gray-200 shadow-none" : ""
                 }`}
                 onClick={handleNextPage}
               >
                 Next
-                {/* Right arrow */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5 ml-1"
@@ -227,4 +215,4 @@ const SAllDoctors = () => {
   );
 };
 
-export default SAllDoctors;
+export default SAllHospitals;

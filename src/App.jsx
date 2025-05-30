@@ -51,7 +51,7 @@ import AppointmentPage from "./PatientDashboard/AppointmentPage";
 import SuperDashboardlayout from "./SuperAdmin/SuperDashboardlayout";
 import SDasboardview from "./SuperAdmin/SDasboardview";
 import SPatientDashboard from "./SuperAdmin/SPatientDashboard";
-import SAllDoctors from "./SuperAdmin/SAllDoctors";
+import SAllHospitals from "./SuperAdmin/SAllHospitals";
 import SAddDoctor from "./SuperAdmin/SAddDoctor";
 import MedicalAIassistant from "./DoctorDashboard/MedicalAIassistant";
 import SingleAppointment from "./Components/SingleAppointment";
@@ -170,7 +170,7 @@ function App() {
             element={<DoctorDashboard />}
           />
           <Route path="/Spatient-dashboard" element={<SPatientDashboard />} />
-          <Route path="/Sall-doctors" element={<SAllDoctors />} />
+          <Route path="/Sall-doctors" element={<SAllHospitals/>} />
           <Route path="/Sedit-doctor" element={<EditDoctor />} />
           {/* <Route
             path="/dashboard/edit-doctorform/:id"
