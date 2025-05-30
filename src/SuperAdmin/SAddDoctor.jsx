@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "../dashboardstyles/addDoctor.css";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import { Notify } from "notiflix/build/notiflix-notify-aio";
 import axios from "axios";
 
-const SAddDoctor = () => {
-  const navigate = useNavigate();
+const SHospitalCreate = () => {
   const {
     register,
     handleSubmit,
@@ -14,61 +12,41 @@ const SAddDoctor = () => {
     reset,
   } = useForm();
 
- 
   const [loading, setLoading] = useState(false);
 
-  
-    const userToken = JSON.parse(localStorage.getItem("userToken"));
-    
-    const hospitalId=userToken?.user?.hospital_id
-     
-    
-
-
-  const onsave = async (data) => {
+  const onSave = async (data) => {
     setLoading(true);
     try {
-      const {
-        firstname,
-        lastname,
-        email,
-        password,
-        age,
-        gender,
-        profile_image_url,
-        phone,
-        notes,
-        specialty,
-      } = data;
-
-      const formData = new FormData();
-      formData.append("firstname", firstname);
-      formData.append("lastname", lastname);
-      formData.append("password", password);
-      formData.append("age", age);
-      formData.append("gender", gender);
-      formData.append("specialty", specialty);
-      formData.append("phone", phone);
-      formData.append("email", email);
-      formData.append("profile_image_url", profile_image_url[0]);
-      formData.append("hospital_id", hospitalId);
-      formData.append("notes", notes);
+      // Prepare data according to your sample JSON:
+      const payload = {
+        hospital_name: data.hospital_name,
+        email: data.email,
+        password: data.password,
+        location: data.location,
+        contact: data.contact,
+        Medical_Supplies: data.Medical_Supplies
+          ? data.Medical_Supplies.split(",").map((item) => item.trim())
+          : [],
+        Medical_Resources: data.Medical_Resources
+          ? data.Medical_Resources.split(",").map((item) => item.trim())
+          : [],
+      };
 
       const response = await axios.post(
-        `http://127.0.0.1:8000/recommend/doctor/create`,
-        formData,
+        "http://127.0.0.1:8000/recommend/hospitals/create",
+        payload,
         {
           headers: {
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "application/json",
           },
         }
       );
 
-      if (response.status === 201) {
-        Notify.success("Doctor Added Successfully");
+      if (response.status === 201 || response.status === 200) {
+        Notify.success("Hospital Added Successfully");
         reset();
       } else {
-        Notify.failure("Adding Doctor failed. Please try again.");
+        Notify.failure("Adding Hospital failed. Please try again.");
       }
     } catch (error) {
       console.error(error);
@@ -82,69 +60,19 @@ const SAddDoctor = () => {
     <div>
       <div className="forms">
         <div className="heades-container">
-          <h1 className="heades-title">ADD NEW DOCTOR</h1>
+          <h1 className="heades-title">ADD NEW Hospital</h1>
         </div>
-        <form onSubmit={handleSubmit(onsave)}>
-          <h2>Doctor info</h2>
+        <form onSubmit={handleSubmit(onSave)}>
+          <h2>Hospital info</h2>
 
-          <label className="label">FirstName</label>
+          <label className="label">Hospital Name</label>
           <input
             type="text"
-            placeholder="FirstName"
-            {...register("firstname", { required: true })}
+            placeholder="Hospital Name"
+            {...register("hospital_name", { required: true })}
           />
 
-          <label className="label">LastName</label>
-          <input
-            type="text"
-            placeholder="LastName"
-            {...register("lastname", { required: true })}
-          />
-
-          <label>Age</label>
-          <input
-            type="text"
-            placeholder="Age"
-            {...register("age", { required: true })}
-          />
-
-          <label>Gender</label>
-          <select {...register("gender", { required: true })}>
-            <option value="">Select Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-          </select>
-
-          <label>Profile Image</label>
-          <input
-            type="file"
-            {...register("profile_image_url", { required: true })}
-          />
-
-          <label>Speciality</label>
-          <input
-            type="text"
-            placeholder="Speciality"
-            name="specialty"
-            {...register("specialty", { required: true })}
-          />
-
-          <label>Phone</label>
-          <input
-            type="text"
-            placeholder="Phone Number"
-            {...register("phone", { required: true })}
-          />
-
-          <label>Hospital Id</label>
-          <input
-            type="text"
-            placeholder="hospital_id"
-            value={hospitalId}
-            readOnly
-          />
-
-          <label className="label">Email</label>
+          <label>Email</label>
           <input
             type="email"
             placeholder="E-mail"
@@ -158,11 +86,33 @@ const SAddDoctor = () => {
             {...register("password", { required: true })}
           />
 
-          <label>Notes</label>
-          <textarea
-            placeholder="Doctor Description"
-            {...register("notes", { required: true })}
-          ></textarea>
+          <label>Location</label>
+          <input
+            type="text"
+            placeholder="Location"
+            {...register("location", { required: true })}
+          />
+
+          <label>Contact</label>
+          <input
+            type="text"
+            placeholder="Contact Number"
+            {...register("contact", { required: true })}
+          />
+
+          <label>Medical Supplies (comma separated)</label>
+          <input
+            type="text"
+            placeholder="e.g. Antibiotics, Bandages"
+            {...register("Medical_Supplies")}
+          />
+
+          <label>Medical Resources (comma separated)</label>
+          <input
+            type="text"
+            placeholder="e.g. Oxygen Therapy Machine, MRI Scanner"
+            {...register("Medical_Resources")}
+          />
 
           <button className="doctor-btn" type="submit" disabled={loading}>
             {loading ? "Saving..." : "Save"}
@@ -173,4 +123,4 @@ const SAddDoctor = () => {
   );
 };
 
-export default SAddDoctor;
+export default SHospitalCreate;

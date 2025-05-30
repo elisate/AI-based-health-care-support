@@ -33,13 +33,13 @@ const SSidebar = () => {
                     {/* <Link to="/dashboard/doctor-dashboard" className='nav-link'><li><MdDonutSmall className='nav-icon' /> Doctor Dashboard</li></Link> */}
 
                     <li onClick={() => setIsDoctorsMenuOpen(!isDoctorsMenuOpen)} className="menu-item">
-                        <FaUserDoctor className='nav-icon' /> Doctors
+                        <FaUserDoctor className='nav-icon' /> Hospital
                         {isDoctorsMenuOpen ? <MdArrowDropDown className='submenu-icon' /> : <MdArrowRight className='submenu-icon' />}
                     </li>
                     <ul className={`submenu ${isDoctorsMenuOpen ? "open" : ""}`}>
-                        <Link to="/Sadd-doctor" className='nav-link'><li>Add Doctor</li></Link>
-                        <Link to="/Sall-doctors" className='nav-link'><li>All Doctors</li></Link>
-                        <Link to="/Sdoctor-view" className='nav-link'><li>Edit Doctor</li></Link>
+                        <Link to="/Sadd-doctor" className='nav-link'><li>Add Hospital</li></Link>
+                        <Link to="/Sall-doctors" className='nav-link'><li>All Hospital</li></Link>
+                        <Link to="/Sdoctor-view" className='nav-link'><li>Edit Hospital</li></Link>
                     </ul>
 
                     <li onClick={() => setIsPatientsMenuOpen(!isPatientsMenuOpen)} className="menu-item">
