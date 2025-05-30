@@ -45,7 +45,12 @@ export default function PatientNavbar() {
             <User size={20} />
           </div>
           <div className="flex flex-col">
-            <span className="font-medium text-blue-500 text-sm">{Lname}</span>
+          
+
+               <span className="font-medium text-blue-500 text-sm">
+              {Lname?.slice(0, 6)}...
+            </span>
+           
             <span className="text-xs text-gray-400">{Role}</span>
           </div>
         </div>
