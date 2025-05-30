@@ -48,7 +48,7 @@ export default function PatientNavbar() {
           
 
                <span className="font-medium text-blue-500 text-sm">
-              {Lname?.slice(0, 6)}...
+              {Lname?.slice(0, 5)}..
             </span>
            
             <span className="text-xs text-gray-400">{Role}</span>

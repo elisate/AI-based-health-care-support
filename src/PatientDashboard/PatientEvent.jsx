@@ -134,7 +134,15 @@ const PatientEvents = () => {
                           className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                             apt.status === "approved"
                               ? "bg-green-100 text-green-800"
-                              : "bg-yellow-100 text-yellow-800"
+                              : apt.status === "rejected"
+                              ? "bg-red-100 text-red-800"
+                              : apt.status === "pending"
+                              ? "bg-yellow-100 text-yellow-800"
+                              : apt.status === "completed"
+                              ? "bg-blue-100 text-blue-800"
+                              : apt.status === "assigned"
+                              ? "bg-purple-100 text-purple-800"
+                              : "bg-gray-100 text-gray-800"
                           }`}
                         >
                           {apt.status}
