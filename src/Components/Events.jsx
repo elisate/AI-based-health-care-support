@@ -5,14 +5,16 @@ import { formatTimeToAmPm } from "../utils/Day_Time_Date";
 import { useNavigate } from "react-router-dom";
 import { Notify } from "notiflix/build/notiflix-notify-aio";
 import Confirm from "../utils/confirmCofig";
+
 const Events = () => {
   const [appointments, setAppointments] = useState([]);
   const [totalAppointments, setTotalAppointments] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
-
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+
   const navigate = useNavigate();
+
   const handleViewAppointment = (appointment_id) => {
     navigate(`/singleAppointment/${appointment_id}`);
   };
@@ -24,35 +26,32 @@ const Events = () => {
 
       try {
         const response = await fetch(
-          `http://127.0.0.1:8000/recommend/Appointment/getAppointmentByHospId/${hospitalId}`
+          `http://127.0.0.1:8000/recommend/Appointment/getAppointmentByHospId/${hospitalId}?page=${currentPage}`
         );
         const data = await response.json();
 
-        if (Array.isArray(data)) {
-          setAppointments(data);
-          setTotalAppointments(data.length);
-        } else if (Array.isArray(data.appointments)) {
+        if (data.appointments && data.pagination) {
           setAppointments(data.appointments);
-          setTotalAppointments(data.appointments.length);
-        } else if (typeof data.total === "number") {
-          setAppointments(data.appointments || []);
-          setTotalAppointments(data.total);
+          setTotalAppointments(data.pagination.total_appointments);
+          setTotalPages(data.pagination.total_pages);
         } else {
           console.error("Unexpected response format:", data);
           setAppointments([]);
           setTotalAppointments(0);
+          setTotalPages(1);
         }
       } catch (error) {
         console.error("Failed to fetch appointments:", error);
         setAppointments([]);
         setTotalAppointments(0);
+        setTotalPages(1);
       } finally {
         setLoading(false);
       }
     };
 
     fetchAppointments();
-  }, []);
+  }, [currentPage]);
 
   const updateAppointmentStatus = (appointmentId, newStatus) => {
     Confirm.show(
@@ -77,9 +76,7 @@ const Events = () => {
             }
           );
 
-          if (!response.ok) {
-            throw new Error("Failed to update status");
-          }
+          if (!response.ok) throw new Error("Failed to update status");
 
           setAppointments((prev) =>
             prev.map((apt) =>
@@ -104,15 +101,6 @@ const Events = () => {
     if (!text) return "";
     return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
   };
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentAppointments = appointments.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
-
-  const totalPages = Math.ceil(appointments.length / itemsPerPage);
 
   const handlePrevPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
@@ -142,6 +130,10 @@ const Events = () => {
           <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
           </div>
+        ) : appointments.length === 0 ? (
+          <div className="text-center text-gray-500 py-10">
+            No appointments found.
+          </div>
         ) : (
           <>
             <div className="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-blue-400">
@@ -169,7 +161,7 @@ const Events = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {currentAppointments.map((apt) => (
+                  {appointments.map((apt) => (
                     <tr
                       key={apt.appointment_id}
                       className={`transition-colors ${
@@ -180,17 +172,15 @@ const Events = () => {
                     >
                       <td className="px-3 py-4 whitespace-nowrap">
                         <div className="flex items-center">
-                          <div className="h-10 w-10 flex-shrink-0">
-                            <div className="h-10 w-10 rounded-full flex items-center justify-center text-lg font-mono bg-blue-100 text-blue-600">
-                              {`${apt.firstname?.[0] || ""}${
-                                apt.lastname?.[0] || ""
-                              }`}
-                            </div>
+                          <div className="h-10 w-10 rounded-full flex items-center justify-center text-lg font-mono bg-blue-100 text-blue-600">
+                            {`${apt.firstname?.[0] || ""}${
+                              apt.lastname?.[0] || ""
+                            }`}
                           </div>
                           <div className="ml-4">
                             <div className="font-medium text-gray-900">
-                              {`${apt.firstname || ""} ${apt.lastname || ""}`
-                                .length > 20
+                              {`${apt.firstname || ""} ${apt.lastname || ""}`.length >
+                              20
                                 ? `${apt.firstname || ""} ${
                                     apt.lastname || ""
                                   }`.slice(0, 20) + ".."
@@ -281,7 +271,7 @@ const Events = () => {
               <div
                 className={`flex items-center justify-center px-4 py-2 rounded-lg shadow-md text-blue-500 bg-white cursor-pointer hover:scale-105 transition-all duration-300 ${
                   currentPage === 1
-                    ? "bg-gray-200 transform-none shadow-none"
+                    ? "bg-gray-200 transform-none shadow-none cursor-not-allowed"
                     : ""
                 }`}
                 onClick={handlePrevPage}
@@ -300,22 +290,16 @@ const Events = () => {
                 </svg>
                 Previous
               </div>
-              <div className="flex items-center">
-                <span className="hidden md:flex items-center gap-1 text-sm md:text-base">
-                  Page <span className="font-bold">{currentPage}</span> of{" "}
-                  {totalPages}
-                </span>
-                <span className="flex md:hidden items-center gap-1 text-sm">
-                  <div className="flex justify-center items-center h-8 w-8 rounded-full font-bold bg-blue-100 text-blue-600">
-                    {currentPage}
-                  </div>
-                  / {totalPages}
-                </span>
+
+              <div className="flex items-center gap-1 text-sm md:text-base">
+                Page <span className="font-bold">{currentPage}</span> of{" "}
+                {totalPages}
               </div>
+
               <div
                 className={`flex items-center justify-center px-4 py-2 rounded-lg shadow-md text-blue-500 bg-white cursor-pointer hover:scale-105 transition-all duration-300 ${
                   currentPage === totalPages
-                    ? "bg-gray-200 transform-none shadow-none"
+                    ? "bg-gray-200 transform-none shadow-none cursor-not-allowed"
                     : ""
                 }`}
                 onClick={handleNextPage}
