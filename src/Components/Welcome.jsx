@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { Notify } from "notiflix";
+import Notify from '../utils/notifyConfig'
 
 export default function Welcome() {
   const [activeTab, setActiveTab] = useState("signin");

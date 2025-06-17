@@ -7,12 +7,11 @@ Notify.init({
   opacity: 0.95,
   borderRadius: '6px',
   timeout: 3500,
-  fontSize: '5px', // Doesn't always apply — we override below
+  fontSize: '1px', // May be ignored, so we override below
   fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
   cssAnimationDuration: 250,
   cssAnimationStyle: 'fade',
   zindex: 99999,
-
   success: {
     background: '#d4edda',
     textColor: '#155724',
@@ -35,31 +34,25 @@ Notify.init({
   },
 });
 
-// Force override styles
+// Full forced override
 const style = document.createElement('style');
 style.innerHTML = `
-  .notiflix-notify {
-    font-size: 5px !important;
-    padding: 6px 10px !important;
-  }
-
-  .notiflix-notify .notiflix-notify-content {
-    font-size: 5px !important;
-    line-height: 1.1 !important;
-    padding: 0 !important;
-  }
-
+  .notiflix-notify,
+  .notiflix-notify-content,
   .notiflix-notify__message {
-    font-size: 5px !important;
+    font-size: 0.5px !important;
+    line-height: 1 !important;
+    padding: 1px 2px !important;
     margin: 0 !important;
   }
 
   .notiflix-notify__icon {
-    transform: scale(0.5) !important;
-    margin-right: 4px;
+    transform: scale(0.3) !important;
+    margin-right: 1px !important;
   }
 `;
 
 document.head.appendChild(style);
+
 
 export default Notify;
