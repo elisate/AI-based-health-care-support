@@ -134,6 +134,7 @@ function App() {
         <Route path="/nurse" element={<NurseLayout />}></Route>
         {/* ---------------------DOCTOR------------------- */}
         <Route path="/doctor" element={<DoctorLayout />}>
+        <Route path="/doctor"  index element={<DoctorDash />} />
           <Route path="/doctor/dash" element={<DoctorDash />} />
           <Route path="/doctor/all-patients" element={<DoctorPatientAssigned/>} />
           <Route path="/doctor/patient-pro" element={<DocPatient />} />
