@@ -75,6 +75,7 @@ export default function Welcome() {
       if (activeTab === "signup") {
         formData.append("firstname", data.firstname);
         formData.append("lastname", data.lastname);
+        formData.append("national_id",data.national_id)
         await axios.post("http://localhost:8000/recommend/register", formData, {
           headers: {
             "Content-Type": "application/json",
@@ -104,7 +105,7 @@ export default function Welcome() {
         } else if (Role === "doctor") {
           navigate("/doctor");
           Notify.success("Doctor Login SuccessFull");
-        } else if (Role === "superAdmin") {
+        } else if (Role === "superadmin") {
           navigate("/super");
           Notify.success("Super Admin Login SuccessFull");
         } else {
@@ -223,6 +224,18 @@ export default function Welcome() {
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Doe"
                     name="lastname"
+                    disabled={isLoading}
+                  />
+                </div>
+                <div className="mb-4">
+                  <div className="block text-sm font-medium text-gray-700 mb-1">
+                    {t("National Id")}
+                  </div>
+                  <input
+                    {...register("national_id", { required: true })}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="1..............."
+                    name="national_id"
                     disabled={isLoading}
                   />
                 </div>
