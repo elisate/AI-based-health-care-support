@@ -115,6 +115,7 @@ function App() {
         </Route>
         {/* ------------------ PATIENT --------------------------- */}
         <Route path="/patient" element={<PatientLayout />}>
+         <Route path="/patient" index element={<PatientPro/>}/>
           <Route path="/patient/patient-pro" element={<Patient />} />
           <Route path="/patient/patient-profile" element={<PatientProfile />} />
           <Route
