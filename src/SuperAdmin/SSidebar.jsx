@@ -65,7 +65,7 @@ const SSidebar = () => {
             </li>
           </Link>
 
-          <Link to="/" className="nav-link">
+          <Link to="/GeneralDoctors" className="nav-link">
             <li>
               <FaUserMd className="nav-icon" /> All Doctors
             </li>

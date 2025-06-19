@@ -53,6 +53,8 @@ import DoctorPatientAssigned from "./DoctorDashboard/DoctorPatientAssigned";
 import PatientIndexPage from "./PatientDashboard/PatientIndexPage";
 import GeneralUsers from "./SuperAdmin/GeneralUsers";
 import SAddHospital from "./SuperAdmin/SAddHospital";
+
+import GeneralDoctors from "./SuperAdmin/GeneralDoctors";
 // import ProtectedRoutes from './Components/ProtectedRoute.js'
 function App() {
   return (
@@ -172,6 +174,7 @@ function App() {
 
           <Route path="/Sadd-Hospitals" element={<SAddHospital />} />
           <Route path="/generalUsers" element={<GeneralUsers />} />
+          <Route path="/GeneralDoctors" element={<GeneralDoctors/>}/>
         </Route>
       </Routes>
     </BrowserRouter>
