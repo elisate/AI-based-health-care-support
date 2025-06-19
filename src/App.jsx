@@ -9,17 +9,14 @@ import AddDoctor from "./Components/AddDoctor";
 import DoctorProfile from "./Components/DoctorProfile";
 import PatientDashboard from "./Components/PatientDashboard";
 import PatientLayout from "./PatientDashboard/PatientLayout";
-import NurseLayout from "./NurseDasboard/NurseLayout";
-import AddNurse from "./Components/AddNurse";
-import AllNurses from "./Components/AllNurses";
-import NurseProfile from "./Components/NurseProfile";
+
 import DoctorLayout from "./DoctorDashboard/DoctorLayout";
 import AddPatient from "./Components/AddPatient";
 import AllPatients from "./Components/AllPatients";
 import Patient from "./PatientDashboard/Patient";
 import DoctorTable from "./Components/DoctorTable";
 import EditDoctorForm from "./Components/EditDoctorForm";
-import NurseTable from "./Components/NurseTable";
+
 import PatientProfile from "./PatientDashboard/PatientProfile";
 import PatientPro from "./PatientDashboard/PatientPro";
 import PatientTable from "./DoctorDashboard/PatientTable";
@@ -31,7 +28,7 @@ import EditPatientForm from "./DoctorDashboard/EditPatientForm";
 import Support from "./PatientDashboard/Support";
 import Events from "./Components/Events";
 import DoctorPatient from "./DoctorDashboard/DoctorPatient";
-import DoctorPati from "./DoctorDashboard/DoctorPati";
+
 import DoctorDash from "./DoctorDashboard/DoctorDash";
 import Settings from "./Components/Settings";
 import DocSettings from "./DoctorDashboard/DocSettings";
@@ -39,15 +36,13 @@ import PaSettings from "./PatientDashboard/PaSettings";
 import PatientEvent from "./PatientDashboard/PatientEvent";
 import Welcome from "./Components/Welcome";
 
-import Test from "./Components/Test";
 import PatientSymptomForm from "./PatientDashboard/PatientSymptomForm";
 import HospitalSchedule from "./other_component/HospitalSchedule";
 import AppointmentPage from "./PatientDashboard/AppointmentPage";
 import SuperDashboardlayout from "./SuperAdmin/SuperDashboardlayout";
 import SDasboardview from "./SuperAdmin/SDasboardview";
-// import SPatientDashboard from "./SuperAdmin/SPatientDashboard";
 import SAllHospitals from "./SuperAdmin/SAllHospitals";
-import SAddDoctor from "./SuperAdmin/SAddDoctor";
+
 import MedicalAIassistant from "./DoctorDashboard/MedicalAIassistant";
 import SingleAppointment from "./Components/SingleAppointment";
 import AssignDoctor from "./Components/AssignDoctor";
@@ -57,6 +52,7 @@ import Treatment from "./DoctorDashboard/Treatment";
 import DoctorPatientAssigned from "./DoctorDashboard/DoctorPatientAssigned";
 import PatientIndexPage from "./PatientDashboard/PatientIndexPage";
 import GeneralUsers from "./SuperAdmin/GeneralUsers";
+import SAddHospital from "./SuperAdmin/SAddHospital";
 // import ProtectedRoutes from './Components/ProtectedRoute.js'
 function App() {
   return (
@@ -94,13 +90,7 @@ function App() {
             path="/all-doctors/doctor_profile/:id"
             element={<DoctorProfile />}
           />
-          <Route path="/all-nurses" element={<AllNurses />} />
-          <Route path="/add-nurse" element={<AddNurse />} />
-          <Route
-            path="dashboard/nurse-profile/:id"
-            element={<NurseProfile />}
-          />
-          <Route path="/nurse-doctor" element={<NurseTable />} />
+
           <Route path="/all-patients" element={<AllPatients />} />
           <Route path="/doctor-view" element={<DoctorTable />} />
           <Route path="/add-patient" element={<AddPatient />} />
@@ -132,8 +122,7 @@ function App() {
             element={<AppointmentPage />}
           />
         </Route>
-        {/* ----------------------------------------------------- */}
-        <Route path="/nurse" element={<NurseLayout />}></Route>
+
         {/* ---------------------DOCTOR------------------- */}
         <Route path="/doctor" element={<DoctorLayout />}>
           <Route path="/doctor" index element={<DoctorDash />} />
@@ -165,9 +154,7 @@ function App() {
             path="/doctor/edit-patientform/:id"
             element={<EditPatientForm />}
           />
-          <Route path="/doctor/all-nurses" element={<AllNurses />} />
-          <Route path="/doctor/nurse-doctor" element={<NurseTable />} />
-          <Route path="/doctor/nurse-profile/:id" element={<NurseProfile />} />
+
           <Route path="/doctor/settings" element={<DocSettings />} />
           <Route path="/doctor/Appointment" element={<AssignedAppointment />} />
           <Route
@@ -183,8 +170,8 @@ function App() {
 
           <Route path="/Sall-Hospitals" element={<SAllHospitals />} />
 
-          <Route path="/Sadd-Hospitals" element={<SAddDoctor />} />
-          <Route path="/generalUsers" element={<GeneralUsers/>}/>
+          <Route path="/Sadd-Hospitals" element={<SAddHospital />} />
+          <Route path="/generalUsers" element={<GeneralUsers />} />
         </Route>
       </Routes>
     </BrowserRouter>

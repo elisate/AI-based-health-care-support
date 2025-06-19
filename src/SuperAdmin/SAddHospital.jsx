@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { Notify } from "notiflix/build/notiflix-notify-aio";
 import axios from "axios";
 
-const SHospitalCreate = () => {
+const SAddHospital = () => {
   const {
     register,
     handleSubmit,
@@ -123,4 +123,4 @@ const SHospitalCreate = () => {
   );
 };
 
-export default SHospitalCreate;
+export default SAddHospital;
