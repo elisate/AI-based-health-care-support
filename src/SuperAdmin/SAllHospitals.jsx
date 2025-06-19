@@ -13,30 +13,32 @@ const SAllHospitals = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
- useEffect(() => {
-  const fetchHospitals = async () => {
-    try {
-      const response = await axios.get("http://127.0.0.1:8000/recommend/hospitals");
-      const data = response.data;
+  useEffect(() => {
+    const fetchHospitals = async () => {
+      try {
+        const response = await axios.get(
+          "http://127.0.0.1:8000/recommend/getAllHospitals"
+        );
+        const data = response.data.hospitals;
 
-      if (Array.isArray(data)) {
-        setHospitals(data);
-        setTotalHospitals(data.length);
-      } else {
+        if (Array.isArray(data)) {
+          setHospitals(response.data.hospitals);
+          setTotalHospitals(data.length);
+        } else {
+          setHospitals([]);
+          setTotalHospitals(0);
+        }
+      } catch (error) {
+        console.error("Failed to fetch hospitals:", error);
         setHospitals([]);
         setTotalHospitals(0);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Failed to fetch hospitals:", error);
-      setHospitals([]);
-      setTotalHospitals(0);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
-  fetchHospitals();
-}, []);
+    fetchHospitals();
+  }, []);
 
   // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -108,15 +110,11 @@ const SAllHospitals = () => {
                       }`}
                     >
                       <td className="px-3 py-4 whitespace-nowrap">
-                        <img
-                          src={
-                            hospital.logo_url ||
-                            "https://via.placeholder.com/40x40?text=H"
-                          }
-                          alt="Hospital Logo"
-                          className="w-10 h-10 rounded-full border-1 border-blue-500"
-                        />
+                        <span className="text-white text-sm bg-blue-500 px-3 py-1 rounded-full">
+                          {hospital.hospital_name?.charAt(0).toUpperCase()}
+                        </span>
                       </td>
+
                       <td className="px-3 py-4 whitespace-nowrap font-medium text-gray-900">
                         {hospital.hospital_name}
                       </td>
