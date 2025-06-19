@@ -1,17 +1,22 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { User, Mail, Phone, Stethoscope, Calendar, UserCheck } from "lucide-react";
+import {
+  User,
+  Mail,
+  Phone,
+  Stethoscope,
+  Calendar,
+  UserCheck,
+} from "lucide-react";
 
 const DoctorDash = () => {
-  
   const [loading, setLoading] = useState(true);
 
-
-   const [doctor, setDoctor] = useState([]);
+  const [doctor, setDoctor] = useState([]);
   const userToken = JSON.parse(localStorage.getItem("userToken")); // Get token from localStorage
-  const doctorId=userToken.role_data.id
-  const Fname=userToken.user.firstname;
-  const Lname=userToken.user.lastname;
+  const doctorId = userToken.role_data.id;
+  const Fname = userToken.user.firstname;
+  const Lname = userToken.user.lastname;
   useEffect(() => {
     const getDoctor = async () => {
       try {
@@ -62,8 +67,12 @@ const DoctorDash = () => {
         <div className="text-center">
           <div className="bg-white rounded-lg shadow-lg p-8">
             <div className="text-red-500 text-6xl mb-4">⚠️</div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">Doctor Not Found</h2>
-            <p className="text-gray-600">Unable to load doctor information. Please try again later.</p>
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+              Doctor Not Found
+            </h2>
+            <p className="text-gray-600">
+              Unable to load doctor information. Please try again later.
+            </p>
           </div>
         </div>
       </div>
@@ -72,13 +81,16 @@ const DoctorDash = () => {
 
   // 👇 Your entire UI remains untouched and still uses `doctor` from API
   return (
-<div className="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8 overflow-x-auto">
-
+    <div className="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8 overflow-x-auto">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Doctor Dashboard</h1>
-          <p className="text-gray-600">Welcome back, {Fname} {Lname}</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Doctor Dashboard
+          </h1>
+          <p className="text-gray-600">
+            Welcome back, {Fname} {Lname}
+          </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -94,7 +106,9 @@ const DoctorDash = () => {
                   />
                   <div className="absolute -bottom-2 -right-2 bg-green-500 w-6 h-6 rounded-full border-2 border-white"></div>
                 </div>
-                <h2 className="text-2xl font-bold text-white mt-4 mb-2">{doctor.userName}</h2>
+                <h2 className="text-2xl font-bold text-white mt-4 mb-2">
+                  {doctor.userName}
+                </h2>
                 <div className="inline-flex items-center bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
                   <Stethoscope className="w-4 h-4 mr-1" />
                   {doctor.Speciality}
@@ -107,13 +121,16 @@ const DoctorDash = () => {
                 <div className="space-y-3">
                   <div className="flex items-center text-gray-600 hover:text-blue-600 transition-colors">
                     <Mail className="w-4 h-4 mr-3 text-blue-600" />
-                    <a href={`mailto:${doctor.userEmail}`} className="text-sm hover:underline">
+                    <a
+                      href={`mailto:${doctor.userEmail}`}
+                      className="text-sm hover:underline"
+                    >
                       {doctor.userEmail}
                     </a>
                   </div>
                   <div className="flex items-center text-gray-600">
                     <Phone className="w-4 h-4 mr-3 text-blue-600" />
-                    <span className="text-sm">{doctor.phoneNumber}</span>
+                    <span className="text-sm">{<span className="text-sm">{doctor.phoneNumber}</span>}</span>
                   </div>
                 </div>
               </div>
@@ -130,16 +147,41 @@ const DoctorDash = () => {
                 </h3>
               </div>
               <div className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 ">
                   <div className="space-y-4">
-                    <InfoItem icon={<User className="w-5 h-5 text-blue-600" />} label="Full Name" value={doctor.userName} />
-                    <InfoItem icon={<UserCheck className="w-5 h-5 text-blue-600" />} label="Gender" value={doctor.Gender} />
-                    <InfoItem icon={<Calendar className="w-5 h-5 text-blue-600" />} label="Age" value={`${doctor.userAge} years`} />
+                    <InfoItem
+                      icon={<User className="w-5 h-5 text-blue-600" />}
+                      label="Full Name"
+                      value={<span className="text-xs">{doctor.userName}</span>} // wrap value
+                    />
+
+                    <InfoItem
+                      icon={<UserCheck className="w-5 h-5 text-blue-600" />}
+                      label="Gender"
+                      value={<span className="text-sm">{doctor.Gender}</span>}
+                    />
+                    <InfoItem
+                      icon={<Calendar className="w-5 h-5 text-blue-600" />}
+                      label="Age"
+                      value={<span className="text-sm">{doctor.userAge} years</span>}
+                    />
                   </div>
                   <div className="space-y-4">
-                    <InfoItem icon={<Phone className="w-5 h-5 text-blue-600" />} label="Phone Number" value={doctor.phoneNumber} />
-                    <InfoItem icon={<Mail className="w-5 h-5 text-blue-600" />} label="Email Address" value={doctor.userEmail} />
-                    <InfoItem icon={<Stethoscope className="w-5 h-5 text-blue-600" />} label="Speciality" value={doctor.Speciality} />
+                    <InfoItem
+                      icon={<Phone className="w-5 h-5 text-blue-600" />}
+                      label="Phone Number"
+                      value={<span className="text-sm">{doctor.phoneNumber}</span>}
+                    />
+                    <InfoItem
+                      icon={<Mail className="w-5 h-5 text-blue-600" />}
+                      label="Email Address"
+                      value={<span className="text-sm">{doctor.userEmail}</span>}
+                    />
+                    <InfoItem
+                      icon={<Stethoscope className="w-5 h-5 text-blue-600" />}
+                      label="Speciality"
+                      value={<span className="text-sm">{doctor.Speciality}</span>}
+                    />
                   </div>
                 </div>
               </div>
@@ -149,9 +191,21 @@ const DoctorDash = () => {
 
         {/* Quick Stats */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <QuickStat icon={<User className="w-6 h-6 text-blue-600" />} title="150+" subtitle="Patients Treated" />
-          <QuickStat icon={<Calendar className="w-6 h-6 text-blue-600" />} title="15+" subtitle="Years Experience" />
-          <QuickStat icon={<Stethoscope className="w-6 h-6 text-blue-600" />} title="98%" subtitle="Success Rate" />
+          <QuickStat
+            icon={<User className="w-6 h-6 text-blue-600" />}
+            title="150+"
+            subtitle="Patients Treated"
+          />
+          <QuickStat
+            icon={<Calendar className="w-6 h-6 text-blue-600" />}
+            title="15+"
+            subtitle="Years Experience"
+          />
+          <QuickStat
+            icon={<Stethoscope className="w-6 h-6 text-blue-600" />}
+            title="98%"
+            subtitle="Success Rate"
+          />
         </div>
       </div>
     </div>
@@ -163,7 +217,9 @@ const InfoItem = ({ icon, label, value }) => (
   <div className="flex items-start">
     <div className="bg-blue-100 p-2 rounded-lg mr-4">{icon}</div>
     <div>
-      <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">{label}</p>
+      <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">
+        {label}
+      </p>
       <p className="text-lg font-semibold text-gray-900">{value}</p>
     </div>
   </div>
