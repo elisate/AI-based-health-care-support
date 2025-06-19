@@ -173,26 +173,13 @@ function App() {
             path="/dashboard/doctor-dashboard"
             element={<DoctorDashboard />}
           />
-          {/* <Route path="/Spatient-dashboard" element={<SPatientDashboard />} /> */}
-          <Route path="/Sall-doctors" element={<SAllHospitals/>} />
+         
+          <Route path="/Sall-Hospitals" element={<SAllHospitals/>} />
           <Route path="/Sedit-doctor" element={<EditDoctor />} />
-          {/* <Route
-            path="/dashboard/edit-doctorform/:id"
-            element={<EditDoctorForm />}
-          /> */}
+         
 
-          <Route path="/Sadd-doctor" element={<SAddDoctor />} />
-          {/* <Route path="/createSchedule" element={<HospitalSchedule />} /> */}
-          {/* <Route
-            path="/all-doctors/doctor_profile/:id"
-            element={<DoctorProfile />}
-          /> */}
-          {/* <Route path="/all-nurses" element={<AllNurses />} />
-          <Route path="/add-nurse" element={<AddNurse />} /> */}
-          {/* <Route
-            path="dashboard/nurse-profile/:id"
-            element={<NurseProfile />}
-          /> */}
+          <Route path="/Sadd-Hospitals" element={<SAddDoctor />} />
+          
           <Route path="/nurse-doctor" element={<NurseTable />} />
           <Route path="/all-patients" element={<AllPatients />} />
           <Route path="/doctor-view" element={<DoctorTable />} />
