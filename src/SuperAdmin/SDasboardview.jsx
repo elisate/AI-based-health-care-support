@@ -16,131 +16,69 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { Import } from "lucide-react";
 const SDasboardview = () => {
-  const [getdoctors, setGetDoctors] = useState([]);
-
   const [supportRequests, setSupportRequests] = useState([]);
   const [reply, setReply] = useState("");
   const [selectedRequestId, setSelectedRequestId] = useState(null);
+  const [patients, setPatients] = useState([]);
+  const [doctor, setDoctor] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [hospital, setHospital] = useState([]);
+
   useEffect(() => {
-    const fetchSupportRequests = async () => {
+    const getAllUsers = async () => {
+      try {
+        const res = await axios.get(
+          `http://127.0.0.1:8000/recommend/getAllUsers`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        setUsers(res.data.users); // assuming the API returns { users: [...] }
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
+      }
+    };
+
+    getAllUsers();
+  }, []); // only run on component mount
+
+  useEffect(() => {
+    const getAllHospitals = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5001/contact//getrequest"
-        );
-        setSupportRequests(response.data); // Update state with the fetched requests
-      } catch (error) {
-        console.error("Error fetching support requests:", error);
-      }
-    };
-
-    fetchSupportRequests();
-  }, []);
-  
-  //============================================================================
-  const [patients, setPatients] = useState([]);
-  const [doctors, setDoctors] = useState([]);
-  const [appointments, setAppointments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  
-    useEffect(() => {
-      const fetchPatients = async () => {
-        const userToken = JSON.parse(localStorage.getItem("userToken"));
-        const hospitalId = userToken?.user?.hospital_id;
-  
-        try {
-          const response = await fetch(
-            `http://127.0.0.1:8000/recommend/Appointment/getPatientByHospId/${hospitalId}`
-          );
-          const data = await response.json();
-  
-          if (data.patients && Array.isArray(data.patients)) {
-            setPatients(data.patients);
-           
-          } else {
-            setPatients([]);
-            
+          `http://127.0.0.1:8000/recommend/getAllHospitals`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
           }
-        } catch (error) {
-          console.error("Failed to fetch patients:", error);
-          setPatients([]);
-          
-        } finally {
-          setLoading(false);
-        }
-      };
-  
-      fetchPatients();
-    }, []);
-  
-  useEffect(() => {
-    const fetchDoctors = async () => {
-      const userToken = JSON.parse(localStorage.getItem("userToken"));
-      const hospitalId = userToken?.user?.hospital_id;
-
-      try {
-        const response = await fetch(
-          `http://127.0.0.1:8000/recommend/doctor/getDoctorByHospitalId/${hospitalId}`
         );
-        const data = await response.json();
-
-        if (data.doctors && Array.isArray(data.doctors)) {
-          setDoctors(data.doctors);
-        } else {
-          setDoctors([]);
-        }
+        setHospital(response.data.hospitals);
+      } catch (error) {}
+    };
+    getAllHospitals();
+  }, []);
+  useEffect(() => {
+    const getAllDoctors = async () => {
+      try {
+        const res = await axios.get(
+          `http://127.0.0.1:8000/recommend/getAllDoctors`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        setDoctor(res.data.doctors);
       } catch (error) {
-        console.error("Failed to fetch doctors:", error);
-        setDoctors([]);
-      } finally {
-        setLoading(false);
+        console.error("Failed to fetch users:", error);
       }
     };
 
-    fetchDoctors();
-  }, []);
-
-  useEffect(() => {
-    const fetchPendingAppointments = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const userToken = JSON.parse(localStorage.getItem("userToken"));
-        const hospitalId = userToken?.user?.hospital_id;
-        if (!hospitalId) {
-          setError("Hospital ID not found.");
-          setLoading(false);
-          return;
-        }
-
-        const response = await fetch(
-          `http://127.0.0.1:8000/recommend/appointment/getAllPendingAppointmentsByHospId/${hospitalId}`
-        );
-
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        if (data.appointments) {
-          setAppointments(data.appointments);
-        } else {
-          setAppointments([]);
-        }
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPendingAppointments();
-  }, []);
-
-  if (loading) return <div>Loading pending appointments...</div>;
-  if (error) return <div>Error: {error}</div>;
+    getAllDoctors();
+  }, []); // only run on component mount
   return (
     <div className="dash">
       <div className="widgets">
@@ -150,14 +88,10 @@ const SDasboardview = () => {
               <FaBedPulse className="ordericon" />
             </div>
             <div className="texts">
-              {error ? (
-                <p style={{ color: "red", fontSize: "1.5rem" }}>{error}</p>
-              ) : (
-                <>
-                  <p>{patients.length}</p>
-                  <span>Total Patients</span>
-                </>
-              )}
+              <>
+                <p>{users.length}</p>
+                <span>Total Users</span>
+              </>
             </div>
           </div>
         </div>
@@ -167,14 +101,10 @@ const SDasboardview = () => {
               <FaUserDoctor className="pageicon" />
             </div>
             <div className="texts">
-              {error ? (
-                <p style={{ color: "red", fontSize: "1.5rem" }}>{error}</p>
-              ) : (
-                <>
-                  <p>{doctors.length}</p>
-                  <span>Available Doctors</span>
-                </>
-              )}
+              <>
+                <p>{hospital.length}</p>
+                <span>Total Hospitals</span>
+              </>
             </div>
           </div>
         </div>
@@ -185,28 +115,24 @@ const SDasboardview = () => {
               <FaUserNurse className="downloadicon" />
             </div>
             <div className="texts">
-              {error ? (
-                <p style={{ color: "red", fontSize: "1.5rem" }}>{error}</p>
-              ) : (
-                <>
-                  <p>{appointments.length}</p>
-                  <span>Pending Request</span>
-                </>
-              )}
+              <>
+                <p>{doctor.length}</p>
+                <span>Total Doctors</span>
+              </>
             </div>
           </div>
         </div>
       </div>
       <div className="second-section">
         <div className="area">
-          <p>Hospital Visits Statistics</p> <br />
-          <SArea/>
+          <p>System Visits Statistics</p> <br />
+          <SArea />
         </div>
         <section className="doctors-list">
           <div className="doctors-header">
-            <h2>Doctors List</h2>
+            <h2>Hospitals List</h2>
           </div>
-          {getdoctors.map((doctor) => (
+          {/* {getdoctors.map((doctor) => (
             <div className="doctor-card" key={doctor._id}>
               <img src={doctor.profileImage} alt="Doctor" />
               <div className="doctor-info">
@@ -214,63 +140,17 @@ const SDasboardview = () => {
                 <p>{doctor.Speciality}</p>
               </div>
             </div>
-          ))}
+          ))} */}
           <button className="view-all">
             <Link to="/all-doctors" className="nav-link">
-              View all doctors
+              View all Hospitals
             </Link>
           </button>
         </section>
       </div>
-      
-      <div className="third-section">
-        <div className="table-section">
-          <div className="top-section">
-            <h2>Patients</h2>
-            <button className="add-btn">
-              <Link to="/add-patient" className="nav-link">
-                +Add Patient
-              </Link>
-            </button>
-          </div>
 
-          <table>
-            <thead>
-              <tr>
-                <th>Full Names</th>
-                <th>National Id</th>
-                <th>Gender</th>
-                <th>Age</th>
-                {/* <th>E-mail</th> */}
-                <th>Disease</th>
-                <th colSpan={2}>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {patients.map((patient) => (
-                <tr key={patient._id}>
-                  <td>{patient.patientName}</td>
-                  <td>{patient.patientId}</td>
-                  <td>{patient.patientGender}</td>
-                  <td>{patient.patientAge}</td>
-                  {/* <td>{patient.patientEmail}</td> */}
-                  <td>{patient.patientDisease}</td>
-                  <td>
-                    {/* <Link to={`/doctor/edit-patientform/${patient._id}`}> */}
-                    <MdModeEdit className="edit" />
-                    {/* </Link> */}
-                  </td>
-                  <td>
-                    <MdDelete
-                      className="delete"
-                      onClick={() => handleDelete(patient._id)}
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      <div className="third-section">
+        
         <div className="table-section" style={{ marginTop: "0rem" }}>
           <div className="top-section">
             <h2>Support Requests</h2>

@@ -160,32 +160,9 @@ h3 {
 .view-all:hover {
   background: #007bffda;
 }
-/* .card-modal{
-  background: #fff;
-  padding: 1rem;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  width: 22rem;
-  margin-bottom: 2rem;
-  margin-top: 2rem;
-  cursor: pointer;
-}
-.card-modal h4{
-  font-size: 1.4rem;
-  color: #555;
-}
-.top-part{
-  display: flex;
-}
-.top-icon{
-  margin-left: 3rem;
-}
-.sec-widgets{
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
-} */
+
  .third-section{
-  margin-top: -7rem;
+  margin-top: 1rem;
  }
  .table-section .top-section h2{
   color: #007BFF;
