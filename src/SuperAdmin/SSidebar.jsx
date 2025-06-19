@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../dashboardstyles/sidebar.css";
 import { Link } from "react-router-dom";
-import { FaUserDoctor, FaBedPulse } from "react-icons/fa6";
+import { FaBedPulse } from "react-icons/fa6";
 import { IoMdMenu } from "react-icons/io";
 import {
   MdDashboard,
@@ -71,7 +71,7 @@ const SSidebar = () => {
             </li>
           </Link>
 
-          <Link to="/" className="nav-link">
+          <Link to="/generalUsers" className="nav-link">
             <li>
               <FaUsersCog className="nav-icon" /> General Users
             </li>

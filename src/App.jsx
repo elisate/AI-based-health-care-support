@@ -2,11 +2,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Dashboardlayout from "./Components/Dashboardlayout";
 import DoctorDashboard from "./Components/DoctorDashboard";
 import Dasboardview from "./Components/Dasboardview";
-import Layout from "./Website/Layout";
-import Home from "./Website/Home";
-import About from "./Website/About";
-import Contact from "./Website/Contact";
-import Login from "./Website/Login";
 import Signup from "./Website/Signup";
 import AllDoctors from "./Components/AllDoctors";
 import EditDoctor from "./Components/EditDoctor";
@@ -61,6 +56,7 @@ import SingleAssignedAppointment from "./DoctorDashboard/SingleAssignedAppointme
 import Treatment from "./DoctorDashboard/Treatment";
 import DoctorPatientAssigned from "./DoctorDashboard/DoctorPatientAssigned";
 import PatientIndexPage from "./PatientDashboard/PatientIndexPage";
+import GeneralUsers from "./SuperAdmin/GeneralUsers";
 // import ProtectedRoutes from './Components/ProtectedRoute.js'
 function App() {
   return (
@@ -70,14 +66,17 @@ function App() {
         <Route path="/signup" element={<Signup />} />
 
         <Route path="/welcome" element={<Welcome />} />
-         {/* ----------------------HOSPITAL DASHBOARD-------------------------- */}
+        {/* ----------------------HOSPITAL DASHBOARD-------------------------- */}
         <Route path="/" element={<Dashboardlayout />}>
           <Route path="/dashboard" element={<Dasboardview />} />
           <Route
             path="/dashboard/doctor-dashboard"
             element={<DoctorDashboard />}
           />
-          <Route path="/assign-doctor/:appointment_id" element={<AssignDoctor/>} />
+          <Route
+            path="/assign-doctor/:appointment_id"
+            element={<AssignDoctor />}
+          />
           <Route path="/patient-dashboard" element={<PatientDashboard />} />
           <Route path="/all-doctors" element={<AllDoctors />} />
           <Route path="/edit-doctor" element={<EditDoctor />} />
@@ -116,8 +115,8 @@ function App() {
         </Route>
         {/* ------------------ PATIENT --------------------------- */}
         <Route path="/patient" element={<PatientLayout />}>
-        <Route path="/patient" index element={<PatientIndexPage/>}/>
-         {/* <Route path="/patient" element={<PatientPro/>}/> */}
+          <Route path="/patient" index element={<PatientIndexPage />} />
+          {/* <Route path="/patient" element={<PatientPro/>}/> */}
           <Route path="/patient/patient-pro" element={<Patient />} />
           <Route path="/patient/patient-profile" element={<PatientProfile />} />
           <Route
@@ -137,17 +136,26 @@ function App() {
         <Route path="/nurse" element={<NurseLayout />}></Route>
         {/* ---------------------DOCTOR------------------- */}
         <Route path="/doctor" element={<DoctorLayout />}>
-        <Route path="/doctor"  index element={<DoctorDash />} />
+          <Route path="/doctor" index element={<DoctorDash />} />
           <Route path="/doctor/dash" element={<DoctorDash />} />
-          <Route path="/doctor/all-patients" element={<DoctorPatientAssigned/>} />
+          <Route
+            path="/doctor/all-patients"
+            element={<DoctorPatientAssigned />}
+          />
           <Route path="/doctor/patient-pro" element={<DocPatient />} />
           <Route path="/doctor/AIassistant" element={<MedicalAIassistant />} />
-           <Route path="/doctor/singleAppointmentForDoctor/:appointment_id" element={<SingleAssignedAppointment/>} />
+          <Route
+            path="/doctor/singleAppointmentForDoctor/:appointment_id"
+            element={<SingleAssignedAppointment />}
+          />
           <Route
             path="/doctor/patient-profile/:id"
             element={<DoctorPatient />}
           />
-          <Route path="/doctor/TreatPatient/:appointmentId" element={<Treatment/>}/>
+          <Route
+            path="/doctor/TreatPatient/:appointmentId"
+            element={<Treatment />}
+          />
           <Route
             path="/doctor/patientpro/:patientId"
             element={<DocPatientPro />}
@@ -161,38 +169,22 @@ function App() {
           <Route path="/doctor/nurse-doctor" element={<NurseTable />} />
           <Route path="/doctor/nurse-profile/:id" element={<NurseProfile />} />
           <Route path="/doctor/settings" element={<DocSettings />} />
-           <Route path="/doctor/Appointment" element={<AssignedAppointment/>} />
-          <Route path="/doctor/SingleAssignedAppointment/:appointmentId" element={<SingleAssignedAppointment/>}/>
+          <Route path="/doctor/Appointment" element={<AssignedAppointment />} />
+          <Route
+            path="/doctor/SingleAssignedAppointment/:appointmentId"
+            element={<SingleAssignedAppointment />}
+          />
         </Route>
 
         {/* --------------------SUPER ADMIN ROUTES ----------------------------------------*/}
         <Route path="/" element={<SuperDashboardlayout />}>
           <Route index element={<SDasboardview />} />
           <Route path="/super" element={<SDasboardview />} />
-          <Route
-            path="/dashboard/doctor-dashboard"
-            element={<DoctorDashboard />}
-          />
-         
-          <Route path="/Sall-Hospitals" element={<SAllHospitals/>} />
-          <Route path="/Sedit-doctor" element={<EditDoctor />} />
-         
+
+          <Route path="/Sall-Hospitals" element={<SAllHospitals />} />
 
           <Route path="/Sadd-Hospitals" element={<SAddDoctor />} />
-          
-          <Route path="/nurse-doctor" element={<NurseTable />} />
-          <Route path="/all-patients" element={<AllPatients />} />
-          <Route path="/doctor-view" element={<DoctorTable />} />
-          <Route path="/add-patient" element={<AddPatient />} />
-
-          <Route path="/dashboard/patient-profile" element={<AdminPatient />} />
-          <Route
-            path="/dashboard/patient-profile/:patientId"
-            element={<AdminPatientPro />}
-          />
-          <Route path="/patient-profile/:id" element={<PatientProfile />} />
-          <Route path="/events" element={<Events />} />
-          <Route path="/dashboard/settings" element={<Settings />} />
+          <Route path="/generalUsers" element={<GeneralUsers/>}/>
         </Route>
       </Routes>
     </BrowserRouter>
