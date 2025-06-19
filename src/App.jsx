@@ -60,6 +60,7 @@ import AssignedAppointment from "./DoctorDashboard/AssignedAppointment";
 import SingleAssignedAppointment from "./DoctorDashboard/SingleAssignedAppointment";
 import Treatment from "./DoctorDashboard/Treatment";
 import DoctorPatientAssigned from "./DoctorDashboard/DoctorPatientAssigned";
+import PatientIndexPage from "./PatientDashboard/PatientIndexPage";
 // import ProtectedRoutes from './Components/ProtectedRoute.js'
 function App() {
   return (
@@ -115,7 +116,8 @@ function App() {
         </Route>
         {/* ------------------ PATIENT --------------------------- */}
         <Route path="/patient" element={<PatientLayout />}>
-         <Route path="/patient" index element={<PatientPro/>}/>
+        <Route path="/patient" index element={<PatientIndexPage/>}/>
+         {/* <Route path="/patient" element={<PatientPro/>}/> */}
           <Route path="/patient/patient-pro" element={<Patient />} />
           <Route path="/patient/patient-profile" element={<PatientProfile />} />
           <Route
