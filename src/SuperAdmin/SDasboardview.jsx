@@ -23,6 +23,7 @@ const SDasboardview = () => {
   const [doctor, setDoctor] = useState([]);
   const [users, setUsers] = useState([]);
   const [hospital, setHospital] = useState([]);
+  const[prediction,setPrediction]=useState([]);
 
   useEffect(() => {
     const getAllUsers = async () => {
@@ -79,6 +80,25 @@ const SDasboardview = () => {
 
     getAllDoctors();
   }, []); // only run on component mount
+  useEffect(() => {
+    const getAllPrediction = async () => {
+      try {
+        const res = await axios.get(
+          `http://127.0.0.1:8000/recommend/getAllPredictions`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        setPrediction(res.data.predictions);
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
+      }
+    };
+
+    getAllPrediction();
+  }, []); // only run on component mount
   return (
     <div className="dash">
       <div className="widgets">
@@ -130,20 +150,12 @@ const SDasboardview = () => {
         </div>
         <section className="doctors-list">
           <div className="doctors-header">
-            <h2>Hospitals List</h2>
+            <h2>No Of AI Prediction</h2>
           </div>
-          {/* {getdoctors.map((doctor) => (
-            <div className="doctor-card" key={doctor._id}>
-              <img src={doctor.profileImage} alt="Doctor" />
-              <div className="doctor-info">
-                <h3>{doctor.userName}</h3>
-                <p>{doctor.Speciality}</p>
-              </div>
-            </div>
-          ))} */}
+          
           <button className="view-all">
             <Link to="/all-doctors" className="nav-link">
-              View all Hospitals
+              {prediction.length}
             </Link>
           </button>
         </section>
