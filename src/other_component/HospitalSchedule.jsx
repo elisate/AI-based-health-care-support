@@ -1,22 +1,19 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
-
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "../other_component/Dialog";
-import { formatTime, formatDate, formatDay,getWeekdayFromDate } from "../utils/Day_Time_Date";
-import TimeSlotModal from "./TimeSlotModal";
 import {
-  AiOutlineDelete,
-  AiOutlineEdit,
-  AiOutlinePlus,
-  AiOutlineCalendar,
-} from "react-icons/ai";
-import Notify  from "../utils/notifyConfig";
+  formatTime,
+  formatDate,
+  formatDay,
+  getWeekdayFromDate,
+} from "../utils/Day_Time_Date";
+import { Trash2, Edit3, Plus, CalendarDays } from "lucide-react";
+import Notify from "../utils/notifyConfig.js";
 
 const HospitalSchedule = () => {
   const [schedule, setSchedule] = useState({
@@ -44,11 +41,9 @@ const HospitalSchedule = () => {
     "sunday",
   ];
 
-   const userToken = JSON.parse(localStorage.getItem("userToken"));
-
+  const userToken = JSON.parse(localStorage.getItem("userToken"));
   const hospitalId = userToken?.role_data?.id;
   const key = userToken?.token;
-  // console.log("===================",hospitalId)
 
   const fetchSchedule = async () => {
     try {
@@ -57,7 +52,6 @@ const HospitalSchedule = () => {
       );
       if (response.status === 200) {
         setSchedule(response.data.schedule);
-        
       }
     } catch (error) {
       console.error("Error fetching schedule:", error);
@@ -65,9 +59,7 @@ const HospitalSchedule = () => {
   };
 
   useEffect(() => {
-    if (hospitalId) {
-      fetchSchedule();
-    }
+    if (hospitalId) fetchSchedule();
   }, [hospitalId]);
 
   const isDuplicateSlot = (day, newSlot, index = null) => {
@@ -120,45 +112,73 @@ const HospitalSchedule = () => {
     }
   };
 
-  const handleEditTimeSlot = (day, index, slot) => {
-    const updatedDaySlots = [...schedule[day]];
-    updatedDaySlots[index] = slot;
-    setSchedule((prev) => ({
-      ...prev,
-      [day]: updatedDaySlots,
-    }));
+  const handleEditTimeSlot = async ({ day, index, slot }) => {
+    try {
+      const updatedSlots = schedule[day].map((slt, i) => (i === index ? slot : slt));
+
+      const response = await axios.put(
+        "http://127.0.0.1:8000/recommend/schedule/update_day",
+        {
+          hospital_id: hospitalId,
+          day,
+          slots: updatedSlots,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${key}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 200 || response.status === 201) {
+        setSchedule((prev) => {
+          const updatedDaySlots = [...prev[day]];
+          updatedDaySlots[index] = slot;
+          return {
+            ...prev,
+            [day]: updatedDaySlots,
+          };
+        });
+        Notify.success("Time slot updated successfully!");
+      } else {
+        Notify.failure("Failed to update time slot.");
+      }
+    } catch (error) {
+      console.error("Error from API:", error?.response?.data || error.message);
+      Notify.failure("Update failed. See console for details.");
+    }
   };
 
   const saveSchedule = async () => {
-  setLoading(true);
-  try {
-    const response = await axios.post(
-      "http://127.0.0.1:8000/recommend/schedule/create",
-      {
-        hospital_id: hospitalId,
-        ...schedule, // 👈 Spread the schedule fields here
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${key}`,
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/recommend/schedule/create",
+        {
+          hospital_id: hospitalId,
+          ...schedule,
         },
+        {
+          headers: {
+            Authorization: `Bearer ${key}`,
+          },
+        }
+      );
+
+      if (response.status === 200 || response.status === 201) {
+        Notify.success("Schedule saved successfully!");
+        await fetchSchedule();
+      } else {
+        alert("Unexpected response while saving schedule.");
       }
-    );
-
-    if (response.status === 200 || response.status === 201) {
-      Notify.success("Schedule saved successfully!");
-      await fetchSchedule(); // Refresh updated data
-    } else {
-      alert("Unexpected response while saving schedule.");
+    } catch (error) {
+      console.error("Error saving schedule:", error);
+      Notify.failure("Failed to save schedule.");
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error("Error saving schedule:", error);
-    Notify.failure("Failed to save schedule.");
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   const openModal = (day, slotIndex = null) => {
     setCurrentDay(day);
@@ -177,28 +197,28 @@ const HospitalSchedule = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-6 px-4 shadow-lg">
+    <div className="min-h-screen bg-gray-50 py-6 px-4">
       <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-lg shadow-md p-4 mb-4">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center mb-3 md:mb-0">
-              <div className="bg-blue-600 p-2 rounded-full mr-3">
-                <AiOutlineCalendar className="h-5 w-5 text-white" />
+        <div className="bg-white rounded-xl shadow-md p-6 mb-6 border border-blue-100">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-3">
+            <div className="flex items-center gap-3">
+              <div className="bg-blue-600 p-2 rounded-full shadow-sm">
+                <CalendarDays className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-medium text-gray-800">
+                <h1 className="text-xl font-bold text-gray-800">
                   Hospital Weekly Schedule
                 </h1>
-                <p className="text-xs text-gray-500">
-                  Manage your hospital's availability
-                </p>
+                <p className="text-sm text-gray-500">Manage hospital availability</p>
               </div>
             </div>
             <button
               onClick={saveSchedule}
               disabled={loading}
-              className={`bg-blue-600 text-white px-4 py-2 text-sm rounded-md flex items-center shadow-sm transition duration-200 ${
-                loading ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"
+              className={`px-4 py-2 rounded-md text-white font-medium transition ${
+                loading
+                  ? "bg-blue-400 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700"
               }`}
             >
               {loading ? "Saving..." : "Save Schedule"}
@@ -206,60 +226,49 @@ const HospitalSchedule = () => {
           </div>
         </div>
 
-        <div className="flex flex-col space-y-4">
+        <div className="flex flex-col gap-5">
           {daysOfWeek.map((day) => (
-            <div
-              key={day}
-              className="bg-white border rounded-lg shadow-sm overflow-hidden"
-            >
-              <div className="border-b px-4 py-2">
-                <h3 className="text-sm font-medium text-gray-600">
+            <div key={day} className="bg-white rounded-lg border shadow-sm">
+              <div className="px-4 py-2 border-b bg-gray-50">
+                <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
                   {formatDay(day)}
-                </h3>
+                </h2>
               </div>
-
-              <div className="p-3">
+              <div className="p-4">
                 {schedule[day].length > 0 ? (
-                  <ul className="space-y-2">
+                  <ul className="flex flex-col gap-2">
                     {schedule[day].map((slot, idx) => (
                       <li
                         key={idx}
-                        className="border border-gray-200 rounded-md p-2 hover:shadow-sm transition duration-200"
+                        className="flex items-center justify-between bg-gray-50 border rounded-lg px-4 py-2 hover:shadow"
                       >
-                        <div className="flex justify-between items-center">
-                          <div>
-                            <div className="text-blue-600 text-sm">
-                              {formatTime(slot.start_time)} - {formatTime(slot.end_time)}
-                            </div>
-                            <div className="text-xs text-gray-500">
-                              {formatDate(slot.date)}
-                            </div>
-                          </div>
-                          <div className="flex gap-2">
-                            <AiOutlineEdit
-                              className=" text-blue-600 hover:text-blue-800 size-5 cursor-pointer"
-                              onClick={() => openModal(day, idx)}
-                            />
-                            <AiOutlineDelete
-                              className="text-red-500 hover:text-red-700 size-5 cursor-pointer"
-                              onClick={() => handleDeleteTimeSlot(day, idx)}
-                            />
-                          </div>
+                        <div>
+                          <p className="text-sm text-blue-700 font-medium">
+                            {formatTime(slot.start_time)} - {formatTime(slot.end_time)}
+                          </p>
+                          <p className="text-xs text-gray-500">{formatDate(slot.date)}</p>
+                        </div>
+                        <div className="flex gap-3">
+                          <Edit3
+                            className="text-blue-600 hover:text-blue-800 cursor-pointer w-5 h-5"
+                            onClick={() => openModal(day, idx)}
+                          />
+                          <Trash2
+                            className="text-red-500 hover:text-red-700 cursor-pointer w-5 h-5"
+                            onClick={() => handleDeleteTimeSlot(day, idx)}
+                          />
                         </div>
                       </li>
                     ))}
                   </ul>
                 ) : (
-                  <div className="py-2 text-center">
-                    <p className="text-gray-400 text-xs">No time slots</p>
-                  </div>
+                  <div className="text-center text-gray-400 text-sm">No time slots</div>
                 )}
-
                 <button
                   onClick={() => openModal(day)}
-                  className="w-full mt-3 bg-white border border-gray-300 text-blue-600 px-2 py-1 rounded-md hover:bg-gray-50 text-xs transition flex items-center justify-center"
+                  className="mt-4 flex items-center justify-center gap-2 text-sm text-blue-600 hover:text-blue-800 w-full border border-blue-200 py-2 rounded-md bg-white hover:bg-blue-50"
                 >
-                  <AiOutlinePlus className="mr-1 h-3 w-3" />
+                  <Plus className="w-4 h-4" />
                   Add Time Slot
                 </button>
               </div>
@@ -278,44 +287,117 @@ const HospitalSchedule = () => {
           <TimeSlotModal
             day={currentDay}
             initialData={editingSlot}
-           onSave={(slot) => {
-  const now = new Date();
-  const selectedDateTime = new Date(`${slot.date}T${slot.start_time}`);
+            onSave={async (slot) => {
+              const now = new Date();
+              const selectedDateTime = new Date(`${slot.date}T${slot.start_time}`);
+              if (selectedDateTime < now) {
+                Notify.warning("Cannot add or update a time slot for a past date/time.");
+                return;
+              }
+              const actualDay = getWeekdayFromDate(slot.date);
+              if (actualDay !== currentDay.toLowerCase()) {
+                Notify(`Date does not match the selected day (${formatDay(currentDay)}).`);
+                return;
+              }
 
-  if (selectedDateTime < now) {
-    Notify.warning("Cannot add or update a time slot for a past date/time.");
-    return;
-  }
+              if (editingSlot) {
+                if (isDuplicateSlot(currentDay, slot, editingSlot.index)) {
+                  alert("This time slot already exists.");
+                  return;
+                }
+                await handleEditTimeSlot({
+                  day: currentDay,
+                  index: editingSlot.index,
+                  slot,
+                });
+              } else {
+                if (isDuplicateSlot(currentDay, slot)) {
+                  alert("This time slot already exists.");
+                  return;
+                }
+                handleAddTimeSlot(currentDay, slot);
+              }
 
-  const actualDay = getWeekdayFromDate(slot.date);
-  if (actualDay !== currentDay.toLowerCase()) {
-    Notify(
-      `Date does not match the selected day (${formatDay(currentDay)}). Please select a correct date.`
-    );
-    return;
-  }
-
-  if (editingSlot) {
-    if (isDuplicateSlot(currentDay, slot, editingSlot.index)) {
-      alert("This time slot already exists.");
-      return;
-    }
-    handleEditTimeSlot(currentDay, editingSlot.index, slot);
-  } else {
-    if (isDuplicateSlot(currentDay, slot)) {
-      alert("This time slot already exists.");
-      return;
-    }
-    handleAddTimeSlot(currentDay, slot);
-  }
-
-  closeModal();
-}}
-
+              closeModal();
+            }}
             onCancel={closeModal}
           />
         </DialogContent>
       </Dialog>
+    </div>
+  );
+};
+
+// ✅ Fixed TimeSlotModal (no hospital_id included in slot data)
+const TimeSlotModal = ({ day, initialData = {}, onSave, onCancel }) => {
+  const [slotData, setSlotData] = useState({
+    start_time: initialData.start_time || "",
+    end_time: initialData.end_time || "",
+    date: initialData.date || "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setSlotData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = () => {
+    const { start_time, end_time, date } = slotData;
+    if (!start_time || !end_time || !date) {
+      Notify.warning("Please fill all fields.");
+      return;
+    }
+
+    // ✅ Only send valid fields (not hospital_id)
+    onSave({ start_time, end_time, date });
+  };
+
+  return (
+    <div className="flex flex-col gap-4">
+      <label className="text-sm font-semibold text-gray-700">Start Time</label>
+      <input
+        type="time"
+        name="start_time"
+        value={slotData.start_time}
+        onChange={handleChange}
+        className="border p-2 rounded"
+      />
+
+      <label className="text-sm font-semibold text-gray-700">End Time</label>
+      <input
+        type="time"
+        name="end_time"
+        value={slotData.end_time}
+        onChange={handleChange}
+        className="border p-2 rounded"
+      />
+
+      <label className="text-sm font-semibold text-gray-700">Date</label>
+      <input
+        type="date"
+        name="date"
+        value={slotData.date}
+        onChange={handleChange}
+        className="border p-2 rounded"
+      />
+
+      <div className="flex justify-end gap-3 mt-4">
+        <button
+          onClick={onCancel}
+          className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={handleSubmit}
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          Save
+        </button>
+      </div>
     </div>
   );
 };
