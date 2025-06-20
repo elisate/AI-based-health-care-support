@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "../dashboardstyles/topbar.css";
 import { IoMdSunny } from "react-icons/io";
-import { FiSearch } from "react-icons/fi";
+
 import { LuMoonStar } from "react-icons/lu";
-import { MdNotifications } from "react-icons/md";
+
 import { User } from "lucide-react";
 const SNavbar = () => {
   const [isDarkTheme, setIsDarkTheme] = useState(false);

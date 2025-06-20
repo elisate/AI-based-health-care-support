@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import Notify from '../utils/notifyConfig'
+import Notify from "../utils/notifyConfig";
 
 export default function Welcome() {
   const [activeTab, setActiveTab] = useState("signin");
@@ -18,6 +18,9 @@ export default function Welcome() {
       signIn: "Sign In",
       signUp: "Sign Up",
       fullName: "Full Name",
+      firstName: "First Name",
+      lastName: "Last Name",
+      nationalId: "National ID",
       email: "Email",
       password: "Password",
       agreeTerms: "I agree to the Terms and Conditions",
@@ -32,6 +35,9 @@ export default function Welcome() {
       signIn: "Se Connecter",
       signUp: "S'inscrire",
       fullName: "Nom Complet",
+      firstName: "Prénom",
+      lastName: "Nom de famille",
+      nationalId: "Numéro d'identité",
       email: "Email",
       password: "Mot de Passe",
       agreeTerms: "J'accepte les termes et conditions",
@@ -46,6 +52,9 @@ export default function Welcome() {
       signIn: "Kwinjira",
       signUp: "Kwiyandikisha",
       fullName: "Amazina Yombi",
+      firstName: "Izina",
+      lastName: "Izina ry'umuryango",
+      nationalId: "Indangamuntu",
       email: "Imeli",
       password: "Ijambo ry'ibanga",
       agreeTerms: "Nemera amabwiriza",
@@ -69,35 +78,25 @@ export default function Welcome() {
 
     setIsLoading(true);
     try {
-      const formData = new FormData();
-      formData.append("email", data.email);
-      formData.append("password", data.password);
+      const formData = {
+        email: data.email,
+        password: data.password,
+      };
+
       if (activeTab === "signup") {
-        formData.append("firstname", data.firstname);
-        formData.append("lastname", data.lastname);
-        formData.append("national_id",data.national_id)
-        await axios.post("http://localhost:8000/recommend/register", formData, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        formData.firstname = data.firstname;
+        formData.lastname = data.lastname;
+        formData.national_id = data.national_id;
+
+        await axios.post("http://localhost:8000/recommend/register", formData);
         Notify.success("Registration successful, please login.");
         reset();
         setActiveTab("signin");
       } else {
-        const res = await axios.post(
-          "http://localhost:8000/recommend/login",
-          formData,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const res = await axios.post("http://localhost:8000/recommend/login", formData);
         const userToken = res.data;
         localStorage.setItem("userToken", JSON.stringify(userToken));
         const Role = userToken?.user?.userRole;
-        console.log("=====================", Role);
 
         if (Role === "hospital") {
           navigate("/dashboard");
@@ -123,8 +122,7 @@ export default function Welcome() {
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
-      {/* Left Section - Image */}
-      {/* Left Section - Image */}
+      {/* Left Section */}
       <div className="hidden md:flex fixed top-0 left-0 h-screen w-1/2 bg-gradient-to-br from-blue-500 to-blue-700 justify-center items-center p-8 z-10">
         <div className="text-center text-white">
           <h2 className="text-3xl font-bold mb-4">
@@ -204,38 +202,35 @@ export default function Welcome() {
             {activeTab === "signup" && (
               <>
                 <div className="mb-4">
-                  <div className="block text-sm font-medium text-gray-700 mb-1">
-                    {t("FirstName")}
-                  </div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t("firstName")}
+                  </label>
                   <input
                     {...register("firstname", { required: true })}
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="John"
-                    name="firstname"
                     disabled={isLoading}
                   />
                 </div>
                 <div className="mb-4">
-                  <div className="block text-sm font-medium text-gray-700 mb-1">
-                    {t("LastName")}
-                  </div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t("lastName")}
+                  </label>
                   <input
                     {...register("lastname", { required: true })}
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Doe"
-                    name="lastname"
                     disabled={isLoading}
                   />
                 </div>
                 <div className="mb-4">
-                  <div className="block text-sm font-medium text-gray-700 mb-1">
-                    {t("National Id")}
-                  </div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t("nationalId")}
+                  </label>
                   <input
                     {...register("national_id", { required: true })}
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="1..............."
-                    name="national_id"
+                    placeholder="1xxxxxxxxxxxxx"
                     disabled={isLoading}
                   />
                 </div>
@@ -243,9 +238,9 @@ export default function Welcome() {
             )}
 
             <div className="mb-4">
-              <div className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 {t("email")}
-              </div>
+              </label>
               <input
                 type="email"
                 {...register("email", { required: true })}
@@ -256,9 +251,9 @@ export default function Welcome() {
             </div>
 
             <div className="mb-4">
-              <div className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 {t("password")}
-              </div>
+              </label>
               <input
                 type="password"
                 {...register("password", { required: true, minLength: 3 })}
@@ -269,30 +264,30 @@ export default function Welcome() {
             </div>
 
             {activeTab === "signin" && (
-              <div className="mb-4">Forget Password</div>
+              <div className="mb-4 text-sm text-right text-blue-500 cursor-pointer">
+                Forgot Password?
+              </div>
             )}
 
             {activeTab === "signup" && (
-              <div className="mb-1">
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id="terms"
-                    checked={agreeToTerms}
-                    onChange={() => setAgreeToTerms(!agreeToTerms)}
-                    disabled={isLoading}
-                    className="w-4 h-4 text-blue-500"
-                  />
-                  <label htmlFor="terms" className="text-sm text-gray-600">
-                    {t("agreeTerms")}
-                  </label>
-                </div>
+              <div className="mb-4 flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="terms"
+                  checked={agreeToTerms}
+                  onChange={() => setAgreeToTerms(!agreeToTerms)}
+                  className="w-4 h-4 text-blue-500"
+                  disabled={isLoading}
+                />
+                <label htmlFor="terms" className="text-sm text-gray-600">
+                  {t("agreeTerms")}
+                </label>
               </div>
             )}
 
             <button
               type="submit"
-              className="bg-blue-500 text-white py-3 hover:bg-blue-600"
+              className="bg-blue-500 text-white py-3 w-full rounded hover:bg-blue-600"
               disabled={isLoading}
             >
               {isLoading ? "Submitting..." : t("submit")}
