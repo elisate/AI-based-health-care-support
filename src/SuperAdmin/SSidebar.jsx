@@ -59,7 +59,7 @@ const SSidebar = () => {
             </Link>
           </ul>
 
-          <Link to="/">
+          <Link to="/GeneralPatients">
             <li className="menu-item">
               <FaBedPulse className="nav-icon" /> Patients
             </li>

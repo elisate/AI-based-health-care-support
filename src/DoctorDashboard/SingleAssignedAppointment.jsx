@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { CalendarCheck } from "lucide-react";
-
+import { ArrowLeft } from 'lucide-react';
 function SingleAssignedAppointment() {
   const { appointment_id } = useParams();
   const [appointment, setAppointment] = useState(null);
@@ -152,19 +152,20 @@ function SingleAssignedAppointment() {
             </div>
           </div>
 
-          <div className="pt-4 ml-[-3.4rem] border-t flex flex-wrap gap-4">
+          <div className="pt-4  border-t flex flex-row justify-between items-center">
             <button
               onClick={() => handleTreatment(appointment.id)}
-              className="bg-blue-600 text-white px-1 py-2 rounded-lg hover:bg-blue-700 transition"
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
             >
               Consult
             </button>
-            <button
+            {/* <button
               onClick={() => window.history.back()}
               className="bg-gray-200 text-black px-1 py-2 rounded-lg hover:bg-gray-300 transition"
             >
               Back
-            </button>
+            </button> */}
+             <ArrowLeft className="w-5 h-5 text-gray-700 cursor-pointer"  onClick={() => window.history.back()}/>
           </div>
         </div>
       </div>
