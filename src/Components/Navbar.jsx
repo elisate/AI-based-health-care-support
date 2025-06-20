@@ -5,7 +5,7 @@ import { Sun, Moon, User } from "lucide-react";
 const Navbar = () => {
  const [isDarkTheme, setIsDarkTheme] = useState(true);
  const userToken = JSON.parse(localStorage.getItem("userToken"));
-  const Fname = userToken?.user?.firstname;
+  const Email = userToken?.user?.email;
   const Lname = userToken?.user?.lastname;
   const Role = userToken?.user?.userRole;
   const key = userToken?.token;
@@ -39,7 +39,7 @@ const Navbar = () => {
         isDarkTheme ? "bg-[#181818]" : "bg-white shadow-lg"
       } text-white z-50 transition-all`}
     >
-      <div className="h-full px-6 flex flex-row items-center gap-9 ">
+      <div className="h-full px-6 flex flex-row items-center gap-3 ">
         {/* Left side with user info */}
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
@@ -49,7 +49,7 @@ const Navbar = () => {
           
 
                <span className="font-medium text-blue-500 text-sm">
-              {Lname?.slice(0, 5)}..
+              {Email?.slice(0, 7)}..
             </span>
            
             <span className="text-xs text-gray-400">{Role}</span>
