@@ -3,7 +3,7 @@ import { Sun, Moon, User } from "lucide-react";
 
 export default function PatientNavbar() {
   const [isDarkTheme, setIsDarkTheme] = useState(true);
- const userToken = JSON.parse(localStorage.getItem("userToken"));
+  const userToken = JSON.parse(localStorage.getItem("userToken"));
   const Fname = userToken?.user?.firstname;
   const Lname = userToken?.user?.lastname;
   const Role = userToken?.user?.userRole;
@@ -31,7 +31,6 @@ export default function PatientNavbar() {
     });
   };
 
- 
   return (
     <nav
       className={`fixed top-0 h-14 ml-[16rem] w-[calc(100%-16rem)] pl-[50rem] sm xl lg-h-16 ${
@@ -45,20 +44,18 @@ export default function PatientNavbar() {
             <User size={20} />
           </div>
           <div className="flex flex-col">
-          
-
-               <span className="font-medium text-blue-500 text-sm">
+            <span className="font-medium text-blue-500 text-sm">
               {Lname?.slice(0, 5)}..
             </span>
-           
+
             <span className="text-xs text-gray-400">{Role}</span>
           </div>
         </div>
-        
+
         {/* Right side with theme toggle */}
         <div
           onClick={toggleTheme}
-          className="p-2 rounded-full text-blue-500 hover:bg-gray-800 transition-colors"
+          className="p-2 rounded-full text-blue-500 hover:bg-gray-800 transition-colors cursor-pointer"
           aria-label="Toggle theme"
         >
           {isDarkTheme ? <Sun size={20} /> : <Moon size={20} />}

@@ -7,7 +7,7 @@ Notify.init({
   opacity: 0.95,
   borderRadius: '6px',
   timeout: 3500,
-  fontSize: '1px', // May be ignored, so we override below
+  fontSize: '12px', // May be ignored, so we override below
   fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
   cssAnimationDuration: 250,
   cssAnimationStyle: 'fade',
@@ -40,7 +40,7 @@ style.innerHTML = `
   .notiflix-notify,
   .notiflix-notify-content,
   .notiflix-notify__message {
-    font-size: 0.5px !important;
+    font-size: 12px !important;
     line-height: 1 !important;
     padding: 1px 2px !important;
     margin: 0 !important;
