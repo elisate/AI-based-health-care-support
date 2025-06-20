@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { CalendarDays, Eye } from "lucide-react";
+import { CalendarDays, Eye, X, Edit2 } from "lucide-react";
 import "../dashboardstyles/table.css";
 import { useNavigate } from "react-router-dom";
 import { Notify } from "notiflix/build/notiflix-notify-aio";
@@ -19,11 +19,14 @@ const GeneralUsers = () => {
   useEffect(() => {
     const getAllUsers = async () => {
       try {
-        const res = await axios.get(`http://127.0.0.1:8000/recommend/getAllUsers`, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const res = await axios.get(
+          `http://127.0.0.1:8000/recommend/getAllUsers`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
         setUsers(res.data.users || []);
       } catch (error) {
         console.error("Failed to fetch users:", error);
@@ -104,28 +107,50 @@ const GeneralUsers = () => {
                       <td className="px-3 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="h-10 w-10 rounded-full flex items-center justify-center text-lg font-mono bg-blue-100 text-blue-600">
-                            {`${user.firstname?.[0] || ""}${user.lastname?.[0] || "N/A"}`}
+                            {`${user.firstname?.[0] || ""}${
+                              user.lastname?.[0] || "N/A"
+                            }`}
                           </div>
                           <div className="ml-4">
                             <div className="font-medium text-gray-900">
-                              {truncateText(`${user.firstname || ""} ${user.lastname || "N/A"}`, 20)}
+                              {truncateText(
+                                `${user.firstname || ""} ${
+                                  user.lastname || "N/A"
+                                }`,
+                                20
+                              )}
                             </div>
                           </div>
                         </div>
                       </td>
                       <td className="px-3 py-4 whitespace-nowrap hidden md:table-cell">
-                        <div className="text-sm text-gray-600">{truncateText(user.email)}</div>
+                        <div className="text-sm text-gray-600">
+                          {truncateText(user.email)}
+                        </div>
                       </td>
                       <td className="px-3 py-4 whitespace-nowrap">
-                        <span className="text-sm text-gray-700 capitalize">{user.userRole}</span>
+                        <span className="text-sm text-gray-700 capitalize">
+                          {user.userRole}
+                        </span>
                       </td>
                       <td className="px-3 py-4 whitespace-nowrap text-sm font-medium">
-                        <div
-                          className="flex items-center bg-blue-100 text-blue-600 px-2 py-1 rounded cursor-pointer hover:bg-blue-200 transition"
-                          onClick={() => handleViewUser(user.id)}
-                        >
-                          <Eye size={16} className="mr-1" />
-                          <span className="text-sm">View</span>
+                        <div className="flex flex-wrap gap-2 items-center">
+                          <div
+                            className="flex items-center bg-blue-100 text-blue-600 px-2 py-1 rounded cursor-pointer hover:bg-blue-200 transition"
+                            onClick={() => handleViewUser(user.id)}
+                          >
+                            <Eye size={16} className="mr-1" />
+                            <span className="text-sm">View</span>
+                          </div>
+                          <div className="flex items-center bg-green-100 text-green-600 px-2 py-1 rounded cursor-pointer hover:bg-green-200 transition">
+                            <Edit2 size={16} className="mr-1" />
+                            <span className="text-sm">Update</span>
+                          </div>
+
+                          <div className="flex items-center bg-red-100 text-red-600 px-2 py-1 rounded cursor-pointer hover:bg-red-200 transition">
+                            <X size={16} className="mr-1" />
+                            <span className="text-sm">Delete</span>
+                          </div>
                         </div>
                       </td>
                     </tr>
@@ -159,7 +184,8 @@ const GeneralUsers = () => {
               </div>
 
               <div className="flex items-center gap-1 text-sm md:text-base">
-                Page <span className="font-bold">{currentPage}</span> of {totalPages}
+                Page <span className="font-bold">{currentPage}</span> of{" "}
+                {totalPages}
               </div>
 
               <div

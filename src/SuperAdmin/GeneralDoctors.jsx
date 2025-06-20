@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { CalendarDays, Eye } from "lucide-react";
+import { CalendarDays, Eye, X, Edit2 } from "lucide-react";
 import "../dashboardstyles/table.css";
 import { useNavigate } from "react-router-dom";
 import { Notify } from "notiflix/build/notiflix-notify-aio";
@@ -19,11 +19,14 @@ const GeneralDoctors = () => {
   useEffect(() => {
     const getAllDoctors = async () => {
       try {
-        const res = await axios.get(`http://127.0.0.1:8000/recommend/getAllDoctors`, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const res = await axios.get(
+          `http://127.0.0.1:8000/recommend/getAllDoctors`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
         setDoctors(res.data.doctors || []);
       } catch (error) {
         console.error("Failed to fetch doctors:", error);
@@ -70,7 +73,9 @@ const GeneralDoctors = () => {
         </div>
 
         {doctors.length === 0 ? (
-          <div className="text-center text-gray-500 py-10">No doctors found.</div>
+          <div className="text-center text-gray-500 py-10">
+            No doctors found.
+          </div>
         ) : (
           <>
             <div className="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-blue-400">
@@ -104,13 +109,21 @@ const GeneralDoctors = () => {
                       <td className="px-3 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <img
-                            src={doctor.profile_image_url || "https://via.placeholder.com/40"}
+                            src={
+                              doctor.profile_image_url ||
+                              "https://via.placeholder.com/40"
+                            }
                             alt="profile"
                             className="h-10 w-10 rounded-full object-cover bg-blue-100 text-blue-600"
                           />
                           <div className="ml-4">
                             <div className="font-medium text-gray-900">
-                              {truncateText(`${doctor.firstname || ""} ${doctor.lastname || ""}`, 20)}
+                              {truncateText(
+                                `${doctor.firstname || ""} ${
+                                  doctor.lastname || ""
+                                }`,
+                                20
+                              )}
                             </div>
                           </div>
                         </div>
@@ -124,12 +137,21 @@ const GeneralDoctors = () => {
                         {truncateText(doctor.specialty || "N/A")}
                       </td>
                       <td className="px-3 py-4 whitespace-nowrap text-sm font-medium">
-                        <div
-                          className="flex items-center bg-blue-100 text-blue-600 px-2 py-1 rounded cursor-pointer hover:bg-blue-200 transition"
-                          onClick={() => handleViewDoctor(doctor.doctor_id)}
-                        >
-                          <Eye size={16} className="mr-1" />
-                          <span className="text-sm">View</span>
+                        <div className="flex flex-wrap gap-2 items-center">
+                          <div className="flex items-center bg-blue-100 text-blue-600 px-2 py-1 rounded cursor-pointer hover:bg-blue-200 transition">
+                            <Eye size={16} className="mr-1" />
+                            <span className="text-sm">View</span>
+                          </div>
+
+                          <div className="flex items-center bg-green-100 text-green-600 px-2 py-1 rounded cursor-pointer hover:bg-green-200 transition">
+                            <Edit2 size={16} className="mr-1" />
+                            <span className="text-sm">Update</span>
+                          </div>
+                          
+                          <div className="flex items-center bg-red-100 text-red-600 px-2 py-1 rounded cursor-pointer hover:bg-red-200 transition">
+                            <X size={16} className="mr-1" />
+                            <span className="text-sm">Delete</span>
+                          </div>
                         </div>
                       </td>
                     </tr>
@@ -163,7 +185,8 @@ const GeneralDoctors = () => {
               </div>
 
               <div className="flex items-center gap-1 text-sm md:text-base">
-                Page <span className="font-bold">{currentPage}</span> of {totalPages}
+                Page <span className="font-bold">{currentPage}</span> of{" "}
+                {totalPages}
               </div>
 
               <div

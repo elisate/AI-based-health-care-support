@@ -133,6 +133,7 @@ const SAllHospitals = () => {
                             <Eye size={16} className="mr-1" />
                             <span className="text-sm">View</span>
                           </div>
+
                           <div className="flex items-center bg-green-100 text-green-600 px-2 py-1 rounded cursor-pointer hover:bg-green-200 transition">
                             <Edit2 size={16} className="mr-1" />
                             <span className="text-sm">Update</span>
