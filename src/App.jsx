@@ -53,10 +53,10 @@ import DoctorPatientAssigned from "./DoctorDashboard/DoctorPatientAssigned";
 import PatientIndexPage from "./PatientDashboard/PatientIndexPage";
 import GeneralUsers from "./SuperAdmin/GeneralUsers";
 import SAddHospital from "./SuperAdmin/SAddHospital";
-
 import GeneralDoctors from "./SuperAdmin/GeneralDoctors";
 import GeneralPatients from "./SuperAdmin/GeneralPatients";
 // import ProtectedRoutes from './Components/ProtectedRoute.js'
+import PatientDetailsPage from "./Components/PatientDetailsModal"
 function App() {
   return (
     <BrowserRouter>
@@ -105,6 +105,9 @@ function App() {
           <Route path="/patient-profile/:id" element={<PatientProfile />} />
           <Route path="/events" element={<Events />} />
           <Route path="/dashboard/settings" element={<Settings />} />
+          <Route path="/patients/:nationalId" element={<PatientDetailsPage />} />
+
+
         </Route>
         {/* ------------------ PATIENT --------------------------- */}
         <Route path="/patient" element={<PatientLayout />}>
