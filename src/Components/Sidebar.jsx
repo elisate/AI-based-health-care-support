@@ -39,7 +39,7 @@ const Sidebar = () => {
                     <ul className={`submenu ${isDoctorsMenuOpen ? "open" : ""}`}>
                         <Link to="/add-doctor" className='nav-link'><li>Add Doctor</li></Link>
                         <Link to="/all-doctors" className='nav-link'><li>All Doctors</li></Link>
-                        <Link to="/doctor-view" className='nav-link'><li>Edit Doctor</li></Link>
+                        {/* <Link to="/doctor-view" className='nav-link'><li>Edit Doctor</li></Link> */}
                     </ul>
 
                     <li onClick={() => setIsPatientsMenuOpen(!isPatientsMenuOpen)} className="menu-item">
@@ -49,7 +49,7 @@ const Sidebar = () => {
                     <ul className={`submenu ${isPatientsMenuOpen ? "open" : ""}`}>
                         <Link to="/add-patient" className='nav-link'><li>Add Patient</li></Link>
                         <Link to="/all-patients" className='nav-link'><li>All Patients</li></Link>
-                        <Link to="/dashboard/patient-profile" className='nav-link'><li>Patient Profile</li></Link>
+                        {/* <Link to="/dashboard/patient-profile" className='nav-link'><li>Patient Profile</li></Link> */}
                     </ul>
                     {/* <li onClick={() => setIsNursesMenuOpen(!isNursesMenuOpen)}>
                         <FaUserNurse className='nav-icon' /> Nurses

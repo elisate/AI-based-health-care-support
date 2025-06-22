@@ -90,9 +90,9 @@ const AllDoctors = () => {
                     <th className="px-3 py-4 text-left text-sm font-medium uppercase tracking-wider hidden md:table-cell bg-blue-500 text-white">
                       Specialty
                     </th>
-                    <th className="px-3 py-4 text-left text-sm font-medium uppercase tracking-wider hidden lg:table-cell bg-blue-500 text-white">
+                    {/* <th className="px-3 py-4 text-left text-sm font-medium uppercase tracking-wider hidden lg:table-cell bg-blue-500 text-white">
                       Phone
-                    </th>
+                    </th> */}
                     <th className="px-3 py-4 text-left text-sm font-medium uppercase tracking-wider bg-blue-500 text-white">
                       Email
                     </th>
@@ -124,9 +124,9 @@ const AllDoctors = () => {
                       <td className="px-3 py-4 whitespace-nowrap hidden md:table-cell text-gray-600">
                         {doc.specialty || "N/A"}
                       </td>
-                      <td className="px-3 py-4 whitespace-nowrap hidden lg:table-cell text-gray-600">
+                      {/* <td className="px-3 py-4 whitespace-nowrap hidden lg:table-cell text-gray-600">
                         {doc.phone || "N/A"}
-                      </td>
+                      </td> */}
                       <td className="px-3 py-4 whitespace-nowrap text-gray-600">
                         {doc.email || "N/A"}
                       </td>

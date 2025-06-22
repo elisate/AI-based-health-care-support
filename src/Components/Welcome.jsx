@@ -28,7 +28,7 @@ export default function Welcome() {
       loggingIn: "Logging in...",
       signingUp: "Signing up...",
       guest: "Continue as Guest",
-      welcome: "Welcome Back",
+      welcome: "Welcome To MediConnect AI-RWA-CST",
       joinUs: "Join Us Today",
     },
     fr: {

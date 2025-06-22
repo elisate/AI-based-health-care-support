@@ -4,10 +4,11 @@ import { useForm } from "react-hook-form";
 import { IoClose } from "react-icons/io5";
 import { VscRequestChanges } from "react-icons/vsc";
 import { useNavigate } from "react-router-dom";
-import Notify from "../utils/notifyConfig"
+import Notify from "../utils/notifyConfig";
+import { Stethoscope } from "lucide-react";
 export default function PatientSymptomForm() {
   const [loading, setLoading] = useState(false);
-const [error, setError] = useState(null);
+  const [error, setError] = useState(null);
 
   const availableSymptoms = [
     "Fever",
@@ -41,7 +42,7 @@ const [error, setError] = useState(null);
   const [symptoms, setSymptoms] = useState([]);
   const { register, handleSubmit, setValue, reset } = useForm();
   const [prediction, setPrediction] = useState(null);
-   const [displayStep, setDisplayStep] = useState(0)
+  const [displayStep, setDisplayStep] = useState(0);
 
   const userToken = JSON.parse(localStorage.getItem("userToken"));
   const userId = userToken?.user?.user_id;
@@ -93,11 +94,11 @@ const [error, setError] = useState(null);
           },
         }
       );
-        reset({
-      user_id: userId,
-      location: "",
-      symptoms: [],
-    });
+      reset({
+        user_id: userId,
+        location: "",
+        symptoms: [],
+      });
       console.log("Submitted:", res.data);
       Notify.success("Data submitted successfully");
 
@@ -106,45 +107,43 @@ const [error, setError] = useState(null);
     } catch (error) {
       console.error("Submission Error:", error);
       Notify.failure("Failed to submit data");
+    } finally {
+      setLoading(false);
     }
-    finally {
-            setLoading(false);
-        }
   };
 
-const fetchPrediction = async () => {
-  let userToken = JSON.parse(localStorage.getItem("userToken"));
-  const authToken = userToken?.token;
+  const fetchPrediction = async () => {
+    let userToken = JSON.parse(localStorage.getItem("userToken"));
+    const authToken = userToken?.token;
 
-  try {
-    const res = await axios.get(
-      "http://localhost:8000/recommend/liveResultPredicted",
-      {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
+    try {
+      const res = await axios.get(
+        "http://localhost:8000/recommend/liveResultPredicted",
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+
+      console.log("Prediction Response:", res.data);
+
+      if (res.data && typeof res.data === "object") {
+        setPrediction(res.data);
+        // Start step-by-step reveal
+        let step = 0;
+        const interval = setInterval(() => {
+          step++;
+          setDisplayStep(step);
+          if (step === 5) clearInterval(interval); // 5 = total sections
+        }, 800); // delay per section (in ms)
+      } else {
+        console.warn("Unexpected prediction format:", res.data);
       }
-    );
-
-    console.log("Prediction Response:", res.data);
-
-    if (res.data && typeof res.data === "object") {
-      setPrediction(res.data);
-      // Start step-by-step reveal
-      let step = 0;
-      const interval = setInterval(() => {
-        step++;
-        setDisplayStep(step);
-        if (step === 5) clearInterval(interval); // 5 = total sections
-      }, 800); // delay per section (in ms)
-    } else {
-      console.warn("Unexpected prediction format:", res.data);
+    } catch (error) {
+      console.error("Failed to fetch prediction:", error);
     }
-  } catch (error) {
-    console.error("Failed to fetch prediction:", error);
-  }
-};
-
+  };
 
   useEffect(() => {
     fetchPrediction(); // initial fetch on component mount
@@ -352,36 +351,189 @@ const fetchPrediction = async () => {
               </svg>
               Predicted Output
             </h1>
-
-             <div className="mt-4">
-      {prediction ? (
-        <div className="rounded-lg bg-gray-50 p-5">
-          <h2 className="text-xl font-bold mb-4 text-gray-800 border-b-2 border-blue-200 pb-2">
+            <>--------------------------</>
+            <div className="mt-4">
+              {prediction ? (
+                <div className="rounded-lg bg-gray-50 p-5">
+                  {/* <h2 className="text-xl font-bold mb-4 text-gray-800 border-b-2 border-blue-200 pb-2">
             Diagnosis Result
-          </h2>
+          </h2> */}
 
-          {/* Diagnosis */}
-          {displayStep >= 1 && (
-            <p className="mb-4 bg-white p-3 rounded-lg shadow-sm border border-gray-100">
-              <span className="font-medium text-blue-500">Diagnosis:</span>{" "}
-              {prediction.diagnosis}
-            </p>
-          )}
+                  {/* Diagnosis */}
+                  {displayStep >= 1 && (
+                    <div className="mb-4">
+                      <p className="font-semibold text-blue-500 mb-2">
+                        Diagnosis:
+                      </p>
+                      <div className="bg-white p-3 rounded-lg shadow-sm border border-gray-100 flex items-start gap-2">
+                        <Stethoscope className="w-5 h-5 text-blue-500 mt-1" />
+                        <span className="text-black">
+                          {prediction.diagnosis}
+                        </span>
+                      </div>
+                    </div>
+                  )}
 
-          {/* Recommended Doctors */}
-          {displayStep >= 2 && (
-            <div className="mb-4">
-              <p className="font-semibold text-blue-500 mb-2">
-                Recommended Doctors:
-              </p>
-              <ul className="bg-white p-3 rounded-lg shadow-sm border border-gray-100">
-                {prediction.recommended_doctors?.map((doctor, index) => (
-                  <li
-                    key={index}
-                    className="mb-1 flex items-center text-black"
-                  >
+                  {/* Recommended Doctors */}
+                  {displayStep >= 2 && (
+                    <div className="mb-4">
+                      <p className="font-semibold text-blue-500 mb-2">
+                        Recommended Doctors:
+                      </p>
+                      <ul className="bg-white p-3 rounded-lg shadow-sm border border-gray-100">
+                        {prediction.recommended_doctors?.map(
+                          (doctor, index) => (
+                            <li
+                              key={index}
+                              className="mb-1 flex items-center text-black"
+                            >
+                              <svg
+                                className="w-4 h-4 mr-2 text-blue-500"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                ></path>
+                              </svg>
+                              {doctor}
+                            </li>
+                          )
+                        )}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Medical Supplies */}
+                  {displayStep >= 3 && (
+                    <div className="mb-4">
+                      <p className="font-semibold text-blue-500 mb-2">
+                        Medical Supplies:
+                      </p>
+                      <ul className="bg-white p-3 rounded-lg shadow-sm border border-gray-100">
+                        {prediction.medical_supplies?.map((supply, index) => (
+                          <li
+                            key={index}
+                            className="mb-1 flex items-center text-black"
+                          >
+                            <svg
+                              className="w-4 h-4 mr-2 text-blue-500"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                              ></path>
+                            </svg>
+                            {supply}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Medical Resources */}
+                  {displayStep >= 4 && (
+                    <div className="mb-4">
+                      <p className="font-semibold text-blue-500 mb-2">
+                        Medical Resources:
+                      </p>
+                      <ul className="bg-white p-3 rounded-lg shadow-sm border border-gray-100">
+                        {prediction.medical_resources?.map(
+                          (resource, index) => (
+                            <li
+                              key={index}
+                              className="mb-1 flex items-center text-black"
+                            >
+                              <svg
+                                className="w-4 h-4 mr-2 text-blue-500"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                                ></path>
+                              </svg>
+                              {resource}
+                            </li>
+                          )
+                        )}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Recommended Hospitals */}
+                  {displayStep >= 5 && (
+                    <div>
+                      <p className="font-semibold text-blue-500 mb-2">
+                        Recommended Hospitals:
+                      </p>
+                      <ul className="bg-white p-3 rounded-lg shadow-sm border border-gray-100">
+                        {prediction.recommended_hospitals?.map(
+                          (hospital, index) => (
+                            <li
+                              key={index}
+                              className="mb-1 flex items-center text-black"
+                            >
+                              <svg
+                                className="w-4 h-4 mr-2 text-blue-500"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                                ></path>
+                              </svg>
+                              {hospital}
+                            </li>
+                          )
+                        )}
+                      </ul>
+                    </div>
+                  )}
+
+                  <div>
+                    <hr className="border-blue-500 border-t-2 my-4" />
+                  </div>
+
+                  {/* Request Appointment */}
+                  {displayStep >= 5 && (
+                    <div className="flex flex-grow gap-2 items-center">
+                      <VscRequestChanges className="text-blue-500" />
+                      <span
+                        className="text-sm cursor-pointer hover:text-blue-500"
+                        onClick={() => handleNavigate(prediction.prediction_id)}
+                      >
+                        Request Appointment
+                      </span>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="flex items-center justify-center h-64 bg-gray-50 rounded-lg border border-gray-200">
+                  <div className="text-center text-gray-500">
                     <svg
-                      className="w-4 h-4 mr-2 text-blue-500"
+                      className="mx-auto h-12 w-12 animate-pulse"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -391,155 +543,15 @@ const fetchPrediction = async () => {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth="2"
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                       ></path>
                     </svg>
-                    {doctor}
-                  </li>
-                ))}
-              </ul>
+                    <p className="mt-2">No prediction data available</p>
+                    <p className="text-sm">Submit the form to see results</p>
+                  </div>
+                </div>
+              )}
             </div>
-          )}
-
-          {/* Medical Supplies */}
-          {displayStep >= 3 && (
-            <div className="mb-4">
-              <p className="font-semibold text-blue-500 mb-2">
-                Medical Supplies:
-              </p>
-              <ul className="bg-white p-3 rounded-lg shadow-sm border border-gray-100">
-                {prediction.medical_supplies?.map((supply, index) => (
-                  <li
-                    key={index}
-                    className="mb-1 flex items-center text-black"
-                  >
-                    <svg
-                      className="w-4 h-4 mr-2 text-blue-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                      ></path>
-                    </svg>
-                    {supply}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* Medical Resources */}
-          {displayStep >= 4 && (
-            <div className="mb-4">
-              <p className="font-semibold text-blue-500 mb-2">
-                Medical Resources:
-              </p>
-              <ul className="bg-white p-3 rounded-lg shadow-sm border border-gray-100">
-                {prediction.medical_resources?.map((resource, index) => (
-                  <li
-                    key={index}
-                    className="mb-1 flex items-center text-black"
-                  >
-                    <svg
-                      className="w-4 h-4 mr-2 text-blue-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                      ></path>
-                    </svg>
-                    {resource}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* Recommended Hospitals */}
-          {displayStep >= 5 && (
-            <div>
-              <p className="font-semibold text-blue-500 mb-2">
-                Recommended Hospitals:
-              </p>
-              <ul className="bg-white p-3 rounded-lg shadow-sm border border-gray-100">
-                {prediction.recommended_hospitals?.map((hospital, index) => (
-                  <li
-                    key={index}
-                    className="mb-1 flex items-center text-black"
-                  >
-                    <svg
-                      className="w-4 h-4 mr-2 text-blue-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                      ></path>
-                    </svg>
-                    {hospital}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          <div>
-            <hr className="border-blue-500 border-t-2 my-4" />
-          </div>
-
-          {/* Request Appointment */}
-          {displayStep >= 5 && (
-            <div className="flex flex-grow gap-2 items-center">
-              <VscRequestChanges className="text-blue-500" />
-              <span
-                className="text-sm cursor-pointer hover:text-blue-500"
-                onClick={() => handleNavigate(prediction.prediction_id)}
-              >
-                Request Appointment
-              </span>
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="flex items-center justify-center h-64 bg-gray-50 rounded-lg border border-gray-200">
-          <div className="text-center text-gray-500">
-            <svg
-              className="mx-auto h-12 w-12 animate-pulse"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              ></path>
-            </svg>
-            <p className="mt-2">No prediction data available</p>
-            <p className="text-sm">Submit the form to see results</p>
-          </div>
-        </div>
-      )}
-    </div>
           </div>
         </div>
       </div>

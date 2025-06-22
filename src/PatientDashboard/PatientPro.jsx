@@ -70,8 +70,8 @@ const PatientPro = () => {
           <div className="patient-info-card">
             <div className="profile-body">
               <h2>{patient.firstname} {patient.lastname}</h2>
-              <p className="expertise"><strong>Disease:</strong> Not Provided</p>
-              <p><strong>Email:</strong> <a href={`mailto:${patient.email}`}>{patient.email || "Not Provided"}</a></p>
+              {/* <p className="expertise"><strong>Disease:</strong> Not Provided</p>
+              <p><strong>Email:</strong> <a href={`mailto:${patient.email}`}>{patient.email || "Not Provided"}</a></p> */}
               <p><strong>National ID:</strong> {patient.national_id}</p>
             </div>
 
@@ -108,7 +108,7 @@ const PatientPro = () => {
               <li><strong>Gender:</strong> {patient.gender}</li>
               <li><strong>Age:</strong> {patient.age}</li>
               <li><strong>Phone:</strong> {patient.phone}</li>
-              <li><strong>Email:</strong> {patient.email || "Not Provided"}</li>
+              {/* <li><strong>Email:</strong> {patient.email || "Not Provided"}</li> */}
               <li><strong>National ID:</strong> {patient.national_id}</li>
             </ul>
           )}

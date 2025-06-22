@@ -47,7 +47,7 @@ const AddPatient = () => {
       }
     } catch (err) {
       setPatient(null);
-      setError("Patient not found or server error.");
+      setError("Patient not found");
     } finally {
       setIsLoading(false);
     }
@@ -55,7 +55,7 @@ const AddPatient = () => {
 
   const handleInputChange = (e) => {
     const value = e.target.value.replace(/\D/g, "");
-    if (value.length <= 13) {
+    if (value.length <= 16) {
       setNationalId(value);
       setError("");
     }
@@ -122,14 +122,14 @@ const AddPatient = () => {
                 value={nationalId}
                 onChange={handleInputChange}
                 onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                placeholder="Enter 13-digit National ID"
+                placeholder="Enter 16-digit National ID"
                 className="w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg"
                 minLength="1"
               />
               <User className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             </div>
             <p className="text-sm text-gray-500 mt-1">
-              Format: 13 digits (e.g., 1234567890123)
+              Format: 16 digits (e.g., 1200xxxxxxxxxxxx)
             </p>
           </div>
 
@@ -161,7 +161,7 @@ const AddPatient = () => {
           {/* ✅ View Profile Button */}
           {patient && (
             <Link to={`/patients/${patient.national_id}`}>
-              <button className="w-full sm:w-auto mt-4 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-lg flex items-center justify-center">
+              <button className="w-full sm:w-auto mt-4  bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-8 rounded-lg flex items-center justify-center">
                 View Full Profile
               </button>
             </Link>

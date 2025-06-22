@@ -87,7 +87,7 @@ const AssignedAppointment = () => {
           <div className="flex items-center gap-3">
             <CalendarDays size={28} className="text-blue-600" />
             <h1 className="text-2xl md:text-3xl font-bold text-blue-600">
-              Requested Appointments
+              Appointments Assigned To Doctor
             </h1>
           </div>
 
