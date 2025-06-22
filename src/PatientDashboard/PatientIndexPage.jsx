@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
 import {
   BarChart,
@@ -10,7 +11,7 @@ import {
 } from "recharts";
 
 const PatientIndexPage = () => {
-  const [patient, setPatient] = useState(null);
+  const [patientData, setPatientData] = useState(null);
   const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 1;
@@ -31,20 +32,18 @@ const PatientIndexPage = () => {
   useEffect(() => {
     const fetchPatient = async () => {
       try {
-        const response = await fetch(
-          `http://127.0.0.1:8000/recommend/patientGetDataByHisId/${patientId}`
+        const response = await axios.get(
+          `http://127.0.0.1:8000/recommend/GetLoaded/${patientId}`
         );
-        if (!response.ok) throw new Error("Failed to load patient data");
 
-        const data = await response.json();
-        if (data) {
-          setPatient(data);
+        if (response.data && response.data.patient) {
+          setPatientData(response.data.patient);
           setError("");
         } else {
-          setError("No patient found with that ID");
+          setError("No patient data found.");
         }
       } catch (err) {
-        setError(err.message);
+        setError("Failed to load patient data");
       }
     };
 
@@ -53,12 +52,13 @@ const PatientIndexPage = () => {
     }
   }, [patientId]);
 
-  const totalPages = patient?.treatments
-    ? Math.ceil(patient.treatments.length / itemsPerPage)
+  const totalPages = patientData?.treatments
+    ? Math.ceil(patientData.treatments.length / itemsPerPage)
     : 0;
+
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentTreatments =
-    patient?.treatments?.slice(startIndex, startIndex + itemsPerPage) || [];
+    patientData?.treatments?.slice(startIndex, startIndex + itemsPerPage) || [];
 
   const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
   const handleNext = () =>
@@ -70,38 +70,37 @@ const PatientIndexPage = () => {
 
       <div className="dashboard-container">
         {/* Patient Info */}
-        {patient && (
+        {patientData && (
           <div className="patient-info-card">
             <div className="profile-body">
-              <h2>{patient.full_name || "Name Not Provided"}</h2>
-              <p className="expertise">
+              <h2>{`${patientData.firstname} ${patientData.lastname}`}</h2>
+              {/* <p className="expertise">
                 <strong>Disease:</strong>{" "}
-                {patient.ongoing_treatments?.[0] || "Not Provided"}
+                {patientData?.ongoing_treatments?.[0] || "Not Provided"}
+              </p> */}
+              <p>
+                <strong>Phone:</strong> {patientData.phone || "Not Provided"}
               </p>
               <p>
-                <strong>Phone:</strong>{" "}
-                {patient.phone || "Not Provided"}
-              </p>
-              <p>
-                <strong>National ID:</strong> {patient.national_id}
+                <strong>National ID:</strong> {patientData.national_id}
               </p>
             </div>
 
             <div className="doctor-statss">
               <div className="stat">
-                <p>{patient.height_cm || "--"} cm</p>
+                <p>{patientData.height_cm || "--"}</p>
                 <small>Height</small>
               </div>
               <div className="stat">
-                <p>{patient.gender || "--"}</p>
+                <p>{patientData.gender || "--"}</p>
                 <small>Gender</small>
               </div>
               <div className="stat">
-                <p>{patient.age || "--"} yrs</p>
+                <p>{patientData.age || "--"} yrs</p>
                 <small>Age</small>
               </div>
               <div className="stat">
-                <p>{patient.weight_kg || "--"} kg</p>
+                <p>{patientData.weight_kg || "--"}</p>
                 <small>Weight</small>
               </div>
             </div>
@@ -126,22 +125,23 @@ const PatientIndexPage = () => {
         {/* Personal Info Section */}
         <div className="specialiity">
           <h3>Personal Information</h3>
-          {patient && (
+          {patientData && (
             <ul className="info">
               <li>
-                <strong>Full Name:</strong> {patient.full_name}
+                <strong>Full Name:</strong>{" "}
+                {`${patientData.firstname} ${patientData.lastname}`}
               </li>
               <li>
-                <strong>Gender:</strong> {patient.gender || "Not Provided"}
+                <strong>Gender:</strong> {patientData.gender || "Not Provided"}
               </li>
               <li>
-                <strong>Age:</strong> {patient.age || "Not Provided"}
+                <strong>Age:</strong> {patientData.age || "Not Provided"}
               </li>
               <li>
-                <strong>Phone:</strong> {patient.phone || "Not Provided"}
+                <strong>Phone:</strong> {patientData.phone || "Not Provided"}
               </li>
               <li>
-                <strong>National ID:</strong> {patient.national_id}
+                <strong>National ID:</strong> {patientData.national_id}
               </li>
             </ul>
           )}
@@ -150,10 +150,10 @@ const PatientIndexPage = () => {
         {/* Messages */}
         <div className="specialiity">
           <h3>Messages</h3>
-          {patient && (
+          {patientData && (
             <div className="message-list">
               <li style={{ marginTop: "2rem" }}>
-                <strong>Dr. Caleb Hamissi: </strong>No description provided.
+                <strong></strong> No description provided.
               </li>
             </div>
           )}
@@ -165,20 +165,27 @@ const PatientIndexPage = () => {
             <h3>Treatment History</h3>
             <ul className="info">
               {currentTreatments.map((treatment) => (
-                <li key={treatment.id} style={{ marginBottom: "1rem" }}>
+                <li key={treatment.treatment_id} style={{ marginBottom: "1rem" }}>
                   <p>
                     <strong>Date:</strong>{" "}
                     {new Date(treatment.created_at).toLocaleDateString()}
                   </p>
                   <p>
+                    <strong>Doctor:</strong>{" "}
+                    {treatment.doctor?.name || "N/A"}
+                  </p>
+                  <p>
                     <strong>Symptoms:</strong>{" "}
-                    {treatment.symptoms?.join(", ") || "N/A"}
+                    {treatment.symptoms?.length > 0
+                      ? treatment.symptoms.join(", ")
+                      : "N/A"}
                   </p>
                   <p>
-                    <strong>Diagnosis:</strong> {treatment.diagnosis}
+                    <strong>Diagnosis:</strong> {treatment.diagnosis || "N/A"}
                   </p>
                   <p>
-                    <strong>Prescription:</strong> {treatment.prescription}
+                    <strong>Prescription:</strong>{" "}
+                    {treatment.prescription || "N/A"}
                   </p>
                   <p>
                     <strong>Notes:</strong> {treatment.notes || "N/A"}
