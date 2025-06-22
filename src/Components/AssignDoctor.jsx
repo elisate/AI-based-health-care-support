@@ -99,7 +99,7 @@ function AssignDoctor() {
                   <strong>Specialty:</strong> {doctor.specialty || "N/A"}
                 </p>
               </div>
-              <div className="ml-[-5rem]">
+              
                 <button
                   onClick={() => handleAssign(doctor)}
                   className="mt-auto bg-blue-600 text-white text-sm  py-2 rounded hover:bg-blue-700 transition disabled:bg-gray-400"
@@ -109,7 +109,7 @@ function AssignDoctor() {
                     ? "Assigning..."
                     : "Assign Appointment"}
                 </button>
-              </div>
+              
             </div>
           ))}
         </div>

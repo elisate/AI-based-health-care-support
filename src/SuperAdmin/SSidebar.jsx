@@ -54,9 +54,9 @@ const SSidebar = () => {
             <Link to="/Sall-Hospitals" className="nav-link">
               <li>All Hospital</li>
             </Link>
-            <Link to="/Sdoctor-view" className="nav-link">
+            {/* <Link to="/Sdoctor-view" className="nav-link">
               <li>Edit Hospital</li>
-            </Link>
+            </Link> */}
           </ul>
 
           <Link to="/GeneralPatients">
