@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Confirm from "../utils/confirmCofig.js";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "../other_component/Dialog";
+import Notify from "../utils/notifyConfig.js";
 import {
   formatTime,
   formatDate,
@@ -13,7 +15,6 @@ import {
   getWeekdayFromDate,
 } from "../utils/Day_Time_Date";
 import { Trash2, Edit3, Plus, CalendarDays } from "lucide-react";
-import Notify from "../utils/notifyConfig.js";
 
 const HospitalSchedule = () => {
   const [schedule, setSchedule] = useState({
@@ -80,36 +81,46 @@ const HospitalSchedule = () => {
     }));
   };
 
-  const handleDeleteTimeSlot = async (day, index) => {
-    if (!window.confirm("Are you sure you want to delete this time slot?")) return;
+  const handleDeleteTimeSlot = (day, index) => {
+    Confirm.show(
+      "Delete Time Slot",
+      "Are you sure you want to delete this time slot?",
+      "Yes",
+      "Cancel",
+      async () => {
+        try {
+          const response = await axios.delete(
+            "http://127.0.0.1:8000/recommend/schedule/delete_slot",
+            {
+              data: {
+                hospital_id: hospitalId,
+                day: day,
+                index: index,
+              },
+            }
+          );
 
-    try {
-      const response = await axios.delete(
-        "http://127.0.0.1:8000/recommend/schedule/delete_slot",
-        {
-          data: {
-            hospital_id: hospitalId,
-            day: day,
-            index: index,
-          },
+          if (response.status === 200) {
+            setSchedule((prev) => {
+              const updatedDaySlots = prev[day].filter((_, i) => i !== index);
+              return {
+                ...prev,
+                [day]: updatedDaySlots,
+              };
+            });
+            Notify.success("Time slot deleted.");
+          } else {
+            Notify.info("Unexpected response from server.");
+          }
+        } catch (error) {
+          console.error("Error deleting slot:", error);
+          Notify.failure("Failed to delete time slot.");
         }
-      );
-
-      if (response.status === 200) {
-        setSchedule((prev) => {
-          const updatedDaySlots = prev[day].filter((_, i) => i !== index);
-          return {
-            ...prev,
-            [day]: updatedDaySlots,
-          };
-        });
-      } else {
-        Notify.info("Unexpected response from server.");
+      },
+      () => {
+        Notify.failure("Delete cancelled.");
       }
-    } catch (error) {
-      console.error("Error deleting slot:", error);
-      Notify.failure("Failed to delete time slot.");
-    }
+    );
   };
 
   const handleEditTimeSlot = async ({ day, index, slot }) => {
@@ -296,7 +307,7 @@ const HospitalSchedule = () => {
               }
               const actualDay = getWeekdayFromDate(slot.date);
               if (actualDay !== currentDay.toLowerCase()) {
-                Notify(`Date does not match the selected day (${formatDay(currentDay)}).`);
+                Notify.info(`Date does not match the selected day (${formatDay(currentDay)}).`);
                 return;
               }
 
@@ -328,12 +339,12 @@ const HospitalSchedule = () => {
   );
 };
 
-// ✅ Fixed TimeSlotModal (no hospital_id included in slot data)
-const TimeSlotModal = ({ day, initialData = {}, onSave, onCancel }) => {
+const TimeSlotModal = ({ day, initialData, onSave, onCancel }) => {
+  const safeData = initialData || {};
   const [slotData, setSlotData] = useState({
-    start_time: initialData.start_time || "",
-    end_time: initialData.end_time || "",
-    date: initialData.date || "",
+    start_time: safeData.start_time || "",
+    end_time: safeData.end_time || "",
+    date: safeData.date || "",
   });
 
   const handleChange = (e) => {
@@ -351,7 +362,6 @@ const TimeSlotModal = ({ day, initialData = {}, onSave, onCancel }) => {
       return;
     }
 
-    // ✅ Only send valid fields (not hospital_id)
     onSave({ start_time, end_time, date });
   };
 
