@@ -119,12 +119,12 @@ useEffect(() => {
                     <p className="text-sm text-gray-500 mb-1">Special Notes</p>
                     <p className="font-medium text-gray-900 capitalize">{profileData.notes}</p>
                   </div>
-                  <div>
+                  {/* <div>
                     <p className="text-sm text-gray-500 mb-1">Hospital ID</p>
                     <p className="font-mono text-sm text-gray-700 bg-white px-2 py-1 rounded border">
                       {profileData.hospital}
                     </p>
-                  </div>
+                  </div> */}
                 </div>
               </div>
 

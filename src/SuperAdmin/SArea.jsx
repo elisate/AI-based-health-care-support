@@ -5,15 +5,15 @@ const data = [
     { name: 'Jan', pv: 30 },
     { name: 'Feb', pv: 60 },
     { name: 'Mar', pv: 40 },
-    { name: 'Apr', pv: 70 },
+    { name: 'Apr', pv: 30 },
     { name: 'May', pv: 50 },
     { name: 'Jun', pv: 90 },
     { name: 'Jul', pv: 50 },
     { name: 'Aug', pv: 55 },
     { name: 'Sep', pv: 45 },
-    { name: 'Oct', pv: 60 },
+    { name: 'Oct', pv: 35 },
     { name: 'Nov', pv: 50 },
-    { name: 'Dec', pv: 65},
+    { name: 'Dec', pv: 40},
 ];
 
 const SArea = () => {

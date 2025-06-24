@@ -4,6 +4,7 @@ import ViewDoctor from "./viewDoctor";
 import "../dashboardstyles/table.css";
 import Notify from "../utils/notifyConfig";
 import Confirm from "../utils/confirmCofig";
+import EditDoctorModal from "./EditDoctorModal";
 const AllDoctors = () => {
   const [doctors, setDoctors] = useState([]);
   const [totalDoctors, setTotalDoctors] = useState(0);
@@ -96,6 +97,7 @@ const AllDoctors = () => {
 
   const [selectedDoctorId, setSelectedDoctorId] = useState(null);
   const [openModal, setModal] = useState(false);
+  const[openUpdateModal,setUpdateModal]=useState(false)
 
   const handleOpenView = (doctor_id) => {
     setSelectedDoctorId(doctor_id);
@@ -107,12 +109,24 @@ const AllDoctors = () => {
     setModal(false);
   };
 
+  const handleUpdate=(doctor_id)=>{
+  setSelectedDoctorId(doctor_id)
+  setUpdateModal(true)
+  }
+  const handleCloseUpdate=()=>{
+    setUpdateModal(false)
+    selectedDoctorId(null)
+  }
+
   return (
     <div className="flex flex-col items-center min-h-screen w-full bg-gray-100">
       {openModal && (
         <ViewDoctor doctorId={selectedDoctorId} handleView={handleCloseView} />
       )}
-
+          {openUpdateModal && (
+        <EditDoctorModal doctorId={selectedDoctorId} handleCloseUpdate={handleCloseUpdate} />
+      )}
+    
       <div className="w-full max-w-7xl mx-auto p-4 md:p-8 mt-16 rounded-xl shadow-lg bg-white text-gray-800">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
@@ -189,7 +203,9 @@ const AllDoctors = () => {
                             <Eye size={16} className="mr-1" />
                             <span className="text-sm">View</span>
                           </div>
-                          <div className="flex items-center bg-green-100 text-green-600 px-2 py-1 rounded cursor-pointer hover:bg-green-200 transition">
+                          <div className="flex items-center bg-green-100 text-green-600 px-2 py-1 rounded cursor-pointer hover:bg-green-200 transition"
+                          onClick={handleUpdate}
+                          >
                             <Edit2 size={16} className="mr-1" />
                             <span className="text-sm">Update</span>
                           </div>
