@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { CalendarDays } from "lucide-react";
+import { CalendarDays, Edit2, X, Eye } from "lucide-react";
+import ViewDoctor from "./viewDoctor";
 import "../dashboardstyles/table.css";
-import { Edit2, Check, X, Eye } from "lucide-react";
+import Notify from "../utils/notifyConfig";
+import Confirm from "../utils/confirmCofig";
 const AllDoctors = () => {
   const [doctors, setDoctors] = useState([]);
   const [totalDoctors, setTotalDoctors] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
@@ -41,7 +42,45 @@ const AllDoctors = () => {
     fetchDoctors();
   }, []);
 
-  // Pagination logic:
+  // DELETE Handler with cancel option
+  const handleDeleteDoctor = (doctorId) => {
+    Confirm.show(
+      "Delete Confirmation",
+      "Are you sure you want to delete this doctor?",
+      "Yes, Delete",
+      "No, Keep Doctor",
+      async () => {
+        try {
+          const response = await fetch(
+            `http://127.0.0.1:8000/recommend/DeleteById/${doctorId}`,
+            {
+              method: "DELETE",
+            }
+          );
+
+          const result = await response.json();
+
+          if (response.ok) {
+            setDoctors((prev) =>
+              prev.filter((doc) => doc.doctor_id !== doctorId)
+            );
+            setTotalDoctors((prev) => prev - 1);
+            Notify.success(result.message || "Doctor deleted successfully");
+          } else {
+            Notify.failure(result.error || "Failed to delete doctor");
+          }
+        } catch (error) {
+          console.error("Error deleting doctor:", error);
+          Notify.failure("An error occurred while deleting the doctor");
+        }
+      },
+      () => {
+        Notify.info("Doctor deletion was cancelled.");
+      }
+    );
+  };
+
+  // Pagination
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentDoctors = doctors.slice(indexOfFirstItem, indexOfLastItem);
@@ -55,8 +94,25 @@ const AllDoctors = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
 
+  const [selectedDoctorId, setSelectedDoctorId] = useState(null);
+  const [openModal, setModal] = useState(false);
+
+  const handleOpenView = (doctor_id) => {
+    setSelectedDoctorId(doctor_id);
+    setModal(true);
+  };
+
+  const handleCloseView = () => {
+    setSelectedDoctorId(null);
+    setModal(false);
+  };
+
   return (
     <div className="flex flex-col items-center min-h-screen w-full bg-gray-100">
+      {openModal && (
+        <ViewDoctor doctorId={selectedDoctorId} handleView={handleCloseView} />
+      )}
+
       <div className="w-full max-w-7xl mx-auto p-4 md:p-8 mt-16 rounded-xl shadow-lg bg-white text-gray-800">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
@@ -65,7 +121,6 @@ const AllDoctors = () => {
               Doctors List
             </h1>
           </div>
-
           <div className="text-base md:text-lg font-medium text-gray-500">
             Total: {totalDoctors}
           </div>
@@ -90,9 +145,6 @@ const AllDoctors = () => {
                     <th className="px-3 py-4 text-left text-sm font-medium uppercase tracking-wider hidden md:table-cell bg-blue-500 text-white">
                       Specialty
                     </th>
-                    {/* <th className="px-3 py-4 text-left text-sm font-medium uppercase tracking-wider hidden lg:table-cell bg-blue-500 text-white">
-                      Phone
-                    </th> */}
                     <th className="px-3 py-4 text-left text-sm font-medium uppercase tracking-wider bg-blue-500 text-white">
                       Email
                     </th>
@@ -124,28 +176,27 @@ const AllDoctors = () => {
                       <td className="px-3 py-4 whitespace-nowrap hidden md:table-cell text-gray-600">
                         {doc.specialty || "N/A"}
                       </td>
-                      {/* <td className="px-3 py-4 whitespace-nowrap hidden lg:table-cell text-gray-600">
-                        {doc.phone || "N/A"}
-                      </td> */}
                       <td className="px-3 py-4 whitespace-nowrap text-gray-600">
                         {doc.email || "N/A"}
                       </td>
                       <td className="px-3 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex flex-wrap gap-2 items-center">
-                          {/* View Button */}
-                          <div className="flex items-center bg-blue-100 text-blue-600 px-2 py-1 rounded cursor-pointer hover:bg-blue-200 transition">
+                          <div
+                            className="flex items-center bg-blue-100 text-blue-600 px-2 py-1 rounded cursor-pointer
+                           hover:bg-blue-200 transition "
+                            onClick={() => handleOpenView(doc.doctor_id)}
+                          >
                             <Eye size={16} className="mr-1" />
                             <span className="text-sm">View</span>
                           </div>
-
-                          {/* Approve Button */}
                           <div className="flex items-center bg-green-100 text-green-600 px-2 py-1 rounded cursor-pointer hover:bg-green-200 transition">
                             <Edit2 size={16} className="mr-1" />
                             <span className="text-sm">Update</span>
                           </div>
-
-                          {/* Reject Button */}
-                          <div className="flex items-center bg-red-100 text-red-600 px-2 py-1 rounded cursor-pointer hover:bg-red-200 transition">
+                          <div
+                            className="flex items-center bg-red-100 text-red-600 px-2 py-1 rounded cursor-pointer hover:bg-red-200 transition"
+                            onClick={() => handleDeleteDoctor(doc.doctor_id)}
+                          >
                             <X size={16} className="mr-1" />
                             <span className="text-sm">Delete</span>
                           </div>
@@ -157,17 +208,16 @@ const AllDoctors = () => {
               </table>
             </div>
 
-            {/* Pagination Controls */}
+            {/* Pagination */}
             <div className="flex flex-wrap justify-center items-center mt-6 gap-2 md:gap-4">
               <div
                 className={`flex items-center justify-center px-4 py-2 rounded-lg shadow-md text-blue-500 bg-white cursor-pointer hover:scale-105 transition-all duration-300 ${
                   currentPage === 1
-                    ? "bg-gray-200  c transform-none shadow-none"
+                    ? "bg-gray-200 transform-none shadow-none"
                     : ""
                 }`}
                 onClick={handlePrevPage}
               >
-                {/* Left arrow */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5 mr-1"
@@ -199,13 +249,12 @@ const AllDoctors = () => {
               <div
                 className={`flex items-center justify-center px-4 py-2 rounded-lg shadow-md text-blue-500 bg-white cursor-pointer hover:scale-105 transition-all duration-300 ${
                   currentPage === totalPages
-                    ? "bg-gray-200  transform-none shadow-none"
+                    ? "bg-gray-200 transform-none shadow-none"
                     : ""
                 }`}
                 onClick={handleNextPage}
               >
                 Next
-                {/* Right arrow */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5 ml-1"
