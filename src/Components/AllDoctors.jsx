@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { CalendarDays, Edit2, X, Eye } from "lucide-react";
 import ViewDoctor from "./viewDoctor";
+import EditDoctorModal from "./EditDoctorModal";
 import "../dashboardstyles/table.css";
 import Notify from "../utils/notifyConfig";
 import Confirm from "../utils/confirmCofig";
-import EditDoctorModal from "./EditDoctorModal";
+
 const AllDoctors = () => {
   const [doctors, setDoctors] = useState([]);
   const [totalDoctors, setTotalDoctors] = useState(0);
@@ -12,6 +13,11 @@ const AllDoctors = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+
+  // Modal states
+  const [selectedDoctorId, setSelectedDoctorId] = useState(null);
+  const [openModal, setModal] = useState(false);
+  const [openUpdateModal, setUpdateModal] = useState(false);
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -43,7 +49,7 @@ const AllDoctors = () => {
     fetchDoctors();
   }, []);
 
-  // DELETE Handler with cancel option
+  // Delete handler
   const handleDeleteDoctor = (doctorId) => {
     Confirm.show(
       "Delete Confirmation",
@@ -54,11 +60,8 @@ const AllDoctors = () => {
         try {
           const response = await fetch(
             `http://127.0.0.1:8000/recommend/DeleteById/${doctorId}`,
-            {
-              method: "DELETE",
-            }
+            { method: "DELETE" }
           );
-
           const result = await response.json();
 
           if (response.ok) {
@@ -81,7 +84,7 @@ const AllDoctors = () => {
     );
   };
 
-  // Pagination
+  // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentDoctors = doctors.slice(indexOfFirstItem, indexOfLastItem);
@@ -95,10 +98,7 @@ const AllDoctors = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
 
-  const [selectedDoctorId, setSelectedDoctorId] = useState(null);
-  const [openModal, setModal] = useState(false);
-  const[openUpdateModal,setUpdateModal]=useState(false)
-
+  // View Modal handlers
   const handleOpenView = (doctor_id) => {
     setSelectedDoctorId(doctor_id);
     setModal(true);
@@ -109,24 +109,29 @@ const AllDoctors = () => {
     setModal(false);
   };
 
-  const handleUpdate=(doctor_id)=>{
-  setSelectedDoctorId(doctor_id)
-  setUpdateModal(true)
-  }
-  const handleCloseUpdate=()=>{
-    setUpdateModal(false)
-    selectedDoctorId(null)
-  }
+  // Update Modal handlers
+  const handleUpdate = (doctor_id) => {
+    setSelectedDoctorId(doctor_id);
+    setUpdateModal(true);
+  };
+
+  const handleCloseUpdate = () => {
+    setUpdateModal(false);
+    setSelectedDoctorId(null);
+  };
 
   return (
     <div className="flex flex-col items-center min-h-screen w-full bg-gray-100">
       {openModal && (
         <ViewDoctor doctorId={selectedDoctorId} handleView={handleCloseView} />
       )}
-          {openUpdateModal && (
-        <EditDoctorModal doctorId={selectedDoctorId} handleCloseUpdate={handleCloseUpdate} />
+      {openUpdateModal && (
+        <EditDoctorModal
+          doctorId={selectedDoctorId}
+          handleCloseUpdate={handleCloseUpdate}
+        />
       )}
-    
+
       <div className="w-full max-w-7xl mx-auto p-4 md:p-8 mt-16 rounded-xl shadow-lg bg-white text-gray-800">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
@@ -196,15 +201,15 @@ const AllDoctors = () => {
                       <td className="px-3 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex flex-wrap gap-2 items-center">
                           <div
-                            className="flex items-center bg-blue-100 text-blue-600 px-2 py-1 rounded cursor-pointer
-                           hover:bg-blue-200 transition "
+                            className="flex items-center bg-blue-100 text-blue-600 px-2 py-1 rounded cursor-pointer hover:bg-blue-200 transition"
                             onClick={() => handleOpenView(doc.doctor_id)}
                           >
                             <Eye size={16} className="mr-1" />
                             <span className="text-sm">View</span>
                           </div>
-                          <div className="flex items-center bg-green-100 text-green-600 px-2 py-1 rounded cursor-pointer hover:bg-green-200 transition"
-                          onClick={handleUpdate}
+                          <div
+                            className="flex items-center bg-green-100 text-green-600 px-2 py-1 rounded cursor-pointer hover:bg-green-200 transition"
+                            onClick={() => handleUpdate(doc.doctor_id)}
                           >
                             <Edit2 size={16} className="mr-1" />
                             <span className="text-sm">Update</span>
