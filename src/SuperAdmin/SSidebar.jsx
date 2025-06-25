@@ -54,9 +54,7 @@ const SSidebar = () => {
             <Link to="/Sall-Hospitals" className="nav-link">
               <li>All Hospital</li>
             </Link>
-            {/* <Link to="/Sdoctor-view" className="nav-link">
-              <li>Edit Hospital</li>
-            </Link> */}
+           
           </ul>
 
           <Link to="/GeneralPatients">
@@ -76,7 +74,7 @@ const SSidebar = () => {
               <FaUsersCog className="nav-icon" /> General Users
             </li>
           </Link>
-          <Link to="/Sdashboard/settings" className="nav-link">
+          <Link to="/userProfile" className="nav-link">
             <li>
               <MdSettings className="nav-icon" /> Settings
             </li>

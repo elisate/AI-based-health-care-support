@@ -57,6 +57,10 @@ import GeneralDoctors from "./SuperAdmin/GeneralDoctors";
 import GeneralPatients from "./SuperAdmin/GeneralPatients";
 // import ProtectedRoutes from './Components/ProtectedRoute.js'
 import PatientDetailsPage from "./Components/PatientDetailsModal"
+// import UserProfile from "./other_component/UseringProfile";
+
+import UseringProfile from "./other_component/UseringProfile";
+import UserLastChats from "./PatientDashboard/UserLastChats";
 function App() {
   return (
     <BrowserRouter>
@@ -104,7 +108,7 @@ function App() {
           />
           <Route path="/patient-profile/:id" element={<PatientProfile />} />
           <Route path="/events" element={<Events />} />
-          <Route path="/dashboard/settings" element={<Settings />} />
+          <Route path="/dashboard/settings" element={<UseringProfile/>} />
           <Route path="/patients/:nationalId" element={<PatientDetailsPage />} />
 
 
@@ -120,13 +124,14 @@ function App() {
             element={<PatientPro />}
           />
           <Route path="/patient/support" element={<Support />} />
-          <Route path="/patient/settings" element={<PaSettings />} />
+          <Route path="/patient/settings" element={<UseringProfile/>} />
           <Route path="/patient/event" element={<PatientEvent />} />
           <Route path="/patient/pridict" element={<PatientSymptomForm />} />
           <Route
             path="/patient/findAppointment/:id"
             element={<AppointmentPage />}
           />
+          <Route path="/patient/lastChat" element={<UserLastChats/>}/>
         </Route>
 
         {/* ---------------------DOCTOR------------------- */}
@@ -161,7 +166,7 @@ function App() {
             element={<EditPatientForm />}
           />
 
-          <Route path="/doctor/settings" element={<DocSettings />} />
+          <Route path="/doctor/settings" element={<UseringProfile/>} />
           <Route path="/doctor/Appointment" element={<AssignedAppointment />} />
           <Route
             path="/doctor/SingleAssignedAppointment/:appointmentId"
@@ -180,6 +185,7 @@ function App() {
           <Route path="/generalUsers" element={<GeneralUsers />} />
           <Route path="/GeneralDoctors" element={<GeneralDoctors/>}/>
           <Route path="/GeneralPatients" element={<GeneralPatients/>}/>
+          <Route path="/userProfile" element={<UseringProfile/>}/>
         </Route>
       </Routes>
     </BrowserRouter>

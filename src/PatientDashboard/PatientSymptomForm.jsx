@@ -5,6 +5,7 @@ import { IoClose } from "react-icons/io5";
 import { VscRequestChanges } from "react-icons/vsc";
 import { useNavigate } from "react-router-dom";
 import Notify from "../utils/notifyConfig";
+import { MoreVertical } from "lucide-react";
 import { Stethoscope } from "lucide-react";
 export default function PatientSymptomForm() {
   const [loading, setLoading] = useState(false);
@@ -153,6 +154,9 @@ export default function PatientSymptomForm() {
   const handleNavigate = (id) => {
     navigate(`/patient/findAppointment/${id}`);
   };
+  const handleSingleLastChat=()=>{
+ navigate(`/patient/lastChat`)
+  }
   return (
     <>
       <div className="text-3xl font-extrabold text-gray-900 mb-8 pl-6 pb-2">
@@ -527,6 +531,19 @@ export default function PatientSymptomForm() {
                         Request Appointment
                       </span>
                     </div>
+                    
+                  )}
+                  {displayStep >= 5 && (
+                    <div className="flex flex-grow gap-2 items-center pt-[1.5rem]">
+                      <MoreVertical className="text-blue-500" />
+                      <span
+                        className="text-sm cursor-pointer hover:text-blue-500"
+                        onClick={handleSingleLastChat}
+                      >
+                       View Last Chat
+                      </span>
+                    </div>
+                    
                   )}
                 </div>
               ) : (

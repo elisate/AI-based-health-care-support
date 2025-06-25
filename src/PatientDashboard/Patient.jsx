@@ -1,39 +1,4 @@
-// import React, { useState } from "react";
 
-// const Patient = () => {
-//     const [patientId, setPatientId] = useState("");
-//     const [patientData, setPatientData] = useState(null);
-//     const [error, setError] = useState("");
-
-//     // Handle input change
-//     const handleChange = (e) => {
-//         setPatientId(e.target.value);
-//     };
-
-//     // Handle form submission
-//     const handleSubmit = async (e) => {
-//         e.preventDefault();
-
-//         if (!patientId) {
-//             setError("Please enter a valid Patient ID.");
-//             return;
-//         }
-
-//         try {
-//             const response = await fetch(`http://localhost:5001/patient/getPatientByNationalId/${patientId}`);
-
-//             if (!response.ok) {
-//                 throw new Error("Patient not found");
-//             }
-
-//             const data = await response.json();
-//             setPatientData(data);
-//             setError(""); // Clear any previous error messages
-//         } catch (err) {
-//             setError(err.message);
-//             setPatientData(null);
-//         }
-//     };
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
