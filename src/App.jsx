@@ -64,9 +64,9 @@ import UserLastChats from "./PatientDashboard/UserLastChats";
 function App() {
   return (
     <BrowserRouter>
+    
       <Routes>
-        <Route path="" index element={<Welcome />} />
-        <Route path="/signup" element={<Signup />} />
+        
 
         <Route path="/welcome" element={<Welcome />} />
         {/* ----------------------HOSPITAL DASHBOARD-------------------------- */}
