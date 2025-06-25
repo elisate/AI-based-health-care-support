@@ -12,8 +12,8 @@ const useLogout = () => {
       'Cancel', // Cancel Button
       () => {
         // Confirmed
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        localStorage.removeItem('userToken');
+        // localStorage.removeItem('user');
         navigate('/welcome');
         Notify.success('Logged out successfully');
       },
