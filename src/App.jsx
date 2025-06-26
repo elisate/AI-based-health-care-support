@@ -64,7 +64,8 @@ import PatientDetailsPage from "./Components/PatientDetailsModal"
 
 import UseringProfile from "./other_component/UseringProfile";
 import UserLastChats from "./PatientDashboard/UserLastChats";
-
+import RequestReset from "./other_component/RequestReset";
+import ChangePassword from "./other_component/ChangePassword";
 
 function App() {
   return (
@@ -72,6 +73,9 @@ function App() {
       <Routes>
         {/* ✅ PUBLIC ROUTE */}
         <Route path="/welcome" element={<Welcome />} />
+        <Route path="/Reset" element={<RequestReset/>}/>
+        <Route path="/changePassword" element={<ChangePassword/>}/>
+      
 
         {/* ✅ PROTECTED ROUTES */}
         <Route

@@ -33,7 +33,7 @@ const PatientIndexPage = () => {
     const fetchPatient = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/recommend/GetLoaded/${patientId}`
+          `http://127.0.0.1:8000/recommend/PatientId/${patientId}`
         );
 
         if (response.data && response.data.patient) {

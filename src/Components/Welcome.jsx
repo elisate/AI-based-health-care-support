@@ -3,12 +3,14 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import Notify from "../utils/notifyConfig";
+import { Link } from "react-router-dom";
 
 export default function Welcome() {
   const [activeTab, setActiveTab] = useState("signin");
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [language, setLanguage] = useState("en");
+
 
   const navigate = useNavigate();
   const { register, handleSubmit, reset } = useForm();
@@ -93,7 +95,10 @@ export default function Welcome() {
         reset();
         setActiveTab("signin");
       } else {
-        const res = await axios.post("http://localhost:8000/recommend/login", formData);
+        const res = await axios.post(
+          "http://localhost:8000/recommend/login",
+          formData
+        );
         const userToken = res.data;
         localStorage.setItem("userToken", JSON.stringify(userToken));
         const Role = userToken?.user?.userRole;
@@ -122,6 +127,7 @@ export default function Welcome() {
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
+      
       {/* Left Section */}
       <div className="hidden md:flex fixed top-0 left-0 h-screen w-1/2 bg-gradient-to-br from-blue-500 to-blue-700 justify-center items-center p-8 z-10">
         <div className="text-center text-white">
@@ -264,9 +270,11 @@ export default function Welcome() {
             </div>
 
             {activeTab === "signin" && (
-              <div className="mb-4 text-sm text-right text-blue-500 cursor-pointer">
+              <Link to="/Reset"><div className="mb-4 text-sm text-right text-blue-500 cursor-pointer"
+             
+              >
                 Forgot Password?
-              </div>
+              </div></Link>
             )}
 
             {activeTab === "signup" && (
